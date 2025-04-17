@@ -31,16 +31,14 @@ class OwnerService
         });
     }
 
-    public function getStaffRequests(){
-        $myHall = $this->myHallSer();
+    public function getStaffRequests() {
+        $myHalls = $this->myHallSer();
+        $hallIds = $myHalls->pluck('id');
 
-        // ************ need's modifications to return all halls !!! **************
-//        foreach ($myHall as $hall){
-//            $id = $hall->id;
-//            return staff_requests::where('hall_id' , $id)->get();
-//        }
-        $id = $myHall->first()->id;
-        return staff_requests::where('hall_id' , $id)->get();
+        return staff_requests::with('user:id,name,photo,email,number') // جلب بيانات المستخدم
+        ->whereIn('hall_id', $hallIds)
+            ->orderBy('created_at', 'desc') // لترتيب الطلبات حسب الأحدث
+            ->get();
     }
 
     public function approveOrRejectStaff($staffReqId,$status) {
