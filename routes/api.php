@@ -38,6 +38,8 @@ Route::middleware(['auth:sanctum'])->prefix('halls')->group(function () {
     Route::put('/{id}', [HallController::class, 'update']);  // Update a hall
     Route::delete('/{id}', [HallController::class, 'destroy']); // Delete a hall
     Route::get('/{hallId}/inquiries', [HallController::class, 'getHallInquiries']); //get this hall inquiries
+    Route::get('/{hallId}/employees', [HallController::class, 'getHallEmployees']); //get this hall employees with there info
+    Route::delete('/employee/{employeeId}', [HallController::class, 'delHallEmployees']); //delete an employee by id
 });
 
 

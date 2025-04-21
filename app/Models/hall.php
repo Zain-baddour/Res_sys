@@ -46,6 +46,10 @@ class hall extends Model
         return $this->belongsToMany(User::class,'hall_employees');
     }
 
+    public function employee() {
+        return $this->hasMany(hall_employee::class);
+    }
+
 
 
     public function images(): HasMany {
