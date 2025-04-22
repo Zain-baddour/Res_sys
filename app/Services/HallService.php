@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\DetailsHall;
 use App\Models\hall;
+use App\Models\hall_employee;
 use App\Models\Hall_img;
 use App\Models\Image_hal;
 use App\Models\inquiry;
@@ -143,6 +144,16 @@ class HallService
 
     public function getInquiriesByHall($hallId) {
         return inquiry::where('hall_id', $hallId)->with('responses')->get();
+    }
+
+    public function getHallEmployee($hallId) {
+        $hall = hall::findOrFail($hallId);
+        return $hall->employee()->with('user')->get();
+    }
+
+    public function delHallEmployee($employeeId) {
+        $employee = hall_employee::findOrFail($employeeId);
+        return $employee->delete();
     }
 
 

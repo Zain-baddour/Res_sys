@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use http\Env\Response;
 use Illuminate\Http\Request;
 use App\Services\HallService;
 
@@ -95,6 +96,19 @@ class HallController extends Controller
 
     public function getHallInquiries($hallId) {
         return response()->json($this->hallService->getInquiriesByHall($hallId));
+    }
+
+    public function getHallEmployees($hallId) {
+        return response()->json($this->hallService->getHallEmployee($hallId));
+    }
+
+    public function delHallEmployees($employeeId) {
+        $deleted = $this->hallService->delHallEmployee($employeeId);
+
+        if ($deleted) {
+            return response()->json(['message' => 'تم حذف الموظف بنجاح']);
+        }
+        return response()->json(['message' => 'حدث خطأ اثناء عملية الحذف']);
     }
 
 
