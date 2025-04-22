@@ -10,9 +10,7 @@ class Policies extends Model
     use HasFactory;
 
     protected $fillable = [
-        'period_of_pay',
-        'panalty',
-        'stutas_pay',
+        
         'description',
         'hall_id'
     ];

@@ -105,10 +105,7 @@ class HallController extends Controller
     public function addpolices(Request $request)
     {
         $data = $request->validate([
-            'period_of_pay'=>'required|date',
-            'panalty' => 'required|integer',
-            'stutas_pay' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'description' => 'nullable|string|max:255',
             'hall_id'=>'|integer',
         ]);
         $polices = $this->hallService->addpolices($data);
@@ -117,10 +114,8 @@ class HallController extends Controller
     }
     public function updatepolices(Request $request ,$id){
         $data = $request->validate([
-            'period_of_pay'=>'date',
-            'panalty' => 'integer',
-            'stutas_pay' => 'string|max:255',
-            'description' => 'nullable|string',
+          
+            'description' => 'nullable|string|max:255',
             'hall_id'=>'|integer',
         ]);
         $polices = $this->hallService->updatepolices($data,$id);

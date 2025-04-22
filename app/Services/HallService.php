@@ -9,6 +9,7 @@ use App\Models\Image_hal;
 use App\Models\inquiry;
 use App\Models\Offer;
 use App\Models\Policies;
+use App\Models\Servicetohall;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -219,6 +220,26 @@ class HallService
 
         return $detail;
     }
+    public function add_service(array $data)
+    {
+        if (Auth::user()->hasRole('assistant')){
+
+            $service = Servicetohall::create($data);
+
+            return $service;
+        }else
+        { $message="you are not employee in the hall";
+            return $message;
+
+        }
+    }
+    public function updateservice($id,array $data)
+    {
+        $service = Servicetohall::findOrFail($id);
+        $service->update($data);
+        return $service;
+    }
+
 
 
 }

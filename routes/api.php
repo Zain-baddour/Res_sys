@@ -8,6 +8,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\HallController;
 use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\OfficeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -108,4 +109,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('add_det', [HallController::class, 'add_detail']);
     Route::get('/det/{id}', [HallController::class, 'showdetail']);
     Route::put('/updatedet/{id}', [HallController::class, 'updatdet']);
+});
+
+
+// ***** Office APIs *****
+Route::middleware(['auth:sanctum'])->prefix('office')->group(function () {
+    Route::post('/', [OfficeController::class, 'addserv']);      // Create a hall
+    Route::post('/addreq/{id}', [OfficeController::class, 'addReqReservation']); //add req
+    Route::get('/show', [OfficeController::class, 'showReqReservation']); 
+    Route::get('/show/{id}', [OfficeController::class, 'get_detail']); //show detail request of booking
+    Route::post('/addcont', [OfficeController::class, 'add_info_contact']);
+    Route::post('/send/{det_id}/{user_id}', [OfficeController::class, 'send_answer']); //send response to bookings user
 });

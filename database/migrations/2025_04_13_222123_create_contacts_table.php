@@ -8,23 +8,27 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('policies', function (Blueprint $table) {
+        Schema::create('contacts', function (Blueprint $table) {
             $table->id();
+            $table->integer('phone');
             $table->string('description');
-        
-            $table->foreignId('hall_id')->constrained('halls')->cascadeOnDelete('');
+            $table->foreignId('office_id')->constrained('offices')->cascadeOnDelete();
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('policies');
+        Schema::dropIfExists('contacts');
     }
 };
