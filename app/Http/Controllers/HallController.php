@@ -116,23 +116,20 @@ class HallController extends Controller
     //***********************************
     //ZainHassan *******************
 
-    public function addpolices(Request $request)
+    public function addpolices(Request $request,$hall_id)
     {
         $data = $request->validate([
-            'description' => 'nullable|string|max:255',
-            'hall_id'=>'|integer',
+            'description'=>'string|max:255',
         ]);
-        $polices = $this->hallService->addpolices($data);
+        $polices = $this->hallService->addpolices($data,$hall_id);
 
         return response()->json([$polices],201);
     }
-    public function updatepolices(Request $request ,$id){
-        $data = $request->validate([
-          
-            'description' => 'nullable|string|max:255',
-            'hall_id'=>'|integer',
+    public function updatepolices($id,Request $request ){
+        $data =$request->validate([
+            'description'=> 'nullable|string|max:255',
         ]);
-        $polices = $this->hallService->updatepolices($data,$id);
+        $polices = $this->hallService->updatepolices($id,$data);
 
         return response()->json($polices,201);
     }
@@ -142,7 +139,7 @@ class HallController extends Controller
         return response()->json($polices);
     }
 
-    public function addoffer(Request $request)
+    public function addoffer(Request $request,hall)
     {
         $data = $request->validate([
             'period_offer'=>'required|date',
@@ -186,6 +183,16 @@ class HallController extends Controller
 
         return response()->json($detail,201);
 
+    }
+    public function add_service(Request $request,$hall_id){
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'price'=>'required|integer|between:2,12',
+            'description'=>'required|string|max:255',
+            
+        ]);
+        $service= $this->hallService->add_service($data,$hall_id);
+        return response()->json($service, 201);
     }
 
 }

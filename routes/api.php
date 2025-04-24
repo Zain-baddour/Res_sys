@@ -101,14 +101,15 @@ Route::middleware(['auth:sanctum'])->prefix('Booking')->group(function () {
 //*********************
 //ZainHassan ********
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::post('addpolices', [HallController::class, 'addpolices']);
-    Route::post('addoffer', [HallController::class, 'addoffer']);
-    Route::put('updatepolic/{id}', [HallController::class, 'updatepolices']);
-    Route::get('/polices/{id}', [HallController::class, 'showpolices']);
+    Route::post('addpolices/{id}', [HallController::class, 'addpolices']);
+    Route::post('addoffer/{id}', [HallController::class, 'addoffer']);
+    Route::post('updatepolic/{id}', [HallController::class, 'updatepolices']);
+    Route::get('polices/{id}', [HallController::class, 'showpolices']);
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('add_det', [HallController::class, 'add_detail']);
+    Route::post('addserv/{id}', [HallController::class, 'add_service']);
     Route::get('/det/{id}', [HallController::class, 'showdetail']);
     Route::put('/updatedet/{id}', [HallController::class, 'updatdet']);
 });

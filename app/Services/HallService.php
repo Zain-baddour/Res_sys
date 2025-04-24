@@ -161,22 +161,39 @@ class HallService
     // ZainHassan *************
 
 
-    public function addpolices(array $data)
+    public function addpolices(array $data,$hall_id)
     {
         if (Auth::user()->hasRole('assistant')){
-            return Policies::create($data);
-        }
+            $exist= hall::where('id',$hall_id)->exists();
+                if($exist){
+                 //   if (isset($data['description']) && !empty($data['description'])) {
+            $polices= Policies::create([
+            'description'=>$data['description'],
+                'hall_id'=>$hall_id
+            ]);
+             return $polices;
+        } else {
+            $message = "The hall does not exist.";
+            return $message;
+    }}
         else{
             $message="you are not employee in the hall";
             return $message;
         }
     }
-    public function addoffer(array $data)
+    public function addoffer(array $data,$hall_id)
     {
+        
         if (Auth::user()->hasRole('assistant')){
+            $exist= hall::where('id',$hall_id)->exists();
+            if($exist){
             return Offer::create($data);
         }
-        else{
+        else {
+            $message = "The hall does not exist.";
+            return $message;}
+        }
+        else {
             $message="you are not employee in the hall";
             return $message;
         }
@@ -187,10 +204,22 @@ class HallService
     public function updatepolices($id,array $data)
     {
         $police = Policies::findOrFail($id);
-        $police->update($data);
+       // if (isset($data['description']) && !empty($data['description'])) {
+        if($police){
+        $police->update(
+           $data);
         return $police;
     }
-
+//     else {
+//         $message = "The hall does not exist.";
+//         return $message;
+// }
+        // else{
+        //     $message = "Description is empty or missing in the data array.";
+        //     return $message;
+        // }
+    
+   }
     public function getpolicesById($id)
     {
 
@@ -231,19 +260,26 @@ class HallService
 
         return $detail;
     }
-    public function add_service(array $data)
+    public function add_service(array $data,$hall_id)
     {
-        if (Auth::user()->hasRole('assistant')){
-
-            $service = Servicetohall::create($data);
+            if (Auth::user()->hasRole('assistant')){
+                $exist= hall::where('id',$hall_id)->exists();
+                if($exist){
+            $service = Servicetohall::create(
+               ['name'=>$data['name'],
+            'price'=>$data['price'],
+            'description'=>$data['description'],
+            'hall_id'=>$hall_id
+             ] );
 
             return $service;
+                }
         }else
         { $message="you are not employee in the hall";
             return $message;
-
         }
     }
+
     public function updateservice($id,array $data)
     {
         $service = Servicetohall::findOrFail($id);

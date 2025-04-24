@@ -10,7 +10,6 @@ class Policies extends Model
     use HasFactory;
 
     protected $fillable = [
-        
         'description',
         'hall_id'
     ];
