@@ -152,16 +152,15 @@ class HallController extends Controller
         $offers= $this->hallService->addoffer($data,$hall_id);
         return response()->json($offers, 201);
     }
-    public function add_detail(Request $request)
+    public function add_detail(Request $request,$hall_id)
     {
         $data = $request->validate([
             'type_hall' => 'required|string|max:255',
             'card_price'=>'required|integer|between:4,12',
             'res_price'=>'required|integer|between:100,1000',
-            'hall_id'=>'required|integer',
         ]);
 
-        $detail= $this->hallService->add_detail($data);
+        $detail= $this->hallService->add_detail($data,$hall_id);
         return response()->json($detail, 201);
     }
 
@@ -195,4 +194,33 @@ class HallController extends Controller
         return response()->json($service, 201);
     }
 
+    public function updatservice(Request $request ,$id){
+        $data =$request->validate([
+            'name' => 'required|string|max:255',
+            'price'=>'required|integer|between:2,12',
+            'description'=>'required|string|max:255',
+        ]);
+        $service =$this->hallService->updateservice($data,$id);
+
+        return response()->json($service,201);
+
 }
+public function showservice($hall_id){
+    $service = $this->hallService->showservice($hall_id);
+    return response()->json($service);
+}
+
+public function add_time(Request $request,$hall_id){
+    $data = $request->validate([
+        'type' => 'required|string|in:mornung,evening ',
+//'from'=>'required|timezone',
+       // 'to'=>'required|timezone',
+        
+    ]);
+    $time= $this->hallService->add_time($data,$hall_id);
+    return response()->json($time, 201);
+}
+}
+
+
+

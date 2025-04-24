@@ -108,10 +108,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::post('add_det', [HallController::class, 'add_detail']);
+    Route::post('add_det/{id}', [HallController::class, 'add_detail']);
     Route::post('addserv/{id}', [HallController::class, 'add_service']);
-    Route::get('/det/{id}', [HallController::class, 'showdetail']);
-    Route::put('/updatedet/{id}', [HallController::class, 'updatdet']);
+    Route::get('det/{id}', [HallController::class, 'showdetail']);
+    Route::put('updatedet/{id}', [HallController::class, 'updatdet']);
+    Route::put('updateservice/{id}', [HallController::class, 'updatservice']);
+    Route::get('showserv/{id}', [HallController::class, 'showservice']);
+    Route::post('addtime/{id}', [HallController::class, 'add_time']);
 });
 
 

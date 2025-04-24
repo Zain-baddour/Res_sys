@@ -89,9 +89,9 @@ public function send_answer($detail_id,$user_id,array $data){
             'detail_id'=>$detail_id,
             'office_id'=>Auth::id()
         ]);
-        return ['message'=>"the message send succesfuly",'contact'=>$send];
+       
     }
-
+    return ['message'=>"the message send succesfuly",'contact'=>$send];
 
 }
 

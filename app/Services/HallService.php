@@ -8,6 +8,7 @@ use App\Models\hall_employee;
 use App\Models\Hall_img;
 use App\Models\Image_hal;
 use App\Models\inquiry;
+use App\Models\Loungetiming;
 use App\Models\Offer;
 use App\Models\Policies;
 use App\Models\Servicetohall;
@@ -210,20 +211,17 @@ class HallService
     public function updatepolices($id,array $data)
     {
         $police = Policies::findOrFail($id);
-       // if (isset($data['description']) && !empty($data['description'])) {
+       
         if($police){
         $police->update(
            $data);
         return $police;
     }
-//     else {
-//         $message = "The hall does not exist.";
-//         return $message;
-// }
-        // else{
-        //     $message = "Description is empty or missing in the data array.";
-        //     return $message;
-        // }
+    else {
+        $message = "The polices does not exist.";
+        return $message;
+}
+      
     
    }
     public function getpolicesById($id)
@@ -233,17 +231,27 @@ class HallService
 
     }
 
-    public function add_detail(array $data)
+    public function add_detail(array $data,$hall_id)
     {
         if (Auth::user()->hasRole('assistant')){
-
-            $detail = DetailsHall::create($data);
-
+            $exist= hall::where('id',$hall_id)->exists();
+            if($exist){
+            $detail = DetailsHall::create( [
+                'type_hall'=>$data['type_hall'],
+                'card_price'=>$data['card_price'],
+                'res_price'=>$data['res_price'],
+                'hall_id'=>$hall_id
+            ]);
+        
             return $detail;
-        }else
-        { $message="you are not employee in the hall";
+        }
+        else {
+            $message = "The hall does not exist.";
+            return $message;}
+        }
+        else{ 
+            $message="you are not employee in the hall";
             return $message;
-
         }
     }
     public function getdetailById($id)
@@ -257,7 +265,7 @@ class HallService
     {
 
         $detail = DetailsHall::findOrFail($id);
-
+if($detail){
         $detail->update([
             'card_price'=>$data['card_price'],
             'type_hall' =>$data['type_hall'],
@@ -265,6 +273,11 @@ class HallService
         ]);
 
         return $detail;
+    }else{
+        $message = "The detail  not found.";
+        return $message;
+
+    }
     }
     public function add_service(array $data,$hall_id)
     {
@@ -286,13 +299,46 @@ class HallService
         }
     }
 
-    public function updateservice($id,array $data)
+    public function updateservice(array $data,$id)
     {
         $service = Servicetohall::findOrFail($id);
-        $service->update($data);
-        return $service;
+        if($service){
+            $service->update(['name'=>$data['name'],
+            'price'=>$data['price'],
+            'description'=>$data['description']
+        ]);
+            return $service;
+        }
+        else{
+            $message = "The service  not found.";
+            return $message;
+        }
+        
+    }
+    public function showservice($hall_id){
+       $services= Servicetohall::where('hall_id',$hall_id)->get();
+$message="this is services to hall";
+       return ['message'=>$message,'service'=>$services];
+
     }
 
+    // public function add_time(array $data,$hall_id){
+    //     if (Auth::user()->hasRole('assistant')){
+    //         $exist= hall::where('id',$hall_id)->exists();
+    //         if($exist){
+    //     $time = Loungetiming::create(
+    //        ['type'=>$data['type'],
+    //    // 'from'=>date_default_timezone_set() ,
+    //     'to'=>$data['to'],
+    //     'hall_id'=>$hall_id
+    //      ] );
 
+    //     return $time;
+    //         }
+    // }else  {
+    //      $message="you are not employee in the hall";
+    //     return $message;
+    // }
 
+}
 }
