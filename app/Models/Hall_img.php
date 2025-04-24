@@ -14,9 +14,7 @@ class Hall_img extends Model
         'image_path',
     ];
 
-    public $appends = [
-        'image_path_url'
-    ];
+
 
     public function getImagePathUrlAttribute()
     {

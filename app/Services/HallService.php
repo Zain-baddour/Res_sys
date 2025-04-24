@@ -33,9 +33,9 @@ class HallService
                     'contact' => $hall->contact,
                     'type' => $hall->type,
                     'events' => $hall->events,
-                    'hall_image' => $hall->hall_image ? url($hall->hall_image) : null,
+                    'hall_image' => $hall->hall_image,
                     'images' => $hall->images->map(function (Hall_img $image) {
-                        return url($image->image_path);
+                        return $image->image_path;
                     }),
                 ];
             });
@@ -63,9 +63,9 @@ class HallService
                     'contact' => $hall->contact,
                     'type' => $hall->type,
                     'events' => $hall->events,
-                    'hall_image' => $hall->hall_image ? url($hall->hall_image) : null,
+                    'hall_image' => $hall->hall_image,
                     'images' => $hall->images->map(function (Hall_img $image) {
-                        return url($image->image_path);
+                        return $image->image_path;
                     }),
                 ];
             });
@@ -135,11 +135,8 @@ class HallService
     }
 
     public function getHallImages($hallId) {
-        $images = Hall_img::where('hall_id' , $hallId)->pluck('image_path')->map(function ($imagePath){
-            return url($imagePath);
-        });
 
-        return $images;
+        return Hall_img::where('hall_id', $hallId)->pluck('image_path');
     }
 
     public function getInquiriesByHall($hallId) {
@@ -183,7 +180,7 @@ class HallService
     }
     public function addoffer(array $data,$hall_id)
     {
-        
+
         if (Auth::user()->hasRole('assistant')){
             $exist= hall::where('id',$hall_id)->exists();
             if($exist){
@@ -224,7 +221,7 @@ class HallService
         //     $message = "Description is empty or missing in the data array.";
         //     return $message;
         // }
-    
+
    }
     public function getpolicesById($id)
     {
