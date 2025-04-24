@@ -187,7 +187,13 @@ class HallService
         if (Auth::user()->hasRole('assistant')){
             $exist= hall::where('id',$hall_id)->exists();
             if($exist){
-            return Offer::create($data);
+            return Offer::create(
+                ['period_offer'=>$data['period_offer'],
+                'start_offer'=>$data['start_offer'],
+                'removable'=>$data['removable'],
+                'offer_val'=>$data['offer_val'],
+                'hall_id'=>$hall_id
+            ]);
         }
         else {
             $message = "The hall does not exist.";

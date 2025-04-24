@@ -139,17 +139,17 @@ class HallController extends Controller
         return response()->json($polices);
     }
 
-    public function addoffer(Request $request,hall)
+    public function addoffer(Request $request,$hall_id)
     {
         $data = $request->validate([
             'period_offer'=>'required|date',
-            'start_ofer' => 'required|date',
+            'start_offer' => 'required|date',
             'description' => 'nullable|string',
             'offer_val'=>'required|decimal:2',
             'removable'=>'nullable|required|boolean',
-            'hall_id'=>'required|integer',
+           
         ]);
-        $offers= $this->hallService->addoffer($data);
+        $offers= $this->hallService->addoffer($data,$hall_id);
         return response()->json($offers, 201);
     }
     public function add_detail(Request $request)
