@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('event_type');
             $table->enum('status', ['unconfirmed', 'confirmed'])->default('unconfirmed');
             $table->boolean('payment_confirmed')->default(false);
+            $table->text('additional_notes')->nullable();
+            $table->text('condolence_additional_notes')->nullable();
             $table->timestamps();
         });
     }
