@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('details_halls', function (Blueprint $table) {
             $table->id();
-            $table->string('type_hall');
-            $table->integer('card_price');
+            $table->enum('type_hall',['wedding','sorrow','both']);
+            $table->json('card_price')->nullable();
             $table->integer('res_price');
             $table->foreignId('hall_id')->constrained('halls')->cascadeOnDelete();
             $table->timestamps();

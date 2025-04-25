@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('loungetimings', function (Blueprint $table) {
             $table->id();
-            $table->enum('type' , ['evening' , 'morning'])->default('evening');
-            $table->timestamp('from')->nullable();
-            $table->timestamp('to')->nullable();
+            $table->enum('type', ['evening' , 'morning'])->default('evening');
+            $table->time('from');
+            $table->time('to');
             $table->foreignId('hall_id')->constrained('halls')->cascadeOnDelete('');
             $table->timestamps();
         });

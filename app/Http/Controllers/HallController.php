@@ -155,8 +155,8 @@ class HallController extends Controller
     public function add_detail(Request $request,$hall_id)
     {
         $data = $request->validate([
-            'type_hall' => 'required|string|max:255',
-            'card_price'=>'required|integer|between:4,12',
+            'type_hall' => 'required|string|in:wedding,sorrow both',
+            'card_price'=>'required|json',
             'res_price'=>'required|integer|between:100,1000',
         ]);
 
@@ -173,10 +173,10 @@ class HallController extends Controller
 
     public function updatdet(Request $request ,$id){
         $data = $request->validate([
-            'type_hall'=>'string|max:255',
-            'card_price'=>'|integer|between:4,12',
+            'type_hall'=>'required|in:wedding,sorrow both',
+            'card_price'=>'required|json',
             'res_price'=>'|integer|between:100,1000',
-            'hall_id'=>'|integer',
+           
         ]);
         $detail =$this->hallService->updatedetail($data,$id);
 
@@ -212,9 +212,9 @@ public function showservice($hall_id){
 
 public function add_time(Request $request,$hall_id){
     $data = $request->validate([
-        'type' => 'required|string|in:mornung,evening ',
-//'from'=>'required|timezone',
-       // 'to'=>'required|timezone',
+        'type' => 'required|string|in:morning,evening',
+'from'=>'required|date_format:H:i',
+        'to'=>'required|date_format:H:i'
         
     ]);
     $time= $this->hallService->add_time($data,$hall_id);

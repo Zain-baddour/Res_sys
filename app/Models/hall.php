@@ -25,9 +25,7 @@ class hall extends Model
         'rate',
     ];
 
-    public $appends = [
-        'hall_image_url',
-        ];
+
 
     protected $casts = [
         'events' => 'array',
