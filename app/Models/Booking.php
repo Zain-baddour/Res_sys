@@ -37,4 +37,13 @@ class Booking extends Model
     {
         return $this->hasOne(payments::class);
     }
+
+    public function services() {
+        return $this->hasMany(BookingService::class);
+    }
+
+    public function songs() {
+        return $this->hasMany(BookingSong::class);
+    }
+
 }
