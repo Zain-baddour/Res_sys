@@ -16,6 +16,7 @@ class Booking extends Model
         'guest_count',
         'event_type',
         'status',
+        'additional_notes',
         'payment_confirmed',
     ];
 
