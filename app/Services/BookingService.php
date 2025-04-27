@@ -34,6 +34,7 @@ class BookingService
                 'event_date' => $data['event_date'],
                 'guest_count' => $data['guest_count'],
                 'event_type' => $data['event_type'],
+                'additional_notes' => $data['additional_notes'],
                 'status' => 'unconfirmed',
             ]);
 

@@ -20,9 +20,9 @@ class AdmineService
                 'contact' => $hall->contact,
                 'type' => $hall->type,
                 'events' => $hall->events,
-                'hall_image' => $hall->hall_image ? url($hall->hall_image) : null,
+                'hall_image' => $hall->hall_image,
                 'images' => $hall->images->map(function (Hall_img $image) {
-                    return url($image->image_path);
+                    return $image->image_path;
                 }),
             ];
         });
