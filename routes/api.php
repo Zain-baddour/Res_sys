@@ -103,6 +103,8 @@ Route::middleware(['auth:sanctum'])->prefix('Booking')->group(function () {
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('addpolices/{id}', [HallController::class, 'addpolices']);
     Route::post('addoffer/{id}', [HallController::class, 'addoffer']);
+    Route::post('updateoffer/{id}', [HallController::class, 'updateoffer']);
+    Route::get('offer/{id}', [HallController::class, 'showoffer']);
     Route::post('updatepolic/{id}', [HallController::class, 'updatepolices']);
     Route::get('polices/{id}', [HallController::class, 'showpolices']);
 });
@@ -111,10 +113,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('add_det/{id}', [HallController::class, 'add_detail']);
     Route::post('addserv/{id}', [HallController::class, 'add_service']);
     Route::get('det/{id}', [HallController::class, 'showdetail']);
-    Route::put('updatedet/{id}', [HallController::class, 'updatdet']);
-    Route::put('updateservice/{id}', [HallController::class, 'updatservice']);
+    Route::post('updatedet/{id}', [HallController::class, 'updatdet']);
+    Route::post('updateservice/{id}', [HallController::class, 'updatservice']);
     Route::get('showserv/{id}', [HallController::class, 'showservice']);
     Route::post('addtime/{id}', [HallController::class, 'add_time']);
+    Route::post('updatetime/{id}', [HallController::class, 'updattime']);
+    Route::get('showtime/{id}', [HallController::class, 'showtime']);
 });
 
 

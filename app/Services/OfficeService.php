@@ -17,8 +17,7 @@ class OfficeService
     {
         $office = Office::create([
            
-            'num_person' => $data['num_person'],
-            'rent_price' => $data['rent_price'],
+            'num_ofcar' => $data['num_ofcar'],
             'type_car' => $data['type_car'],
           
         ]);

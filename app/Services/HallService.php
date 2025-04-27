@@ -202,8 +202,29 @@ class HallService
             return $message;
         }
     }
+    public function updateoffer($id,array $data)
+    {
+        $offer = Offer::findOrFail($id);
+       
+        if($offer){
+        $offer->update(
+           $data);
+        return $offer;
+    }
 
+    else {
+        $message = "The offer does not exist.";
+        return $message;
+}
 
+    }
+
+    public function getofferById($id)
+    {
+
+        return Offer::findOrFail($id);
+
+    }
 
     public function updatepolices($id,array $data)
     {
@@ -344,4 +365,27 @@ $message="this is services to hall";
     }
 
 }
+
+public function updatetime(array $data,$id)
+{
+    $time = Loungetiming::findOrFail($id);
+    if($time){
+        $time->update([
+            'type'=>$data['type'],
+        'from'=>$data['from'],
+        'to'=>$data['to'],
+    ]);
+        return $time;
+    }
+    else{
+        $message = "The time off hall  not found.";
+        return $message;
+    }   }
+
+    public function gettimeById($id)
+    {
+
+        return Loungetiming::findOrFail($id);
+
+    }
 }

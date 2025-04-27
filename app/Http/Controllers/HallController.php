@@ -125,6 +125,7 @@ class HallController extends Controller
 
         return response()->json([$polices],201);
     }
+
     public function updatepolices($id,Request $request ){
         $data =$request->validate([
             'description'=> 'nullable|string|max:255',
@@ -133,6 +134,7 @@ class HallController extends Controller
 
         return response()->json($polices,201);
     }
+
     public function showpolices($id)
     {
         $polices = $this->hallService->getpolicesById($id);
@@ -152,6 +154,25 @@ class HallController extends Controller
         $offers= $this->hallService->addoffer($data,$hall_id);
         return response()->json($offers, 201);
     }
+
+    public function updateoffer($offer_id,Request $request){
+$data =$request->validate([
+    'period_offer'=>'required|date',
+    'start_offer' => 'required|date',
+    'description' => 'nullable|string',
+    'offer_val'=>'required|decimal:2',
+    'removable'=>'nullable|required|boolean',
+        ]);
+        $offer = $this->hallService->updateoffer($offer_id,$data);
+
+        return response()->json($offer,201);
+    }
+    public function showoffer($id)
+    {
+        $offer = $this->hallService->getofferById($id);
+        return response()->json($offer);
+    }
+    
     public function add_detail(Request $request,$hall_id)
     {
         $data = $request->validate([
@@ -215,12 +236,26 @@ public function add_time(Request $request,$hall_id){
         'type' => 'required|string|in:morning,evening',
 'from'=>'required|date_format:H:i',
         'to'=>'required|date_format:H:i'
-        
     ]);
     $time= $this->hallService->add_time($data,$hall_id);
     return response()->json($time, 201);
 }
+
+public function updattime(Request $request ,$id){
+    $data =$request->validate([
+        'type' => 'required|string|in:morning,evening',
+        'from'=>'required|date_format:H:i',
+                'to'=>'required|date_format:H:i'  
+    ]);
+    $time =$this->hallService->updatetime($data,$id);
+
+    return response()->json($time,201);
 }
 
-
+public function showtime($id)
+{
+    $time = $this->hallService->gettimeById($id);
+    return response()->json($time);
+}
+}
 

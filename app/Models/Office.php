@@ -12,8 +12,7 @@ class Office extends Model
     protected $fillable=[
         'car_image',
         'type_car',
-        'rent_price',
-        'num_person'
+        'num_ofcar'
 
     ];
     public function detail_booking(): HasMany {

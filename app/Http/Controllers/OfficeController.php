@@ -19,8 +19,7 @@ class OfficeController extends Controller
         $data = $request->validate([
             'car_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'type_car' => 'required|string|max:255',
-            'rent_price' => 'required|integer|min:3',
-            'num_person' => 'required|integer|min:1',]);
+            'num_ofcar' => 'required|integer|min:1',]);
 
     $office = $this->officeService->addservice($data);
     return response()->json($office);
