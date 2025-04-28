@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Booking;
 use App\Models\Hall;
 use App\Models\payments;
+use App\Models\Servicetohall;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +18,7 @@ class BookingService
 {
     public function createBooking($data)
     {
+
         return DB::transaction(function () use ($data) {
             $existingBooking = Booking::where('hall_id', $data['hall_id'])
                 ->where('event_date', $data['event_date'])
@@ -38,13 +40,6 @@ class BookingService
                 'status' => 'unconfirmed',
             ]);
 
-            payments::create([
-                'user_id' => Auth::id(),
-                'booking_id' => $booking->id,
-                'amount' => 100.00,
-                'status' => 'pending',
-            ]);
-
             // حفظ الخدمات الإضافية
             $additionalServices = [
                 'buffet_service',
@@ -60,6 +55,7 @@ class BookingService
                 'condolence_hospitality_services',
             ];
 
+            $total_price = 0;
             foreach ($additionalServices as $serviceKey) {
                 if (isset($data[$serviceKey])) {
                     $booking->services()->create([
@@ -68,6 +64,10 @@ class BookingService
                         'from_hall' => $data[$serviceKey]['from_hall'] ?? null,
                         'details' => isset($data[$serviceKey]['details']) ? json_encode($data[$serviceKey]['details']) : null,
                     ]);
+                    $service = Servicetohall::where('hall_id', $booking->id)->where('name', $serviceKey)->first();
+                    if($service) {
+                        $total_price += $service->price;
+                    }
                 }
             }
 
@@ -89,6 +89,13 @@ class BookingService
             if (isset($data['condolence_additional_notes'])) {
                 $booking->update(['condolence_additional_notes' => $data['condolence_additional_notes']]);
             }
+
+            payments::create([
+                'user_id' => Auth::id(),
+                'booking_id' => $booking->id,
+                'amount' => $total_price,
+                'status' => 'pending',
+            ]);
 
             // إرسال إشعارات
             $hall = Hall::with('owner', 'employees')->find($data['hall_id']);
