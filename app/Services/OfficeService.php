@@ -37,6 +37,7 @@ public function addReqReservation(array $data,$office_id){
         'car_type' => $data['car_type'],
         'num_car' => $data['num_car'],
         'date' => $data['date'],
+        'date_day' =>date('Y-m-d') ,
         'description' => $data['description'],
         'user_id'=>Auth::id(),
         'office_id'=>$office_id
@@ -46,7 +47,7 @@ public function addReqReservation(array $data,$office_id){
 }
 public function showReqReservation(){
     $show=Detail_booking::join('users','users.id','Detail_bookings.user_id')
-    ->select('users.id','users.name','users.number','Detail_bookings.date')
+    ->select('users.id','users.name','users.number','users.photo','Detail_bookings.date')
     ->get();
     return $show;
 }
@@ -56,7 +57,7 @@ public function get_detail($det_id) {
     $exist= Detail_booking::where('id',$det_id)->exists();
     if($exist){
     $det= Detail_booking::join('users', 'detail_bookings.user_id', 'users.id')
-    -> select('detail_bookings.*', 'users.number', 'users.name')
+    -> select('detail_bookings.*', 'users.number', 'users.name','users.photo')
                         ->where('detail_bookings.id', $det_id)
                         ->get();
 

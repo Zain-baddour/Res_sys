@@ -119,6 +119,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('addtime/{id}', [HallController::class, 'add_time']);
     Route::post('updatetime/{id}', [HallController::class, 'updattime']);
     Route::get('showtime/{id}', [HallController::class, 'showtime']);
+    Route::post('addpay/{id}', [HallController::class, 'add_pay']);
+    Route::post('updatepay/{id}', [HallController::class, 'updatpay']);
 });
 
 

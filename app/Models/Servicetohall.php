@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Servicetohall extends Model
 { protected $fillable = [
-    'name',
+    'name','video_path',
     'price','description','hall_id'
 ];
 }

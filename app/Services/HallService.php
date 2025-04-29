@@ -10,6 +10,7 @@ use App\Models\Image_hal;
 use App\Models\inquiry;
 use App\Models\Loungetiming;
 use App\Models\Offer;
+use App\Models\Paymentway;
 use App\Models\Policies;
 use App\Models\Servicetohall;
 use Exception;
@@ -188,7 +189,7 @@ class HallService
             return Offer::create(
                 ['period_offer'=>$data['period_offer'],
                 'start_offer'=>$data['start_offer'],
-                'removable'=>$data['removable'],
+                
                 'offer_val'=>$data['offer_val'],
                 'hall_id'=>$hall_id
             ]);
@@ -218,13 +219,14 @@ class HallService
 }
 
     }
+    public function showoffer($hall_id){
+        $offers= Offer::where('hall_id',$hall_id)->get();
+ $message="this is offers to hall";
+        return ['message'=>$message,'service'=>$offers];
+ 
+     }
 
-    public function getofferById($id)
-    {
-
-        return Offer::findOrFail($id);
-
-    }
+   
 
     public function updatepolices($id,array $data)
     {
@@ -264,9 +266,21 @@ class HallService
                 'type_hall'=>$data['type_hall'],
                 'card_price'=>$data['card_price'],
                 'res_price'=>$data['res_price'],
+                'num_person'=>$data['num_person'],
+                'location'=>$data['location'],
+                'number'=>$data['number'],
                 'hall_id'=>$hall_id
             ]);
-        
+            if (isset($data['images'])) {
+                foreach ($data['images'] as $image) {
+                    $path = uniqid() . '_images_.' . $image->getClientOriginalExtension();
+                    $image->store('detail_image' , 'public');;
+                    Hall_img::create([
+                       'hall_id' => $hall_id,
+                       'image_path' => $path,
+                    ]);
+                }}
+                $detail->save();
             return $detail;
         }
         else {
@@ -315,9 +329,29 @@ if($detail){
             'hall_id'=>$hall_id
              ] );
 
-            return $service;
-                }
-        }else
+ if (isset($data['images'])) {
+                foreach ($data['images'] as $image) {
+                    $path = uniqid() . '_images_.' . $image->getClientOriginalExtension();
+                    $image->store('servic_image' , 'public');;
+                    Hall_img::create([
+                       'hall_id' => $hall_id,
+                       'image_path' => $path,
+                    ]);
+                }}
+                
+            if (isset($data['video'])) {
+                $video = $data['video'];
+                $videoPath = uniqid() . '_video_.' . $video->getClientOriginalExtension();
+
+                // قم بإجراء التحقق من الفيديو هنا
+                if ($video->isValid()) {
+                    $video->storeAs('service_videos', $videoPath, 'public');
+                    $service->video_path = $videoPath;
+                
+                }}
+                $service->save();
+                return $service;
+        }}else
         { $message="you are not employee in the hall";
             return $message;
         }
@@ -382,10 +416,44 @@ public function updatetime(array $data,$id)
         return $message;
     }   }
 
-    public function gettimeById($id)
-    {
+    public function showtime($hall_id){
+        $times= Loungetiming::where('hall_id',$hall_id)->get();
+ $message="the time of hall";
+        return ['message'=>$message,'service'=>$times];
+ 
+     }
+     public function addpay(array $data,$hall_id)
+     {
+         if (Auth::user()->hasRole('assistant')){
+             $exist= hall::where('id',$hall_id)->exists();
+                 if($exist){
+                  
+             $pay= Paymentway::create([
+             'type'=>$data['type'],
+                 'hall_id'=>$hall_id
+             ]);
+              return $pay;
+         } else {
+             $message = "The hall does not exist.";
+             return $message;
+     }}
+         else{
+             $message="you are not employee in the hall";
+             return $message;
+         }
+     }
 
-        return Loungetiming::findOrFail($id);
-
+     public function updatepay(array $data,$id){
+    $pay= Paymentway::findOrFail($id);
+    if($pay){
+        $pay->update([
+            'type'=>$data['type'],
+    ]);
+        return $pay;
     }
+    else{
+        $message = "The payment way off hall  not found.";
+        return $message;
+    }   }
+
 }

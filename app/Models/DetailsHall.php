@@ -12,6 +12,9 @@ class DetailsHall extends Model
         'type_hall',
         'card_price',
         'res_price',
+        'number',
+        'num_person',
+        'location',
         'path_image',
         'hall_id'
     ] ;

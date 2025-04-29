@@ -13,7 +13,7 @@ class Detail_booking extends Model
       'to','date',
       'office_id',
       'user_id',
-      'description','car_type','num_car'
+      'description','car_type','num_car','date_day'
       
     ];
     public function user(){

@@ -12,8 +12,8 @@ class offer extends Model
         'period_offer',
         'start_offer',
         'offer_val',
-        'removable',
-        'description',
+        //'removable',
+      //  'description',
         'hall_id'
     ];
 }
