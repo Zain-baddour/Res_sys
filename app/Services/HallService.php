@@ -243,19 +243,17 @@ class HallService
         return $message;
 }
       
-//     else {
-//         $message = "The hall does not exist.";
-//         return $message;
-// }
+
      
 
    }
-    public function getpolicesById($id)
-    {
+   public function showspolices($hall_id){
+    $polices= Policies::where('hall_id',$hall_id)->get();
+$message="this is polices to hall";
+    return ['message'=>$message,'polices'=>$polices];
 
-        return Policies::findOrFail($id);
+ }
 
-    }
 
     public function add_detail(array $data,$hall_id)
     {
@@ -292,24 +290,37 @@ class HallService
             return $message;
         }
     }
-    public function getdetailById($id)
-    {
-
-        return DetailsHall::findOrFail($id);
-
-    }
+    public function showdetail($hall_id){
+        $details= DetailsHall::where('hall_id',$hall_id)->get();
+ $message="this is detail to hall";
+        return ['message'=>$message,'service'=>$details];
+ 
+     }
 
     public function updatedetail(array $data,$id)
     {
 
         $detail = DetailsHall::findOrFail($id);
+       // $hall_id= DetailsHall::select('details_halls.hall_id') ->where('details_halls.id', $id)->get();
 if($detail){
         $detail->update([
             'card_price'=>$data['card_price'],
             'type_hall' =>$data['type_hall'],
-            'res_price' =>$data['res_price']
+            'res_price' =>$data['res_price'],
+            'num_person'=>$data['num_person'],
+            'location'=>$data['location'],
+            'number'=>$data['number'],
         ]);
-
+        if (isset($data['images'])) {
+            foreach ($data['images'] as $image) {
+                $path = uniqid() . '_images_.' . $image->getClientOriginalExtension();
+                $image->store('detail_image' , 'public');
+                Hall_img::create([
+                   'hall_id' => $detail->hall_id,
+                   'image_path' => $path,
+                ]);
+            }}
+            $detail->save();
         return $detail;
     }else{
         $message = "The detail  not found.";

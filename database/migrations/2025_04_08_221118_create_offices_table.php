@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('type_car');
             $table->integer('rent_price');
-            $table->integer('num_person');
+            $table->integer('num_ofcar');
             $table->string('car_image')->nullable();
             
             $table->timestamps();

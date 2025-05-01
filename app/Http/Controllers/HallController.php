@@ -137,7 +137,7 @@ class HallController extends Controller
 
     public function showpolices($id)
     {
-        $polices = $this->hallService->getpolicesById($id);
+        $polices = $this->hallService->showspolices($id);
         return response()->json($polices);
     }
 
@@ -188,7 +188,8 @@ $data =$request->validate([
 
     public function showdetail($id)
     {
-        $detail = $this->hallService->getdetailById($id);
+     
+        $detail = $this->hallService->showdetail($id);
         return response()->json($detail);
     }
 
@@ -197,6 +198,10 @@ $data =$request->validate([
             'type_hall'=>'required|in:wedding,sorrow both',
             'card_price'=>'required|json',
             'res_price'=>'|integer|between:100,1000',
+            'location' => 'required|string|max:255',
+            'number' => 'required|string|max:255',
+            'num_person' => 'required|integer|min:1',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
            
         ]);
         $detail =$this->hallService->updatedetail($data,$id);
@@ -221,6 +226,8 @@ $data =$request->validate([
             'name' => 'required|string|max:255',
             'price'=>'required|integer|between:2,12',
             'description'=>'required|string|max:255',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'video' => 'file|mimes:mp4,avi,mpg,mov,wmv|max:20480',
         ]);
         $service =$this->hallService->updateservice($data,$id);
 

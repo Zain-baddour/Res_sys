@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->enum('type_hall',['wedding','sorrow','both']);
             $table->json('card_price')->nullable();
+            $table->string('number');
+            $table->string('location');
+            $table->integer('num_person');
             $table->integer('res_price');
             $table->foreignId('hall_id')->constrained('halls')->cascadeOnDelete();
             $table->timestamps();

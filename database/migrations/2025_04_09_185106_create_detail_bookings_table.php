@@ -17,6 +17,9 @@ return new class extends Migration
             $table->id();
             $table->string('from');
             $table->string('to');
+            $table->string('car_type');
+            $table->integer('num_car');
+            $table->date('date_day');
             $table->time('date');
            
            // $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
