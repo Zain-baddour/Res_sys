@@ -13,6 +13,8 @@ class Booking extends Model
         'user_id',
         'hall_id',
         'event_date',
+        'from',
+        'to',
         'guest_count',
         'event_type',
         'status',

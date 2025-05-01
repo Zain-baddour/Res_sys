@@ -20,6 +20,8 @@ class BookingController extends Controller
         $data = $request->validate([
             'hall_id' => 'required|exists:halls,id',
             'event_date' => 'required|date',
+            'from' => 'required|date_format:H:i',
+            'to' => 'required|date_format:H:i|after:from',
             'guest_count' => 'required|integer|min:1',
             'event_type' => 'required|string',
 

@@ -48,7 +48,10 @@ class hall extends Model
         return $this->hasMany(hall_employee::class);
     }
 
-
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 
     public function images(): HasMany {
         return $this->hasMany(Hall_img::class, 'hall_id');

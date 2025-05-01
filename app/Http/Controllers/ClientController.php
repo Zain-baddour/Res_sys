@@ -28,4 +28,15 @@ class ClientController extends Controller
         $userId = auth()->id();
         return response()->json($this->clientService->getMyInquiries($userId));
     }
+
+    public function storeReview(Request $request)
+    {
+        $request->validate([
+            'hall_id' => 'required|exists:halls,id',
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'required|string|max:1000',
+        ]);
+
+        return $this->clientService->handleReview($request);
+    }
 }
