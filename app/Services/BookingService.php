@@ -20,20 +20,26 @@ class BookingService
     {
 
         return DB::transaction(function () use ($data) {
-            $existingBooking = Booking::where('hall_id', $data['hall_id'])
-                ->where('event_date', $data['event_date'])
-                ->first();
+            $conflictingBooking = Booking::where('hall_id', $data['hall_id'])
+                ->whereDate('event_date', $data['event_date'])
+                ->where(function ($query) use ($data) {
+                    $query->where(function ($q) use ($data) {
+                        $q->where('from', '<', $data['to'])
+                            ->where('to', '>', $data['from']);
+                    });
+                })
+                ->exists();
 
-            if ($existingBooking) {
-                throw ValidationException::withMessages([
-                    'event_date' => 'تم حجز هذه الصالة في هذا الوقت مسبقاً.'
-                ]);
+            if ($conflictingBooking) {
+                return response()->json(['message' => 'تم حجز هذه القاعة بالفعل خلال الوقت المحدد'], 422);
             }
 
             $booking = Booking::create([
                 'user_id' => Auth::id(),
                 'hall_id' => $data['hall_id'],
                 'event_date' => $data['event_date'],
+                'from' => $data['from'],
+                'to' => $data['to'],
                 'guest_count' => $data['guest_count'],
                 'event_type' => $data['event_type'],
                 'additional_notes' => $data['additional_notes'],

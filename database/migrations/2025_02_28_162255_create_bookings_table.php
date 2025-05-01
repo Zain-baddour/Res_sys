@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('hall_id')->constrained('halls')->onDelete('cascade');
             $table->dateTime('event_date');
+            $table->time('from');
+            $table->time('to');
             $table->integer('guest_count');
             $table->string('event_type');
             $table->enum('status', ['unconfirmed', 'confirmed'])->default('unconfirmed');

@@ -39,6 +39,7 @@ class HallService
                     'images' => $hall->images->map(function (Hall_img $image) {
                         return $image->image_path;
                     }),
+                    'average_rating' => round($hall->reviews->avg('rating'), 1),
                 ];
             });
         } catch (Exception $e) {
@@ -189,7 +190,7 @@ class HallService
             return Offer::create(
                 ['period_offer'=>$data['period_offer'],
                 'start_offer'=>$data['start_offer'],
-                
+
                 'offer_val'=>$data['offer_val'],
                 'hall_id'=>$hall_id
             ]);
@@ -206,7 +207,7 @@ class HallService
     public function updateoffer($id,array $data)
     {
         $offer = Offer::findOrFail($id);
-       
+
         if($offer){
         $offer->update(
            $data);
@@ -223,15 +224,15 @@ class HallService
         $offers= Offer::where('hall_id',$hall_id)->get();
  $message="this is offers to hall";
         return ['message'=>$message,'service'=>$offers];
- 
+
      }
 
-   
+
 
     public function updatepolices($id,array $data)
     {
         $police = Policies::findOrFail($id);
-       
+
         if($police){
         $police->update(
            $data);
@@ -242,12 +243,12 @@ class HallService
         $message = "The polices does not exist.";
         return $message;
 }
-      
+
 //     else {
 //         $message = "The hall does not exist.";
 //         return $message;
 // }
-     
+
 
    }
     public function getpolicesById($id)
@@ -287,7 +288,7 @@ class HallService
             $message = "The hall does not exist.";
             return $message;}
         }
-        else{ 
+        else{
             $message="you are not employee in the hall";
             return $message;
         }
@@ -338,7 +339,7 @@ if($detail){
                        'image_path' => $path,
                     ]);
                 }}
-                
+
             if (isset($data['video'])) {
                 $video = $data['video'];
                 $videoPath = uniqid() . '_video_.' . $video->getClientOriginalExtension();
@@ -347,7 +348,7 @@ if($detail){
                 if ($video->isValid()) {
                     $video->storeAs('service_videos', $videoPath, 'public');
                     $service->video_path = $videoPath;
-                
+
                 }}
                 $service->save();
                 return $service;
@@ -371,7 +372,7 @@ if($detail){
             $message = "The service  not found.";
             return $message;
         }
-        
+
     }
     public function showservice($hall_id){
        $services= Servicetohall::where('hall_id',$hall_id)->get();
@@ -420,14 +421,14 @@ public function updatetime(array $data,$id)
         $times= Loungetiming::where('hall_id',$hall_id)->get();
  $message="the time of hall";
         return ['message'=>$message,'service'=>$times];
- 
+
      }
      public function addpay(array $data,$hall_id)
      {
          if (Auth::user()->hasRole('assistant')){
              $exist= hall::where('id',$hall_id)->exists();
                  if($exist){
-                  
+
              $pay= Paymentway::create([
              'type'=>$data['type'],
                  'hall_id'=>$hall_id

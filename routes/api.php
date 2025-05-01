@@ -69,6 +69,7 @@ Route::middleware(['auth:sanctum'])->prefix('assistant')->group(function () {
 Route::middleware(['auth:sanctum'])->prefix('Client')->group(function () {
     Route::post('/inquiry', [ClientController::class, 'store']); //send an inquiry
     Route::get('/myInquiries', [ClientController::class, 'myInquiries']); //get client inquiries
+    Route::post('/reviews', [ClientController::class, 'storeReview']); //review and comment on a hall
 });
 
 // ***** Booking APIs *****
@@ -128,7 +129,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::middleware(['auth:sanctum'])->prefix('office')->group(function () {
     Route::post('/', [OfficeController::class, 'addserv']);      // Create a hall
     Route::post('/addreq/{id}', [OfficeController::class, 'addReqReservation']); //add req
-    Route::get('/show', [OfficeController::class, 'showReqReservation']); 
+    Route::get('/show', [OfficeController::class, 'showReqReservation']);
     Route::get('/show/{id}', [OfficeController::class, 'get_detail']); //show detail request of booking
     Route::post('/addcont', [OfficeController::class, 'add_info_contact']);
     Route::post('/send/{det_id}/{user_id}', [OfficeController::class, 'send_answer']); //send response to bookings user

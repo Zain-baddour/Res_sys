@@ -65,6 +65,13 @@ class User extends Authenticatable
         return $this->belongsToMany(Hall::class, 'hall_employees');
     }
 
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+
     public function getPhotoUrlAttribute()
     {
         return $this->photo ? asset($this->photo) : null;
