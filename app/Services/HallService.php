@@ -137,6 +137,16 @@ class HallService
         return true;
     }
 
+    public function getHallReviews ($hall_id) {
+        $hall = hall::with(['reviews' => function($query) {
+            $query->latest()->with('user');
+        }])->findOrFail($hall_id);
+
+        return response()->json([
+            'reviews' => $hall->reviews
+        ]);
+    }
+
     public function getHallImages($hallId) {
 
         return Hall_img::where('hall_id', $hallId)->pluck('image_path');
@@ -243,20 +253,9 @@ class HallService
         $message = "The polices does not exist.";
         return $message;
 }
-<<<<<<< HEAD
-      
-
-     
-=======
-
-//     else {
-//         $message = "The hall does not exist.";
-//         return $message;
-// }
-
->>>>>>> 3cd0ad760ead9951925a3ccc9464cbafed78514c
 
    }
+
    public function showspolices($hall_id){
     $polices= Policies::where('hall_id',$hall_id)->get();
 $message="this is polices to hall";
@@ -304,7 +303,7 @@ $message="this is polices to hall";
         $details= DetailsHall::where('hall_id',$hall_id)->get();
  $message="this is detail to hall";
         return ['message'=>$message,'service'=>$details];
- 
+
      }
 
     public function updatedetail(array $data,$id)
