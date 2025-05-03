@@ -179,6 +179,7 @@ $data =$request->validate([
             'number' => 'required|string|max:255',
             'num_person' => 'required|integer|min:1',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'video' => 'file|mimes:mp4,avi,mpg,mov,wmv|max:20480',
         ]);
 
         $detail= $this->hallService->add_detail($data,$hall_id);
@@ -202,6 +203,7 @@ $data =$request->validate([
             'number' => 'required|string|max:255',
             'num_person' => 'required|integer|min:1',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'video' => 'file|mimes:mp4,avi,mpg,mov,wmv|max:20480',
            
         ]);
         $detail =$this->hallService->updatedetail($data,$id);
@@ -211,7 +213,8 @@ $data =$request->validate([
     }
     public function add_service(Request $request,$hall_id){
         $data = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|in:buffet,hospitality,performance,car,decoration,
+            photographer,promo,reader,condolence_photographer,condolence_hospitality',
             'price'=>'required|integer|between:2,12',
             'description'=>'required|string|max:255',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -223,7 +226,8 @@ $data =$request->validate([
 
     public function updatservice(Request $request ,$id){
         $data =$request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|in:buffet,hospitality,performance,car,decoration,
+            photographer,promo,reader,condolence_photographer,condolence_hospitality',
             'price'=>'required|integer|between:2,12',
             'description'=>'required|string|max:255',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -267,7 +271,7 @@ public function showtime($id)
 }
 public function add_pay(Request $request,$hall_id){
     $data = $request->validate([
-        'type' => 'required|string|in:e-pay,cash,both',
+        'type' => 'required|string|in:Electronic,Cash,Both',
 
     ]);
     $pay= $this->hallService->addpay($data,$hall_id);
@@ -276,7 +280,7 @@ public function add_pay(Request $request,$hall_id){
 
 public function updatpay(Request $request ,$id){
     $data =$request->validate([
-        'type' => 'required|string|in:e-pay,cash,both', 
+        'type' => 'required|string|in:Electronic,Cash,Both', 
     ]);
     $time =$this->hallService->updatepay($data,$id);
 

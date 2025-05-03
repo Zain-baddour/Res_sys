@@ -6,6 +6,7 @@ use App\Models\DetailsHall;
 use App\Models\hall;
 use App\Models\hall_employee;
 use App\Models\Hall_img;
+use App\Models\Detail_img;
 use App\Models\Image_hal;
 use App\Models\inquiry;
 use App\Models\Loungetiming;
@@ -166,7 +167,6 @@ class HallService
         if (Auth::user()->hasRole('assistant')){
             $exist= hall::where('id',$hall_id)->exists();
                 if($exist){
-                 //   if (isset($data['description']) && !empty($data['description'])) {
             $polices= Policies::create([
             'description'=>$data['description'],
                 'hall_id'=>$hall_id
@@ -243,18 +243,6 @@ class HallService
         $message = "The polices does not exist.";
         return $message;
 }
-<<<<<<< HEAD
-      
-
-     
-=======
-
-//     else {
-//         $message = "The hall does not exist.";
-//         return $message;
-// }
-
->>>>>>> 3cd0ad760ead9951925a3ccc9464cbafed78514c
 
    }
    public function showspolices($hall_id){
@@ -283,11 +271,21 @@ $message="this is polices to hall";
                 foreach ($data['images'] as $image) {
                     $path = uniqid() . '_images_.' . $image->getClientOriginalExtension();
                     $image->store('detail_image' , 'public');;
-                    Hall_img::create([
-                       'hall_id' => $hall_id,
+                    Detail_img::create([
+                       'detail_id' => $detail->id,
                        'image_path' => $path,
                     ]);
                 }}
+                if (isset($data['video'])) {
+                    $video = $data['video'];
+                    $videoPath = uniqid() . '_video_.' . $video->getClientOriginalExtension();
+    
+                    // قم بإجراء التحقق من الفيديو هنا
+                    if ($video->isValid()) {
+                        $video->storeAs('detail_videos', $videoPath, 'public');
+                        $detail->video_path = $videoPath;
+    
+                    }}
                 $detail->save();
             return $detail;
         }
@@ -300,13 +298,20 @@ $message="this is polices to hall";
             return $message;
         }
     }
-    public function showdetail($hall_id){
-        $details= DetailsHall::where('hall_id',$hall_id)->get();
- $message="this is detail to hall";
-        return ['message'=>$message,'service'=>$details];
- 
-     }
-
+    public function showdetail($det_id){
+        $details= DetailsHall::where('id',$det_id)->exists();
+        if($details){
+            $det= DetailsHall::join('detail_imgs', 'detail_imgs.detail_id', 'details_halls.id')
+            -> select('details_halls.*', 'detail_imgs.image_path')
+                                ->where('detail_imgs.detail_id', $det_id)
+                                ->get();
+        
+            return $det;
+        }
+        else{
+            $message="the record not found";
+            return $message;
+        }}
     public function updatedetail(array $data,$id)
     {
 
@@ -325,11 +330,20 @@ if($detail){
             foreach ($data['images'] as $image) {
                 $path = uniqid() . '_images_.' . $image->getClientOriginalExtension();
                 $image->store('detail_image' , 'public');
-                Hall_img::create([
-                   'hall_id' => $detail->hall_id,
-                   'image_path' => $path,
-                ]);
-            }}
+                Detail_img::create([
+                    'detail_id' => $detail->id,
+                    'image_path' => $path,
+                 ]);
+            }}if (isset($data['video'])) {
+                $video = $data['video'];
+                $videoPath = uniqid() . '_video_.' . $video->getClientOriginalExtension();
+
+                // قم بإجراء التحقق من الفيديو هنا
+                if ($video->isValid()) {
+                    $video->storeAs('detail_videos', $videoPath, 'public');
+                    $detail->video_path = $videoPath;
+
+                }}
             $detail->save();
         return $detail;
     }else{

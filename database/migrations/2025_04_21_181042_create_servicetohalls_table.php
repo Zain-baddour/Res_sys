@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('servicetohalls', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->enum('name', ['buffet','hospitality','performance','car','decoration','photographer','protection',
+            'promo','reader','condolence_photographer','condolence_hospitality']);
             $table->integer('price');
             $table->string('description');
             $table->string('video_path');

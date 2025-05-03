@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('location');
             $table->integer('num_person');
             $table->integer('res_price');
+            $table->string('video_path');
             $table->foreignId('hall_id')->constrained('halls')->cascadeOnDelete();
             $table->timestamps();
         });

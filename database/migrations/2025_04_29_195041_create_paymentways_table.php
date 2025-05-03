@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('paymentways', function (Blueprint $table) {
             $table->id();
-            $table->enum('type', ['e-pay' , 'cash','both'])->default('e-pay');
+            $table->enum('type', ['Electronic' , 'Cash','Both'])->default('Electronic');
             $table->foreignId('hall_id')->constrained('halls')->cascadeOnDelete();
             $table->timestamps();
         });

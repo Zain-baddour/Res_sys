@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reviews', function (Blueprint $table) {
+        Schema::create('detail_imgs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('hall_id')->constrained()->onDelete('cascade');
-            $table->unsignedTinyInteger('rating'); // من 1 لـ 5
-            $table->text('comment');
+            $table->foreignId('detail_id')->constrained('details_halls')->onDelete('cascade');
+            $table->string('image_path');
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reviews');
+        Schema::dropIfExists('detail_imgs');
     }
 };

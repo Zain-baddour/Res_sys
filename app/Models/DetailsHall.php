@@ -14,8 +14,9 @@ class DetailsHall extends Model
         'res_price',
         'number',
         'num_person',
+        'video_path',
         'location',
-        'path_image',
+       // 'path_image',
         'hall_id'
     ] ;
     public function hall(){
