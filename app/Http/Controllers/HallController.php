@@ -86,6 +86,10 @@ class HallController extends Controller
         return response()->json(['message' => 'Hall deleted successfully']);
     }
 
+    public function getHallReviews($hall_id) {
+        return $this->hallService->getHallReviews($hall_id);
+    }
+
     public function getHallImagesC($hallId) {
         $images = $this->hallService->getHallImages($hallId);
         return response()->json([
@@ -147,7 +151,7 @@ class HallController extends Controller
             'period_offer'=>'required|date',
             'start_offer' => 'required|date',
             'offer_val'=>'required|decimal:2',
-           
+
         ]);
         $offers= $this->hallService->addoffer($data,$hall_id);
         return response()->json($offers, 201);
@@ -168,7 +172,7 @@ $data =$request->validate([
         $offer = $this->hallService->showoffer($id);
         return response()->json($offer);
     }
-    
+
     public function add_detail(Request $request,$hall_id)
     {
         $data = $request->validate([
@@ -189,7 +193,7 @@ $data =$request->validate([
 
     public function showdetail($id)
     {
-     
+
         $detail = $this->hallService->showdetail($id);
         return response()->json($detail);
     }
@@ -204,7 +208,7 @@ $data =$request->validate([
             'num_person' => 'required|integer|min:1',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'video' => 'file|mimes:mp4,avi,mpg,mov,wmv|max:20480',
-           
+
         ]);
         $detail =$this->hallService->updatedetail($data,$id);
 
@@ -257,7 +261,7 @@ public function updattime(Request $request ,$id){
     $data =$request->validate([
         'type' => 'required|string|in:morning,evening',
         'from'=>'required|date_format:H:i',
-                'to'=>'required|date_format:H:i'  
+                'to'=>'required|date_format:H:i'
     ]);
     $time =$this->hallService->updatetime($data,$id);
 
@@ -280,7 +284,11 @@ public function add_pay(Request $request,$hall_id){
 
 public function updatpay(Request $request ,$id){
     $data =$request->validate([
+
         'type' => 'required|string|in:Electronic,Cash,Both', 
+
+        'type' => 'required|string|in:e-pay,cash,both',
+
     ]);
     $time =$this->hallService->updatepay($data,$id);
 

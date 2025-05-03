@@ -30,7 +30,8 @@ Route::controller(AuthController::class)->group(function (){
 
 // *****  Hall API's *****
 
-Route::get('/halls', [HallController::class, 'index']);       // Get all halls
+Route::get('/halls', [HallController::class, 'index']);  // Get all halls
+Route::get('/halls/{id}/reviews', [HallController::class, 'getHallReviews']);  //Get Hall Reviews
 Route::get('/halls/{id}', [HallController::class, 'show']);    // Get single hall
 Route::get('/halls/{id}/images', [HallController::class, 'getHallImagesC']);    // Get single hall images
 
