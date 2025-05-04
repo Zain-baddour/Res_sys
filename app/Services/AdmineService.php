@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\AppSetting;
 use App\Models\hall;
 use App\Models\Hall_img;
 use Illuminate\Support\Facades\Auth;
@@ -37,6 +38,21 @@ class AdmineService
         $hall->status = $status;
         $hall->save();
         return $hall;
+    }
+
+    public function updateSettings(array $data) {
+        $settings = AppSetting::first();
+        if (!$settings) {
+            $settings = AppSetting::create($data);
+        }
+        else {
+            $settings->update($data);
+        }
+        return $settings;
+    }
+
+    public function getSettings () {
+        return AppSetting::first();
     }
 
 }

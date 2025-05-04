@@ -48,6 +48,8 @@ Route::middleware(['auth:sanctum'])->prefix('halls')->group(function () {
 // ***** Admin APIs *****
 
 Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
+    Route::get('/settings', [AdminController::class, 'showSettings']); //show the app settings (free trial , subscription price)
+    Route::put('/settings/update', [AdminController::class, 'updateSettings']); //update the settings (free trial , subscription price)
     Route::get('/pending', [AdminController::class, 'getPendingHalls']);    // get pending halls
     Route::post('/status/{id}', [AdminController::class, 'updateHallStatus']);    // update status from pending to approved or rejected
 });
