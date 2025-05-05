@@ -13,11 +13,12 @@ class ClientService
         return inquiry::create($data);
     }
 
-    public function getMyInquiries($userId) {
+    public function getMyInquiries($userId, $hallId) {
         $inquiries = Inquiry::with(['responses' => function ($query) {
             $query->orderBy('created_at', 'asc');
         }])
             ->where('user_id', $userId)
+            ->where('hall_id', $hallId)
             ->orderBy('created_at', 'asc')
             ->get();
 

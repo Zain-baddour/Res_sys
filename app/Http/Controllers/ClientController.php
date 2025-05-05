@@ -24,9 +24,9 @@ class ClientController extends Controller
         return response()->json($inquiry, 201);
     }
 
-    public function myInquiries() {
+    public function myInquiries($hallId) {
         $userId = auth()->id();
-        return response()->json($this->clientService->getMyInquiries($userId));
+        return response()->json($this->clientService->getMyInquiries($userId, $hallId));
     }
 
     public function storeReview(Request $request)

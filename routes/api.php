@@ -71,7 +71,7 @@ Route::middleware(['auth:sanctum'])->prefix('assistant')->group(function () {
 // ***** Client APIs *****
 Route::middleware(['auth:sanctum'])->prefix('Client')->group(function () {
     Route::post('/inquiry', [ClientController::class, 'store']); //send an inquiry
-    Route::get('/myInquiries', [ClientController::class, 'myInquiries']); //get client inquiries
+    Route::get('/myInquiries/{hallId}', [ClientController::class, 'myInquiries']); //get client inquiries
     Route::post('/reviews', [ClientController::class, 'storeReview']); //review and comment on a hall
 });
 
