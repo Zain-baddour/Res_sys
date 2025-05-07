@@ -65,13 +65,14 @@ Route::middleware(['auth:sanctum'])->prefix('owner')->group(function () {
 // ***** Assistant APIs *****
 Route::middleware(['auth:sanctum'])->prefix('assistant')->group(function () {
     Route::post('/inquiry/response', [AssistantController::class, 'responseToInquiry']); //response to an inquiry
+    Route::get('/myInquiries/{hall_id?}/{userId}', [ClientController::class, 'myInquiries']);
     Route::post('/requestStaff/{id}', [AssistantController::class, 'requestStaff']); //request to get hired at a hall
 });
 
 // ***** Client APIs *****
 Route::middleware(['auth:sanctum'])->prefix('Client')->group(function () {
     Route::post('/inquiry', [ClientController::class, 'store']); //send an inquiry
-    Route::get('/myInquiries/{hallId}', [ClientController::class, 'myInquiries']); //get client inquiries
+    Route::get('/myInquiries/{hall_id}', [ClientController::class, 'myInquiries']); //get client inquiries
     Route::post('/reviews', [ClientController::class, 'storeReview']); //review and comment on a hall
 });
 
