@@ -67,6 +67,7 @@ Route::middleware(['auth:sanctum'])->prefix('assistant')->group(function () {
     Route::post('/inquiry/response', [AssistantController::class, 'responseToInquiry']); //response to an inquiry
     Route::get('/myInquiries/{hall_id?}/{userId}', [ClientController::class, 'myInquiries']);
     Route::post('/requestStaff/{id}', [AssistantController::class, 'requestStaff']); //request to get hired at a hall
+    Route::get('/chats', [AssistantController::class, 'getChat']); //get all chats
 });
 
 // ***** Client APIs *****
