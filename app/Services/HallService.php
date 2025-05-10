@@ -26,23 +26,27 @@ class HallService
     public function getAll()
     {
         try {
-            return hall::with('images')->where('status', 'approved')->get()->map(function ($hall){
-                return [
-                    'id' => $hall->id,
-                    'name' => $hall->name,
-                    'owner_id' => $hall->owner_id,
-                    'capacity' => $hall->capacity,
-                    'location' => $hall->location,
-                    'contact' => $hall->contact,
-                    'type' => $hall->type,
-                    'events' => $hall->events,
-                    'hall_image' => $hall->hall_image,
-                    'images' => $hall->images->map(function (Hall_img $image) {
-                        return $image->image_path;
-                    }),
-                    'average_rating' => round($hall->reviews->avg('rating'), 1),
-                ];
-            });
+            return hall::with('images')
+                ->withAvg('reviews', 'rating')
+                ->where('status', 'approved')
+                ->get();
+//                ->map(function ($hall){
+//                return [
+//                    'id' => $hall->id,
+//                    'name' => $hall->name,
+//                    'owner_id' => $hall->owner_id,
+//                    'capacity' => $hall->capacity,
+//                    'location' => $hall->location,
+//                    'contact' => $hall->contact,
+//                    'type' => $hall->type,
+//                    'events' => $hall->events,
+//                    'hall_image' => $hall->hall_image,
+//                    'images' => $hall->images->map(function (Hall_img $image) {
+//                        return $image->image_path;
+//                    }),
+//                    'average_rating' => round($hall->reviews->avg('rating'), 1),
+//                ];
+//            });
         } catch (Exception $e) {
             return response()->json([
                 'error' => $e->getMessage()
@@ -57,22 +61,26 @@ class HallService
     public function getById($id)
     {
         try {
-            return hall::with('images')->where('id', $id)->get()->map(function ($hall){
-                return [
-                    'id' => $hall->id,
-                    'name' => $hall->name,
-                    'owner_id' => $hall->owner_id,
-                    'capacity' => $hall->capacity,
-                    'location' => $hall->location,
-                    'contact' => $hall->contact,
-                    'type' => $hall->type,
-                    'events' => $hall->events,
-                    'hall_image' => $hall->hall_image,
-                    'images' => $hall->images->map(function (Hall_img $image) {
-                        return $image->image_path;
-                    }),
-                ];
-            });
+            return hall::with(['images', 'owner:id,photo'])
+                ->withAvg('reviews', 'rating')
+                ->where('id', $id)
+                ->get();
+//                ->map(function ($hall){
+//                return [
+//                    'id' => $hall->id,
+//                    'name' => $hall->name,
+//                    'owner_id' => $hall->owner_id,
+//                    'capacity' => $hall->capacity,
+//                    'location' => $hall->location,
+//                    'contact' => $hall->contact,
+//                    'type' => $hall->type,
+//                    'events' => $hall->events,
+//                    'hall_image' => $hall->hall_image,
+//                    'images' => $hall->images->map(function (Hall_img $image) {
+//                        return $image->image_path;
+//                    }),
+//                ];
+//            });
         } catch (Exception $e) {
             return response()->json([
                 'error' => $e->getMessage()
@@ -290,12 +298,12 @@ $message="this is polices to hall";
                 if (isset($data['video'])) {
                     $video = $data['video'];
                     $videoPath = uniqid() . '_video_.' . $video->getClientOriginalExtension();
-    
+
                     // قم بإجراء التحقق من الفيديو هنا
                     if ($video->isValid()) {
                         $video->storeAs('detail_videos', $videoPath, 'public');
                         $detail->video_path = $videoPath;
-    
+
                     }}
                 $detail->save();
             return $detail;
@@ -317,7 +325,7 @@ $message="this is polices to hall";
             -> select('details_halls.*', 'detail_imgs.image_path')
                                 ->where('detail_imgs.detail_id', $det_id)
                                 ->get();
-        
+
             return $det;
         }
         else{
@@ -325,7 +333,7 @@ $message="this is polices to hall";
             return $message;
         }}
 
-    
+
 
 
     public function updatedetail(array $data,$id)

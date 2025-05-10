@@ -51,6 +51,8 @@ class AdminController extends Controller
         return response()->json($settings);
     }
 
-
+    public function getAllUsers() {
+        return response()->json($this->adminService->getAllUsers());
+    }
 
 }

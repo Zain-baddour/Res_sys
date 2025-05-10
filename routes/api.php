@@ -52,6 +52,7 @@ Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
     Route::put('/settings/update', [AdminController::class, 'updateSettings']); //update the settings (free trial , subscription price)
     Route::get('/pending', [AdminController::class, 'getPendingHalls']);    // get pending halls
     Route::post('/status/{id}', [AdminController::class, 'updateHallStatus']);    // update status from pending to approved or rejected
+    Route::get('/allUsers', [AdminController::class, 'getAllUsers']);
 });
 
 
