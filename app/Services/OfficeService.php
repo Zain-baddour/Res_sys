@@ -29,6 +29,13 @@ class OfficeService
         $office->save();
         return ['message'=>"the service added succesfuly",'service'=>$office];
 }
+
+public function showserviceoffice(){
+    $services= Office::all();
+$message="this is services to  office";
+    return ['message'=>$message,'service'=>$services];
+
+ }
 public function addReqReservation(array $data,$office_id){
     $req =Detail_booking::create([
            
@@ -91,7 +98,7 @@ public function send_answer($detail_id,$user_id,array $data){
         ]);
        
     }
-    return ['message'=>"the message send succesfuly",'contact'=>$send];
+    return ['message'=>"the message send succesfuly",'answer'=>$send];
 
 }
 

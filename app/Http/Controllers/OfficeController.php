@@ -24,6 +24,11 @@ class OfficeController extends Controller
     $office = $this->officeService->addservice($data);
     return response()->json($office);
 }
+public function showservice(){
+    $service = $this->officeService->showserviceoffice();
+    return response()->json($service);
+}
+
 public function addReqReservation(Request $request,$office_id)
     {
         $data = $request->validate([
