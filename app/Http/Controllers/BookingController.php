@@ -35,28 +35,16 @@ class BookingController extends Controller
             'hospitality_services.details.*' => 'string',
 
             'performance_service.from_hall' => 'nullable|boolean',
-            'performance_service.details' => 'nullable|array',
-            'performance_service.details.*' => 'string',
 
             'car_service.from_hall' => 'nullable|boolean',
-            'car_service.details' => 'nullable|array',
-            'car_service.details.*' => 'string',
 
             'decoration_service.from_hall' => 'nullable|boolean',
-            'decoration_service.details' => 'nullable|array',
-            'decoration_service.details.*' => 'string',
 
             'photographer_service.from_hall' => 'nullable|boolean',
-            'photographer_service.details' => 'nullable|array',
-            'photographer_service.details.*' => 'string',
 
             'protection_service.from_hall' => 'nullable|boolean',
-            'protection_service.details' => 'nullable|array',
-            'protection_service.details.*' => 'string',
 
             'promo_service.from_hall' => 'nullable|boolean',
-            'promo_service.details' => 'nullable|array',
-            'promo_service.details.*' => 'string',
 
             'songs' => 'nullable|array',
             'songs.*.person_name' => 'required|string',
@@ -66,12 +54,8 @@ class BookingController extends Controller
 
             // خدمات الأتراح
             'reader_service.from_hall' => 'nullable|boolean',
-            'reader_service.details' => 'nullable|array',
-            'reader_service.details.*' => 'string',
 
             'condolence_photographer_service.from_hall' => 'nullable|boolean',
-            'condolence_photographer_service.details' => 'nullable|array',
-            'condolence_photographer_service.details.*' => 'string',
 
             'condolence_hospitality_services.from_hall' => 'nullable|boolean',
             'condolence_hospitality_services.details' => 'nullable|array',

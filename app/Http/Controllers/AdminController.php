@@ -30,4 +30,29 @@ class AdminController extends Controller
         return response()->json($hall);
     }
 
+    public function updateSettings(Request $request)
+    {
+        $request->validate([
+            'monthly_subscription_price' => 'required|numeric|min:0',
+            'trial_duration_days' => 'required|integer|min:0',
+        ]);
+
+        $this->adminService->updateSettings($request->only([
+            'monthly_subscription_price',
+            'trial_duration_days'
+        ]));
+
+        return response()->json(['message' => 'تم التحديث بنجاح']);
+    }
+
+    public function showSettings()
+    {
+        $settings = $this->adminService->getSettings();
+        return response()->json($settings);
+    }
+
+    public function getAllUsers() {
+        return response()->json($this->adminService->getAllUsers());
+    }
+
 }
