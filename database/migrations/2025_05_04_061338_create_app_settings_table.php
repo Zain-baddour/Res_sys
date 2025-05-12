@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('app_settings', function (Blueprint $table) {
             $table->id();
-            $table->decimal('monthly_subscription_price' , 8, 2)->default(0);
+            $table->decimal('subscription_value' , 8, 2)->default(0);
+            $table->integer('subscription_duration_days')->default(0);
+            $table->string('currency')->default('usd');
             $table->integer('trial_duration_days')->default(30);
             $table->timestamps();
         });
