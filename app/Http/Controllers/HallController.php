@@ -217,12 +217,13 @@ $data =$request->validate([
     }
     public function add_service(Request $request,$hall_id){
         $data = $request->validate([
-            'name' => 'required|string|in:buffet,hospitality,performance,car,decoration,
-            photographer,promo,reader,condolence_photographer,condolence_hospitality',
-            'price'=>'required|integer|between:2,12',
+            'name' => 'required|string|in:buffet_service,hospitality_services,performance_service,car_service,decoration_service,
+            photographer_service,protection_service,promo_service,reader_service,condolence_photographer_service,condolence_hospitality_services',
+            'service_price'=>'required|numeric',
             'description'=>'required|string|max:255',
+            'is_fixed' => 'required|boolean',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'video' => 'file|mimes:mp4,avi,mpg,mov,wmv|max:20480',
+            'video' => 'nullable|mimetypes:mp4,avi,mpg,mov,wmv|max:20480',
         ]);
         $service= $this->hallService->add_service($data,$hall_id);
         return response()->json($service, 201);
@@ -285,7 +286,7 @@ public function add_pay(Request $request,$hall_id){
 public function updatpay(Request $request ,$id){
     $data =$request->validate([
 
-        'type' => 'required|string|in:Electronic,Cash,Both', 
+        'type' => 'required|string|in:Electronic,Cash,Both',
 
         'type' => 'required|string|in:e-pay,cash,both',
 

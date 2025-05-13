@@ -2,11 +2,31 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Servicetohall extends Model
-{ protected $fillable = [
-    'name','video_path',
-    'price','description','hall_id'
+{
+    use HasFactory;
+
+    protected $fillable = [
+    'hall_id',
+    'name',
+    'service_price',
+    'description',
+    'is_fixed',
 ];
+
+    public function hall() {
+        return $this->belongsTo(hall::class);
+    }
+
+    public function images() {
+        return $this->hasMany(HallServiceImage::class);
+    }
+
+    public function video() {
+        return $this->hasOne(HallServiceVideo::class);
+    }
+
 }

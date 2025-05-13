@@ -376,44 +376,27 @@ if($detail){
 
     }
     }
-    public function add_service(array $data,$hall_id)
+    public function add_service($data,$hallId)
     {
-            if (Auth::user()->hasRole('assistant')){
-                $exist= hall::where('id',$hall_id)->exists();
-                if($exist){
-            $service = Servicetohall::create(
-               ['name'=>$data['name'],
-            'price'=>$data['price'],
-            'description'=>$data['description'],
-            'hall_id'=>$hall_id
-             ] );
+        $data['hall_id'] = $hallId;
+        $service = Servicetohall::create($data);
 
- if (isset($data['images'])) {
+            if (isset($data['images'])) {
                 foreach ($data['images'] as $image) {
-                    $path = uniqid() . '_images_.' . $image->getClientOriginalExtension();
-                    $image->store('servic_image' , 'public');;
-                    Hall_img::create([
-                       'hall_id' => $hall_id,
-                       'image_path' => $path,
-                    ]);
+                    $imageName = uniqid() . '_service_images_.' . $image->getClientOriginalExtension();
+                    $path = $image->storeAs('public', $imageName);
+                    $service->images()->create(['image_path' => $path]);
+
                 }}
 
             if (isset($data['video'])) {
                 $video = $data['video'];
-                $videoPath = uniqid() . '_video_.' . $video->getClientOriginalExtension();
+                $videoName = uniqid() . '_service_video_.' . $video->getClientOriginalExtension();
+                $videoPath = $video->storeAs('public', $videoName);
+                $service->video()->create(['video_path' => $videoPath]);
+            }
 
-                // قم بإجراء التحقق من الفيديو هنا
-                if ($video->isValid()) {
-                    $video->storeAs('service_videos', $videoPath, 'public');
-                    $service->video_path = $videoPath;
-
-                }}
-                $service->save();
-                return $service;
-        }}else
-        { $message="you are not employee in the hall";
-            return $message;
-        }
+                return $service->load('images', 'video');
     }
 
     public function updateservice(array $data,$id)
