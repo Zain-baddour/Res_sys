@@ -384,30 +384,45 @@ if($detail){
             if (isset($data['images'])) {
                 foreach ($data['images'] as $image) {
                     $imageName = uniqid() . '_service_images_.' . $image->getClientOriginalExtension();
-                    $path = $image->storeAs('public', $imageName);
-                    $service->images()->create(['image_path' => $path]);
+                    $path = $image->move(public_path(), $imageName);
+                    $service->images()->create(['image_path' => $imageName]);
 
                 }}
 
             if (isset($data['video'])) {
                 $video = $data['video'];
                 $videoName = uniqid() . '_service_video_.' . $video->getClientOriginalExtension();
-                $videoPath = $video->storeAs('public', $videoName);
-                $service->video()->create(['video_path' => $videoPath]);
+                $videoPath = $video->move(public_path(), $videoName);
+                $service->video()->create(['video_path' => $videoName]);
             }
 
                 return $service->load('images', 'video');
     }
 
-    public function updateservice(array $data,$id)
+    public function updateservice($data,$id)
     {
         $service = Servicetohall::findOrFail($id);
         if($service){
-            $service->update(['name'=>$data['name'],
-            'price'=>$data['price'],
-            'description'=>$data['description']
-        ]);
-            return $service;
+            $service->update($data);
+
+            if (isset($data['images'])) {
+                $service->images()->delete();
+                foreach ($data['images'] as $image) {
+                    $imageName = uniqid() . '_service_images_.' . $image->getClientOriginalExtension();
+                    $path = $image->move(public_path(), $imageName);
+                    $service->images()->create(['image_path' => $imageName]);
+
+                }}
+
+            if (isset($data['video'])) {
+                $service->video()->delete();
+                $video = $data['video'];
+                $videoName = uniqid() . '_service_video_.' . $video->getClientOriginalExtension();
+                $videoPath = $video->move(public_path(), $videoName);
+                $service->video()->create(['video_path' => $videoName]);
+            }
+
+            return $service->load('images', 'video');
         }
         else{
             $message = "The service  not found.";
@@ -416,7 +431,7 @@ if($detail){
 
     }
     public function showservice($hall_id){
-       $services= Servicetohall::where('hall_id',$hall_id)->get();
+       $services= Servicetohall::where('hall_id',$hall_id)->with(['images', 'video'])->get();
 $message="this is services to hall";
        return ['message'=>$message,'service'=>$services];
 

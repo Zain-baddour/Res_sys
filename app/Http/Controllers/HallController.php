@@ -223,7 +223,7 @@ $data =$request->validate([
             'description'=>'required|string|max:255',
             'is_fixed' => 'required|boolean',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'video' => 'nullable|mimetypes:mp4,avi,mpg,mov,wmv|max:20480',
+            'video' => 'nullable|mimetypes:video/mp4,video/avi,video/mpg,video/mov,video/wmv|max:20480',
         ]);
         $service= $this->hallService->add_service($data,$hall_id);
         return response()->json($service, 201);
@@ -231,12 +231,13 @@ $data =$request->validate([
 
     public function updatservice(Request $request ,$id){
         $data =$request->validate([
-            'name' => 'required|string|in:buffet,hospitality,performance,car,decoration,
-            photographer,promo,reader,condolence_photographer,condolence_hospitality',
-            'price'=>'required|integer|between:2,12',
+            'name' => 'required|string|in:buffet_service,hospitality_services,performance_service,car_service,decoration_service,
+            photographer_service,protection_service,promo_service,reader_service,condolence_photographer_service,condolence_hospitality_services',
+            'service_price'=>'required|numeric',
             'description'=>'required|string|max:255',
+            'is_fixed' => 'required|boolean',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'video' => 'file|mimes:mp4,avi,mpg,mov,wmv|max:20480',
+            'video' => 'nullable|mimetypes:video/mp4,video/avi,video/mpg,video/mov,video/wmv|max:20480',
         ]);
         $service =$this->hallService->updateservice($data,$id);
 

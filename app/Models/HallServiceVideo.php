@@ -10,7 +10,7 @@ class HallServiceVideo extends Model
     use HasFactory;
 
     protected $fillable = [
-        'hall_service_id',
+        'servicetohall_id',
         'video_path',
     ];
 

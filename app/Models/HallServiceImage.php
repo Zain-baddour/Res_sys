@@ -10,7 +10,7 @@ class HallServiceImage extends Model
     use HasFactory;
 
     protected $fillable = [
-      'hall_service_id',
+      'servicetohall_id',
       'image_path',
     ];
 

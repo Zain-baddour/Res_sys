@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('hall_service_videos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('hall_service_id')->constrained('servicetohalls')->cascadeOnDelete();
+            $table->foreignId('servicetohall_id')->constrained('servicetohalls')->cascadeOnDelete();
             $table->string('video_path');
             $table->timestamps();
         });
