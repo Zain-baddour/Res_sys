@@ -422,6 +422,7 @@ if($detail){
                 $service->video()->create(['video_path' => $videoName]);
             }
 
+            $service->save();
             return $service->load('images', 'video');
         }
         else{
