@@ -2,10 +2,12 @@
 
 namespace App\Services;
 
+use App\Models\Booking;
 use App\Models\hall;
 use App\Models\inquiry;
 use App\Models\Review;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ClientService
 {
@@ -95,6 +97,12 @@ class ClientService
         }
 
         return true;
+    }
+
+    public function getMyBookings() {
+        $id = Auth::id();
+        $bookings = Booking::where('user_id', $id)->get();
+        return $bookings;
     }
 
 }

@@ -82,6 +82,7 @@ Route::middleware(['auth:sanctum'])->prefix('Client')->group(function () {
     Route::post('/inquiry', [ClientController::class, 'store']); //send an inquiry
     Route::get('/myInquiries/{hall_id}', [ClientController::class, 'myInquiries']); //get client inquiries
     Route::post('/reviews', [ClientController::class, 'storeReview']); //review and comment on a hall
+    Route::get('/myBookings', [ClientController::class, 'getMyBook']); // get all client's bookings
 });
 
 // ***** Booking APIs *****
@@ -128,11 +129,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('updatedet/{id}', [HallController::class, 'updatdet']);
     Route::post('addtime/{id}', [HallController::class, 'add_time']);
     Route::post('updatetime/{id}', [HallController::class, 'updattime']);
-    Route::get('showtime/{id}', [HallController::class, 'showtime']);
+
     Route::post('addpay/{id}', [HallController::class, 'add_pay']);
     Route::post('updatepay/{id}', [HallController::class, 'updatpay']);
 });
-
+Route::get('showtime/{id}', [HallController::class, 'showtime']);
 
 // ***** Office APIs *****
 Route::middleware(['auth:sanctum'])->prefix('office')->group(function () {
