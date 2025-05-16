@@ -72,6 +72,9 @@ Route::middleware(['auth:sanctum'])->prefix('assistant')->group(function () {
     Route::post('addserv/{id}', [HallController::class, 'add_service']); // add a service
     Route::post('updateservice/{id}', [HallController::class, 'updatservice']); // update a service
     Route::get('showserv/{id}', [HallController::class, 'showservice']); // show a hall services
+    Route::post('addpay/{id}', [HallController::class, 'add_pay']);
+    Route::post('updatepay/{id}', [HallController::class, 'updatpay']);
+    Route::get('/showpay/{id}', [HallController::class, 'showPayWay']);
 
 
 
@@ -130,8 +133,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('addtime/{id}', [HallController::class, 'add_time']);
     Route::post('updatetime/{id}', [HallController::class, 'updattime']);
 
-    Route::post('addpay/{id}', [HallController::class, 'add_pay']);
-    Route::post('updatepay/{id}', [HallController::class, 'updatpay']);
+
 });
 Route::get('showtime/{id}', [HallController::class, 'showtime']);
 

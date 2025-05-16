@@ -115,8 +115,8 @@ class HallService
                 $path = uniqid() . '_images_.' . $image->getClientOriginalExtension();
                 $image->move(public_path(), $path);
                 Hall_img::create([
-                   'hall_id' => $hall->id,
-                   'image_path' => $path,
+                    'hall_id' => $hall->id,
+                    'image_path' => $path,
                 ]);
             }
         }
@@ -146,8 +146,9 @@ class HallService
         return true;
     }
 
-    public function getHallReviews ($hall_id) {
-        $hall = hall::with(['reviews' => function($query) {
+    public function getHallReviews($hall_id)
+    {
+        $hall = hall::with(['reviews' => function ($query) {
             $query->latest()->with('user');
         }])->findOrFail($hall_id);
 
@@ -156,21 +157,25 @@ class HallService
         ]);
     }
 
-    public function getHallImages($hallId) {
+    public function getHallImages($hallId)
+    {
 
         return Hall_img::where('hall_id', $hallId)->pluck('image_path');
     }
 
-    public function getInquiriesByHall($hallId) {
+    public function getInquiriesByHall($hallId)
+    {
         return inquiry::where('hall_id', $hallId)->with('responses')->get();
     }
 
-    public function getHallEmployee($hallId) {
+    public function getHallEmployee($hallId)
+    {
         $hall = hall::findOrFail($hallId);
         return $hall->employee()->with('user')->get();
     }
 
-    public function delHallEmployee($employeeId) {
+    public function delHallEmployee($employeeId)
+    {
         $employee = hall_employee::findOrFail($employeeId);
         return $employee->delete();
     }
@@ -180,121 +185,121 @@ class HallService
     // ZainHassan *************
 
 
-    public function addpolices(array $data,$hall_id)
+    public function addpolices(array $data, $hall_id)
     {
-        if (Auth::user()->hasRole('assistant')){
-            $exist= hall::where('id',$hall_id)->exists();
-                if($exist){
-            $polices= Policies::create([
-            'description'=>$data['description'],
-                'hall_id'=>$hall_id
-            ]);
-             return $polices;
+        if (Auth::user()->hasRole('assistant')) {
+            $exist = hall::where('id', $hall_id)->exists();
+            if ($exist) {
+                $polices = Policies::create([
+                    'description' => $data['description'],
+                    'hall_id' => $hall_id
+                ]);
+                return $polices;
+            } else {
+                $message = "The hall does not exist.";
+                return $message;
+            }
         } else {
-            $message = "The hall does not exist.";
-            return $message;
-    }}
-        else{
-            $message="you are not employee in the hall";
+            $message = "you are not employee in the hall";
             return $message;
         }
     }
-    public function addoffer(array $data,$hall_id)
+
+    public function addoffer(array $data, $hall_id)
     {
 
-        if (Auth::user()->hasRole('assistant')){
-            $exist= hall::where('id',$hall_id)->exists();
-            if($exist){
-            return Offer::create(
-                ['period_offer'=>$data['period_offer'],
-                'start_offer'=>$data['start_offer'],
+        if (Auth::user()->hasRole('assistant')) {
+            $exist = hall::where('id', $hall_id)->exists();
+            if ($exist) {
+                return Offer::create(
+                    ['period_offer' => $data['period_offer'],
+                        'start_offer' => $data['start_offer'],
 
-                'offer_val'=>$data['offer_val'],
-                'hall_id'=>$hall_id
-            ]);
-        }
-        else {
-            $message = "The hall does not exist.";
-            return $message;}
-        }
-        else {
-            $message="you are not employee in the hall";
+                        'offer_val' => $data['offer_val'],
+                        'hall_id' => $hall_id
+                    ]);
+            } else {
+                $message = "The hall does not exist.";
+                return $message;
+            }
+        } else {
+            $message = "you are not employee in the hall";
             return $message;
         }
     }
-    public function updateoffer($id,array $data)
+
+    public function updateoffer($id, array $data)
     {
         $offer = Offer::findOrFail($id);
 
-        if($offer){
-        $offer->update(
-           $data);
-        return $offer;
-    }
-
-    else {
-        $message = "The offer does not exist.";
-        return $message;
-}
+        if ($offer) {
+            $offer->update(
+                $data);
+            return $offer;
+        } else {
+            $message = "The offer does not exist.";
+            return $message;
+        }
 
     }
-    public function showoffer($hall_id){
-        $offers= Offer::where('hall_id',$hall_id)->get();
- $message="this is offers to hall";
-        return ['message'=>$message,'service'=>$offers];
 
-     }
+    public function showoffer($hall_id)
+    {
+        $offers = Offer::where('hall_id', $hall_id)->get();
+        $message = "this is offers to hall";
+        return ['message' => $message, 'service' => $offers];
+
+    }
 
 
-
-    public function updatepolices($id,array $data)
+    public function updatepolices($id, array $data)
     {
         $police = Policies::findOrFail($id);
 
-        if($police){
-        $police->update(
-           $data);
-        return $police;
+        if ($police) {
+            $police->update(
+                $data);
+            return $police;
+        } else {
+            $message = "The polices does not exist.";
+            return $message;
+        }
+
     }
 
-    else {
-        $message = "The polices does not exist.";
-        return $message;
-}
-
-   }
-
-   public function showspolices($hall_id){
-    $polices= Policies::where('hall_id',$hall_id)->get();
-$message="this is polices to hall";
-    return ['message'=>$message,'polices'=>$polices];
-
- }
-
-
-    public function add_detail(array $data,$hall_id)
+    public function showspolices($hall_id)
     {
-        if (Auth::user()->hasRole('assistant')){
-            $exist= hall::where('id',$hall_id)->exists();
-            if($exist){
-            $detail = DetailsHall::create( [
-                'type_hall'=>$data['type_hall'],
-                'card_price'=>$data['card_price'],
-                'res_price'=>$data['res_price'],
-                'num_person'=>$data['num_person'],
-                'location'=>$data['location'],
-                'number'=>$data['number'],
-                'hall_id'=>$hall_id
-            ]);
-            if (isset($data['images'])) {
-                foreach ($data['images'] as $image) {
-                    $path = uniqid() . '_images_.' . $image->getClientOriginalExtension();
-                    $image->store('detail_image' , 'public');;
-                    Detail_img::create([
-                       'detail_id' => $detail->id,
-                       'image_path' => $path,
-                    ]);
-                }}
+        $polices = Policies::where('hall_id', $hall_id)->get();
+        $message = "this is polices to hall";
+        return ['message' => $message, 'polices' => $polices];
+
+    }
+
+
+    public function add_detail(array $data, $hall_id)
+    {
+        if (Auth::user()->hasRole('assistant')) {
+            $exist = hall::where('id', $hall_id)->exists();
+            if ($exist) {
+                $detail = DetailsHall::create([
+                    'type_hall' => $data['type_hall'],
+                    'card_price' => $data['card_price'],
+                    'res_price' => $data['res_price'],
+                    'num_person' => $data['num_person'],
+                    'location' => $data['location'],
+                    'number' => $data['number'],
+                    'hall_id' => $hall_id
+                ]);
+                if (isset($data['images'])) {
+                    foreach ($data['images'] as $image) {
+                        $path = uniqid() . '_images_.' . $image->getClientOriginalExtension();
+                        $image->store('detail_image', 'public');;
+                        Detail_img::create([
+                            'detail_id' => $detail->id,
+                            'image_path' => $path,
+                        ]);
+                    }
+                }
                 if (isset($data['video'])) {
                     $video = $data['video'];
                     $videoPath = uniqid() . '_video_.' . $video->getClientOriginalExtension();
@@ -304,61 +309,62 @@ $message="this is polices to hall";
                         $video->storeAs('detail_videos', $videoPath, 'public');
                         $detail->video_path = $videoPath;
 
-                    }}
+                    }
+                }
                 $detail->save();
-            return $detail;
-        }
-        else {
-            $message = "The hall does not exist.";
-            return $message;}
-        }
-        else{
-            $message="you are not employee in the hall";
+                return $detail;
+            } else {
+                $message = "The hall does not exist.";
+                return $message;
+            }
+        } else {
+            $message = "you are not employee in the hall";
             return $message;
         }
     }
 
-    public function showdetail($det_id){
-        $details= DetailsHall::where('id',$det_id)->exists();
-        if($details){
-            $det= DetailsHall::join('detail_imgs', 'detail_imgs.detail_id', 'details_halls.id')
-            -> select('details_halls.*', 'detail_imgs.image_path')
-                                ->where('detail_imgs.detail_id', $det_id)
-                                ->get();
+    public function showdetail($det_id)
+    {
+        $details = DetailsHall::where('id', $det_id)->exists();
+        if ($details) {
+            $det = DetailsHall::join('detail_imgs', 'detail_imgs.detail_id', 'details_halls.id')
+                ->select('details_halls.*', 'detail_imgs.image_path')
+                ->where('detail_imgs.detail_id', $det_id)
+                ->get();
 
             return $det;
-        }
-        else{
-            $message="the record not found";
+        } else {
+            $message = "the record not found";
             return $message;
-        }}
+        }
+    }
 
 
-
-
-    public function updatedetail(array $data,$id)
+    public function updatedetail(array $data, $id)
     {
 
         $detail = DetailsHall::findOrFail($id);
-       // $hall_id= DetailsHall::select('details_halls.hall_id') ->where('details_halls.id', $id)->get();
-if($detail){
-        $detail->update([
-            'card_price'=>$data['card_price'],
-            'type_hall' =>$data['type_hall'],
-            'res_price' =>$data['res_price'],
-            'num_person'=>$data['num_person'],
-            'location'=>$data['location'],
-            'number'=>$data['number'],
-        ]);
-        if (isset($data['images'])) {
-            foreach ($data['images'] as $image) {
-                $path = uniqid() . '_images_.' . $image->getClientOriginalExtension();
-                $image->store('detail_image' , 'public');
-                Detail_img::create([
-                    'detail_id' => $detail->id,
-                    'image_path' => $path,
-                 ]);
-            }}if (isset($data['video'])) {
+        // $hall_id= DetailsHall::select('details_halls.hall_id') ->where('details_halls.id', $id)->get();
+        if ($detail) {
+            $detail->update([
+                'card_price' => $data['card_price'],
+                'type_hall' => $data['type_hall'],
+                'res_price' => $data['res_price'],
+                'num_person' => $data['num_person'],
+                'location' => $data['location'],
+                'number' => $data['number'],
+            ]);
+            if (isset($data['images'])) {
+                foreach ($data['images'] as $image) {
+                    $path = uniqid() . '_images_.' . $image->getClientOriginalExtension();
+                    $image->store('detail_image', 'public');
+                    Detail_img::create([
+                        'detail_id' => $detail->id,
+                        'image_path' => $path,
+                    ]);
+                }
+            }
+            if (isset($data['video'])) {
                 $video = $data['video'];
                 $videoPath = uniqid() . '_video_.' . $video->getClientOriginalExtension();
 
@@ -367,42 +373,45 @@ if($detail){
                     $video->storeAs('detail_videos', $videoPath, 'public');
                     $detail->video_path = $videoPath;
 
-                }}
+                }
+            }
             $detail->save();
-        return $detail;
-    }else{
-        $message = "The detail  not found.";
-        return $message;
+            return $detail;
+        } else {
+            $message = "The detail  not found.";
+            return $message;
 
+        }
     }
-    }
-    public function add_service($data,$hallId)
+
+    public function add_service($data, $hallId)
     {
         $data['hall_id'] = $hallId;
         $service = Servicetohall::create($data);
 
-            if (isset($data['images'])) {
-                foreach ($data['images'] as $image) {
-                    $imageName = uniqid() . '_service_images_.' . $image->getClientOriginalExtension();
-                    $path = $image->move(public_path(), $imageName);
-                    $service->images()->create(['image_path' => $imageName]);
+        if (isset($data['images'])) {
+            foreach ($data['images'] as $image) {
+                $imageName = uniqid() . '_service_images_.' . $image->getClientOriginalExtension();
+                $path = $image->move(public_path(), $imageName);
+                $service->images()->create(['image_path' => $imageName]);
 
-                }}
-
-            if (isset($data['video'])) {
-                $video = $data['video'];
-                $videoName = uniqid() . '_service_video_.' . $video->getClientOriginalExtension();
-                $videoPath = $video->move(public_path(), $videoName);
-                $service->video()->create(['video_path' => $videoName]);
             }
+        }
 
-                return $service->load('images', 'video');
+        if (isset($data['video'])) {
+            $video = $data['video'];
+            $videoName = uniqid() . '_service_video_.' . $video->getClientOriginalExtension();
+            $videoPath = $video->move(public_path(), $videoName);
+            $service->video()->create(['video_path' => $videoName]);
+        }
+
+        return $service->load('images', 'video');
     }
 
-    public function updateservice($data,$id)
+    public function updateservice($data, $id)
     {
         $service = Servicetohall::findOrFail($id);
-        if($service){
+        if ($service) {
             $service->update($data);
 
             if (isset($data['images'])) {
@@ -412,7 +421,8 @@ if($detail){
                     $path = $image->move(public_path(), $imageName);
                     $service->images()->create(['image_path' => $imageName]);
 
-                }}
+                }
+            }
 
             if (isset($data['video'])) {
                 $service->video()->delete();
@@ -424,94 +434,105 @@ if($detail){
 
             $service->save();
             return $service->load('images', 'video');
-        }
-        else{
+        } else {
             $message = "The service  not found.";
             return $message;
         }
 
     }
-    public function showservice($hall_id){
-       $services= Servicetohall::where('hall_id',$hall_id)->with(['images', 'video'])->get();
-$message="this is services to hall";
-       return ['message'=>$message,'service'=>$services];
+
+    public function showservice($hall_id)
+    {
+        $services = Servicetohall::where('hall_id', $hall_id)->with(['images', 'video'])->get();
+        $message = "this is services to hall";
+        return ['message' => $message, 'service' => $services];
 
     }
 
-    public function add_time(array $data,$hall_id){
-        if (Auth::user()->hasRole('assistant')){
-            $exist= hall::where('id',$hall_id)->exists();
-            if($exist){
-        $time = Loungetiming::create(
-           ['type'=>$data['type'],
-        'from'=>$data['from'],
-        'to'=>$data['to'],
-        'hall_id'=>$hall_id
-         ] );
+    public function add_time(array $data, $hall_id)
+    {
+        if (Auth::user()->hasRole('assistant')) {
+            $exist = hall::where('id', $hall_id)->exists();
+            if ($exist) {
+                $time = Loungetiming::create(
+                    ['type' => $data['type'],
+                        'from' => $data['from'],
+                        'to' => $data['to'],
+                        'hall_id' => $hall_id
+                    ]);
 
-        return $time;
+                return $time;
             }
-    }else  {
-         $message="you are not employee in the hall";
-        return $message;
+        } else {
+            $message = "you are not employee in the hall";
+            return $message;
+        }
+
     }
 
-}
-
-public function updatetime(array $data,$id)
-{
-    $time = Loungetiming::findOrFail($id);
-    if($time){
-        $time->update([
-            'type'=>$data['type'],
-        'from'=>$data['from'],
-        'to'=>$data['to'],
-    ]);
-        return $time;
+    public function updatetime(array $data, $id)
+    {
+        $time = Loungetiming::findOrFail($id);
+        if ($time) {
+            $time->update([
+                'type' => $data['type'],
+                'from' => $data['from'],
+                'to' => $data['to'],
+            ]);
+            return $time;
+        } else {
+            $message = "The time off hall  not found.";
+            return $message;
+        }
     }
-    else{
-        $message = "The time off hall  not found.";
-        return $message;
-    }   }
 
-    public function showtime($hall_id){
-        $times= Loungetiming::where('hall_id',$hall_id)->get();
- $message="the time of hall";
-        return ['message'=>$message,'service'=>$times];
+    public function showtime($hall_id)
+    {
+        $times = Loungetiming::where('hall_id', $hall_id)->get();
+        $message = "the time of hall";
+        return ['message' => $message, 'service' => $times];
 
-     }
-     public function addpay(array $data,$hall_id)
-     {
-         if (Auth::user()->hasRole('assistant')){
-             $exist= hall::where('id',$hall_id)->exists();
-                 if($exist){
-
-             $pay= Paymentway::create([
-             'type'=>$data['type'],
-                 'hall_id'=>$hall_id
-             ]);
-              return $pay;
-         } else {
-             $message = "The hall does not exist.";
-             return $message;
-     }}
-         else{
-             $message="you are not employee in the hall";
-             return $message;
-         }
-     }
-
-     public function updatepay(array $data,$id){
-    $pay= Paymentway::findOrFail($id);
-    if($pay){
-        $pay->update([
-            'type'=>$data['type'],
-    ]);
-        return $pay;
     }
-    else{
-        $message = "The payment way off hall  not found.";
-        return $message;
-    }   }
+
+    public function addpay(array $data, $hall_id)
+    {
+        if (Auth::user()->hasRole('assistant')) {
+            $exist = hall::where('id', $hall_id)->exists();
+            if ($exist) {
+
+                $pay = Paymentway::create([
+                    'type' => $data['type'],
+                    'hall_id' => $hall_id
+                ]);
+                return $pay;
+            } else {
+                $message = "The hall does not exist.";
+                return $message;
+            }
+        } else {
+            $message = "you are not employee in the hall";
+            return $message;
+        }
+    }
+
+    public function updatepay(array $data, $id)
+    {
+        $pay = Paymentway::findOrFail($id);
+        if ($pay) {
+            $pay->update([
+                'type' => $data['type'],
+            ]);
+            $pay->save();
+            return $pay;
+        } else {
+            $message = "The payment way off hall  not found.";
+            return $message;
+        }
+    }
+
+    public function showPay($hallId) {
+        return Paymentway::where('hall_id', $hallId)->get();
+
+    }
 
 }
