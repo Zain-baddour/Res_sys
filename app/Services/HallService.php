@@ -318,24 +318,18 @@ $message="this is polices to hall";
         }
     }
 
-    public function showdetail($det_id){
-        $details= DetailsHall::where('id',$det_id)->exists();
+    public function showdetail($hall_id){
+        $details= DetailsHall::where('hall_id',$hall_id)->value('id');
         if($details){
             $det= DetailsHall::join('detail_imgs', 'detail_imgs.detail_id', 'details_halls.id')
             -> select('details_halls.*', 'detail_imgs.image_path')
-                                ->where('detail_imgs.detail_id', $det_id)
+                                ->where('detail_imgs.detail_id', $details)
                                 ->get();
 
             return $det;
-        }
-        else{
-            $message="the record not found";
-            return $message;
-        }}
+      }
 
-
-
-
+    }
     public function updatedetail(array $data,$id)
     {
 
