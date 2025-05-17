@@ -33,13 +33,15 @@ class AdminController extends Controller
     public function updateSettings(Request $request)
     {
         $request->validate([
-            'monthly_subscription_price' => 'required|numeric|min:0',
-            'trial_duration_days' => 'required|integer|min:0',
+            'subscription_duration_days' => 'required|integer|min:0',
+            'subscription_value' => 'required|numeric|min:0',
+            'currency' => 'required|string',
         ]);
 
         $this->adminService->updateSettings($request->only([
-            'monthly_subscription_price',
-            'trial_duration_days'
+            'subscription_duration_days',
+            'subscription_value',
+            'currency'
         ]));
 
         return response()->json(['message' => 'تم التحديث بنجاح']);

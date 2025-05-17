@@ -10,4 +10,9 @@ class Paymentway extends Model
         'type',
         'hall_id'
     ];
+
+
+    public function hall() {
+        return $this->belongsTo(hall::class);
+    }
 }

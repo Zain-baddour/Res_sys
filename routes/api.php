@@ -69,6 +69,15 @@ Route::middleware(['auth:sanctum'])->prefix('assistant')->group(function () {
     Route::get('/myInquiries/{hall_id?}/{userId}', [ClientController::class, 'myInquiries']);
     Route::post('/requestStaff/{id}', [AssistantController::class, 'requestStaff']); //request to get hired at a hall
     Route::get('/chats', [AssistantController::class, 'getChat']); //get all chats
+    Route::post('addserv/{id}', [HallController::class, 'add_service']); // add a service
+    Route::post('updateservice/{id}', [HallController::class, 'updatservice']); // update a service
+    Route::get('showserv/{id}', [HallController::class, 'showservice']); // show a hall services
+    Route::post('addpay/{id}', [HallController::class, 'add_pay']);
+    Route::post('updatepay/{id}', [HallController::class, 'updatpay']);
+    Route::get('/showpay/{id}', [HallController::class, 'showPayWay']);
+
+
+
 });
 
 // ***** Client APIs *****
@@ -76,6 +85,7 @@ Route::middleware(['auth:sanctum'])->prefix('Client')->group(function () {
     Route::post('/inquiry', [ClientController::class, 'store']); //send an inquiry
     Route::get('/myInquiries/{hall_id}', [ClientController::class, 'myInquiries']); //get client inquiries
     Route::post('/reviews', [ClientController::class, 'storeReview']); //review and comment on a hall
+    Route::get('/myBookings', [ClientController::class, 'getMyBook']); // get all client's bookings
 });
 
 // ***** Booking APIs *****
@@ -118,18 +128,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('add_det/{id}', [HallController::class, 'add_detail']);
-    Route::post('addserv/{id}', [HallController::class, 'add_service']);
     Route::get('det/{id}', [HallController::class, 'showdetail']);
     Route::post('updatedet/{id}', [HallController::class, 'updatdet']);
-    Route::post('updateservice/{id}', [HallController::class, 'updatservice']);
-    Route::get('showserv/{id}', [HallController::class, 'showservice']);
     Route::post('addtime/{id}', [HallController::class, 'add_time']);
     Route::post('updatetime/{id}', [HallController::class, 'updattime']);
-    Route::get('showtime/{id}', [HallController::class, 'showtime']);
-    Route::post('addpay/{id}', [HallController::class, 'add_pay']);
-    Route::post('updatepay/{id}', [HallController::class, 'updatpay']);
-});
 
+
+});
+Route::get('showtime/{id}', [HallController::class, 'showtime']);
 
 // ***** Office APIs *****
 Route::middleware(['auth:sanctum'])->prefix('office')->group(function () {

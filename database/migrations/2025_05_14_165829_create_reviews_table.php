@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('app_settings', function (Blueprint $table) {
+        Schema::create('reviews', function (Blueprint $table) {
             $table->id();
-            $table->decimal('subscription_value' , 8, 2)->default(0);
-            $table->integer('subscription_duration_days')->default(0);
-            $table->string('currency')->default('usd');
-            $table->integer('trial_duration_days')->default(30);
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('hall_id')->constrained()->cascadeOnDelete();
+            $table->unsignedTinyInteger('rating');
+            $table->text('comment');
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('app_settings');
+        Schema::dropIfExists('reviews');
     }
 };

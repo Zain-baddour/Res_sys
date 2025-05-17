@@ -64,7 +64,8 @@ class BookingController extends Controller
             'condolence_additional_notes' => 'nullable|string',
         ]);
 
-        return response()->json($this->bookingService->createBooking($data));
+        $book = $this->bookingService->createBooking($data);
+        return response()->json($book->load(['services','songs']));
     }
 
     public function confirm($bookingId)

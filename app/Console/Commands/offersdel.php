@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 use App\Models\Offer;
 use Illuminate\Console\Command;
+use Carbon\Carbon;
 
 class offersdel extends Command
 {
@@ -24,17 +25,15 @@ class offersdel extends Command
      * Execute the console command.
      */
     public function handle()
-    {  $offers = Offer::all();   
-        $todayDate = date('Y-m-d'); // تاريخ اليوم
-        $todayDatetime = strtotime($todayDate);
+    {   $offers = Offer::all();   
+        $todayDate = Carbon::today(); // تاريخ اليوم
+       // $todayDatetime = strtotime($todayDate);
         foreach ($offers as $of) {
-            $periodOfferDate = date('Y-m-d', strtotime($of->period_offer)); // تحويل تنسيق تاريخ period_offer
-            if ($periodOfferDate <= $todayDatetime) {
-                $of->update([
-                    'period_offer'=>$todayDatetime
-                ]);
+            $periodOfferDate = Carbon::parse($of->period_offer); // تحويل تنسيق تاريخ period_offer
+            if ($periodOfferDate <= $todayDate) {
+                $of->delete();
     }
         }
-        
+
     }
 }

@@ -60,4 +60,9 @@ class ClientController extends Controller
 
         return $this->clientService->handleReview($request);
     }
+
+    public function getMyBook() {
+        $books = $this->clientService->getMyBookings();
+        return response()->json($books->load(['hall','payment','services','songs']));
+    }
 }

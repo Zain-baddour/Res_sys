@@ -86,11 +86,13 @@ class HallController extends Controller
         return response()->json(['message' => 'Hall deleted successfully']);
     }
 
-    public function getHallReviews($hall_id) {
+    public function getHallReviews($hall_id)
+    {
         return $this->hallService->getHallReviews($hall_id);
     }
 
-    public function getHallImagesC($hallId) {
+    public function getHallImagesC($hallId)
+    {
         $images = $this->hallService->getHallImages($hallId);
         return response()->json([
             'hall_id' => $hallId,
@@ -98,15 +100,18 @@ class HallController extends Controller
         ]);
     }
 
-    public function getHallInquiries($hallId) {
+    public function getHallInquiries($hallId)
+    {
         return response()->json($this->hallService->getInquiriesByHall($hallId));
     }
 
-    public function getHallEmployees($hallId) {
+    public function getHallEmployees($hallId)
+    {
         return response()->json($this->hallService->getHallEmployee($hallId));
     }
 
-    public function delHallEmployees($employeeId) {
+    public function delHallEmployees($employeeId)
+    {
         $deleted = $this->hallService->delHallEmployee($employeeId);
 
         if ($deleted) {
@@ -120,23 +125,24 @@ class HallController extends Controller
     //***********************************
     //ZainHassan *******************
 
-    public function addpolices(Request $request,$hall_id)
+    public function addpolices(Request $request, $hall_id)
     {
         $data = $request->validate([
-            'description'=>'string|max:255',
+            'description' => 'string|max:255',
         ]);
-        $polices = $this->hallService->addpolices($data,$hall_id);
+        $polices = $this->hallService->addpolices($data, $hall_id);
 
-        return response()->json([$polices],201);
+        return response()->json([$polices], 201);
     }
 
-    public function updatepolices($id,Request $request ){
-        $data =$request->validate([
-            'description'=> 'nullable|string|max:255',
+    public function updatepolices($id, Request $request)
+    {
+        $data = $request->validate([
+            'description' => 'nullable|string|max:255',
         ]);
-        $polices = $this->hallService->updatepolices($id,$data);
+        $polices = $this->hallService->updatepolices($id, $data);
 
-        return response()->json($polices,201);
+        return response()->json($polices, 201);
     }
 
     public function showpolices($id)
@@ -145,40 +151,42 @@ class HallController extends Controller
         return response()->json($polices);
     }
 
-    public function addoffer(Request $request,$hall_id)
+    public function addoffer(Request $request, $hall_id)
     {
         $data = $request->validate([
-            'period_offer'=>'required|date',
+            'period_offer' => 'required|date',
             'start_offer' => 'required|date',
-            'offer_val'=>'required|decimal:2',
+            'offer_val' => 'required|decimal:2',
 
         ]);
-        $offers= $this->hallService->addoffer($data,$hall_id);
+        $offers = $this->hallService->addoffer($data, $hall_id);
         return response()->json($offers, 201);
     }
 
-    public function updateoffer($offer_id,Request $request){
-$data =$request->validate([
-    'period_offer'=>'required|date',
-    'start_offer' => 'required|date',
-    'offer_val'=>'required|decimal:2',
+    public function updateoffer($offer_id, Request $request)
+    {
+        $data = $request->validate([
+            'period_offer' => 'required|date',
+            'start_offer' => 'required|date',
+            'offer_val' => 'required|decimal:2',
         ]);
-        $offer = $this->hallService->updateoffer($offer_id,$data);
+        $offer = $this->hallService->updateoffer($offer_id, $data);
 
-        return response()->json($offer,201);
+        return response()->json($offer, 201);
     }
+
     public function showoffer($id)
     {
         $offer = $this->hallService->showoffer($id);
         return response()->json($offer);
     }
 
-    public function add_detail(Request $request,$hall_id)
+    public function add_detail(Request $request, $hall_id)
     {
         $data = $request->validate([
             'type_hall' => 'required|string|in:wedding,sorrow,both',
-            'card_price'=>'required|json',
-            'res_price'=>'required|integer|between:100,1000',
+            'card_price' => 'required|json',
+            'res_price' => 'required|integer|between:100,1000',
             'location' => 'required|string|max:255',
             'number' => 'required|string|max:255',
             'num_person' => 'required|integer|min:1',
@@ -186,7 +194,7 @@ $data =$request->validate([
             'video' => 'file|mimes:mp4,avi,mpg,mov,wmv|max:20480',
         ]);
 
-        $detail= $this->hallService->add_detail($data,$hall_id);
+        $detail = $this->hallService->add_detail($data, $hall_id);
         return response()->json($detail, 201);
     }
 
@@ -198,11 +206,12 @@ $data =$request->validate([
         return response()->json($detail);
     }
 
-    public function updatdet(Request $request ,$id){
+    public function updatdet(Request $request, $id)
+    {
         $data = $request->validate([
-            'type_hall'=>'required|in:wedding,sorrow both',
-            'card_price'=>'required|json',
-            'res_price'=>'|integer|between:100,1000',
+            'type_hall' => 'required|in:wedding,sorrow both',
+            'card_price' => 'required|json',
+            'res_price' => '|integer|between:100,1000',
             'location' => 'required|string|max:255',
             'number' => 'required|string|max:255',
             'num_person' => 'required|integer|min:1',
@@ -210,90 +219,105 @@ $data =$request->validate([
             'video' => 'file|mimes:mp4,avi,mpg,mov,wmv|max:20480',
 
         ]);
-        $detail =$this->hallService->updatedetail($data,$id);
+        $detail = $this->hallService->updatedetail($data, $id);
 
-        return response()->json($detail,201);
+        return response()->json($detail, 201);
 
     }
-    public function add_service(Request $request,$hall_id){
+
+    public function add_service(Request $request, $hall_id)
+    {
         $data = $request->validate([
-            'name' => 'required|string|in:buffet,hospitality,performance,car,decoration,
-            photographer,promo,reader,condolence_photographer,condolence_hospitality',
-            'price'=>'required|integer|between:2,12',
-            'description'=>'required|string|max:255',
+            'name' => 'required|string|in:buffet_service,hospitality_services,performance_service,car_service,decoration_service,
+            photographer_service,protection_service,promo_service,reader_service,condolence_photographer_service,condolence_hospitality_services',
+            'service_price' => 'required|numeric',
+            'description' => 'required|string|max:255',
+            'is_fixed' => 'required|boolean',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'video' => 'file|mimes:mp4,avi,mpg,mov,wmv|max:20480',
+            'video' => 'nullable|mimetypes:video/mp4,video/avi,video/mpg,video/mov,video/wmv|max:20480',
         ]);
-        $service= $this->hallService->add_service($data,$hall_id);
+        $service = $this->hallService->add_service($data, $hall_id);
         return response()->json($service, 201);
     }
 
-    public function updatservice(Request $request ,$id){
-        $data =$request->validate([
-            'name' => 'required|string|in:buffet,hospitality,performance,car,decoration,
-            photographer,promo,reader,condolence_photographer,condolence_hospitality',
-            'price'=>'required|integer|between:2,12',
-            'description'=>'required|string|max:255',
+    public function updatservice(Request $request, $id)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|in:buffet_service,hospitality_services,performance_service,car_service,decoration_service,
+            photographer_service,protection_service,promo_service,reader_service,condolence_photographer_service,condolence_hospitality_services',
+            'service_price' => 'required|numeric',
+            'description' => 'required|string|max:255',
+            'is_fixed' => 'required|boolean',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'video' => 'file|mimes:mp4,avi,mpg,mov,wmv|max:20480',
+            'video' => 'nullable|mimetypes:video/mp4,video/avi,video/mpg,video/mov,video/wmv|max:20480',
         ]);
-        $service =$this->hallService->updateservice($data,$id);
+        $service = $this->hallService->updateservice($data, $id);
 
-        return response()->json($service,201);
+        return response()->json($service, 201);
 
-}
-public function showservice($hall_id){
-    $service = $this->hallService->showservice($hall_id);
-    return response()->json($service);
-}
+    }
 
-public function add_time(Request $request,$hall_id){
-    $data = $request->validate([
-        'type' => 'required|string|in:morning,evening',
-'from'=>'required|date_format:H:i',
-        'to'=>'required|date_format:H:i'
-    ]);
-    $time= $this->hallService->add_time($data,$hall_id);
-    return response()->json($time, 201);
-}
+    public function showservice($hall_id)
+    {
+        $service = $this->hallService->showservice($hall_id);
+        return response()->json($service);
+    }
 
-public function updattime(Request $request ,$id){
-    $data =$request->validate([
-        'type' => 'required|string|in:morning,evening',
-        'from'=>'required|date_format:H:i',
-                'to'=>'required|date_format:H:i'
-    ]);
-    $time =$this->hallService->updatetime($data,$id);
+    public function add_time(Request $request, $hall_id)
+    {
+        $data = $request->validate([
+            'type' => 'required|string|in:morning,evening',
+            'from' => 'required|date_format:H:i',
+            'to' => 'required|date_format:H:i'
+        ]);
+        $time = $this->hallService->add_time($data, $hall_id);
+        return response()->json($time, 201);
+    }
 
-    return response()->json($time,201);
-}
+    public function updattime(Request $request, $id)
+    {
+        $data = $request->validate([
+            'type' => 'required|string|in:morning,evening',
+            'from' => 'required|date_format:H:i',
+            'to' => 'required|date_format:H:i'
+        ]);
+        $time = $this->hallService->updatetime($data, $id);
 
-public function showtime($id)
-{
-    $time = $this->hallService->showtime($id);
-    return response()->json($time);
-}
-public function add_pay(Request $request,$hall_id){
-    $data = $request->validate([
-        'type' => 'required|string|in:Electronic,Cash,Both',
+        return response()->json($time, 201);
+    }
 
-    ]);
-    $pay= $this->hallService->addpay($data,$hall_id);
-    return response()->json($pay, 201);
-}
+    public function showtime($id)
+    {
+        $time = $this->hallService->showtime($id);
+        return response()->json($time);
+    }
 
-public function updatpay(Request $request ,$id){
-    $data =$request->validate([
+    public function add_pay(Request $request, $hall_id)
+    {
+        $data = $request->validate([
+            'type' => 'required|string|in:Electronic,Cash,Both',
 
-        'type' => 'required|string|in:Electronic,Cash,Both', 
+        ]);
+        $pay = $this->hallService->addpay($data, $hall_id);
+        return response()->json($pay, 201);
+    }
 
-        'type' => 'required|string|in:e-pay,cash,both',
+    public function updatpay(Request $request, $id)
+    {
+        $data = $request->validate([
 
-    ]);
-    $time =$this->hallService->updatepay($data,$id);
+            'type' => 'required|string|in:Electronic,Cash,Both',
 
-    return response()->json($time,201);
-}
+        ]);
+        $time = $this->hallService->updatepay($data, $id);
+
+        return response()->json($time, 201);
+    }
+
+    public function showPayWay($hallId) {
+        $pay = $this->hallService->showPay($hallId);
+        return response()->json($pay);
+    }
 
 }
 

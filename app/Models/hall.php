@@ -64,4 +64,8 @@ class hall extends Model
     public function offer(){
         return $this->hasMany(Offer::class);
     }
+
+    public function paymentway() {
+        return $this->hasOne(Paymentway::class);
+    }
 }

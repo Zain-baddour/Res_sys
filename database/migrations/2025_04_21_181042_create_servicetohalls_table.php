@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('servicetohalls', function (Blueprint $table) {
             $table->id();
-            $table->enum('name', ['buffet','hospitality','performance','car','decoration','photographer','protection',
-            'promo','reader','condolence_photographer','condolence_hospitality']);
-            $table->integer('price');
-            $table->string('description');
-            $table->string('video_path');
             $table->foreignId('hall_id')->constrained('halls')->cascadeOnDelete('');
+            $table->enum('name', ['buffet_service','hospitality_services','performance_service','car_service','decoration_service','photographer_service','protection_service',
+            'promo_service','reader_service','condolence_photographer_service','condolence_hospitality_services']);
+            $table->decimal('service_price', 10, 2);
+            $table->text('description');
+            $table->boolean('is_fixed');
             $table->timestamps();
         });
     }
