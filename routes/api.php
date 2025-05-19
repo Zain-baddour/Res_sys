@@ -34,6 +34,7 @@ Route::get('/halls', [HallController::class, 'index']);  // Get all halls
 Route::get('/halls/{id}/reviews', [HallController::class, 'getHallReviews']);  //Get Hall Reviews
 Route::get('/halls/{id}', [HallController::class, 'show']);    // Get single hall
 Route::get('/halls/{id}/images', [HallController::class, 'getHallImagesC']);    // Get single hall images
+Route::get('showserv/{id}', [HallController::class, 'showservice']); // show a hall services
 
 Route::middleware(['auth:sanctum'])->prefix('halls')->group(function () {
     Route::post('/', [HallController::class, 'store']);      // Create a hall
@@ -71,7 +72,7 @@ Route::middleware(['auth:sanctum'])->prefix('assistant')->group(function () {
     Route::get('/chats', [AssistantController::class, 'getChat']); //get all chats
     Route::post('addserv/{id}', [HallController::class, 'add_service']); // add a service
     Route::post('updateservice/{id}', [HallController::class, 'updatservice']); // update a service
-    Route::get('showserv/{id}', [HallController::class, 'showservice']); // show a hall services
+
     Route::post('addpay/{id}', [HallController::class, 'add_pay']);
     Route::post('updatepay/{id}', [HallController::class, 'updatpay']);
     Route::get('/showpay/{id}', [HallController::class, 'showPayWay']);
