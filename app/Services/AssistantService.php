@@ -23,12 +23,19 @@ class AssistantService
         $assistantId = auth()->id();
 
         $hallId = hall_employee::where('user_id', $assistantId)->value('hall_id');
+        if(!$hallId) {
+            return response()->json(['message' => 'أنت غير مرتبط بقاعة'], 404);
+        }
 
         $customers = inquiry::where('hall_id', $hallId)
             ->distinct()
             ->pluck('user_id');
 
-        $customersDetails = User::where('id', $customers)->get();
+        if ($customers->isEmpty()) {
+            return response()->json(['message' => 'لا توجد رسائل حاليا'], 404);
+        }
+
+        $customersDetails = User::whereIn('id', $customers)->get();
 
         return $customersDetails ;
     }

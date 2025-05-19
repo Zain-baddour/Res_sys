@@ -6,6 +6,7 @@ use App\Models\hall;
 use App\Models\Hall_img;
 use App\Models\staff_requests;
 use App\Notifications\StaffRequestApprovedNotification;
+use App\Notifications\StaffRequestRejectedNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
@@ -64,10 +65,10 @@ class OwnerService
             $staffReq->user->notify(new StaffRequestApprovedNotification());
         }
         else{
-            $staffReq->user->notify(new StaffRequestApprovedNotification());
+            $staffReq->user->notify(new StaffRequestRejectedNotification());
         }
 
-        return $staffReq;
+        return $staffReq->status;
 
     }
 

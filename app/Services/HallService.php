@@ -385,6 +385,7 @@ class HallService
     {
         $data['hall_id'] = $hallId;
         $service = Servicetohall::create($data);
+        $service->save();
 
         if (isset($data['images'])) {
             foreach ($data['images'] as $image) {
@@ -401,6 +402,7 @@ class HallService
             $videoPath = $video->move(public_path(), $videoName);
             $service->video()->create(['video_path' => $videoName]);
         }
+
 
         return $service->load('images', 'video');
     }
