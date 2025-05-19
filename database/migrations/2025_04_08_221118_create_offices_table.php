@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('offices', function (Blueprint $table) {
             $table->id();
             $table->string('type_car');
-            $table->integer('rent_price');
             $table->integer('num_ofcar');
             $table->string('car_image')->nullable();
             
