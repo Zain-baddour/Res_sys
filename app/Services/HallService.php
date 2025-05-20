@@ -440,12 +440,41 @@ class HallService
 
     }
 
+//    public function showservice($hall_id)
+//    {
+//        $services = Servicetohall::where('hall_id', $hall_id)->with(['images', 'video'])->get();
+//        $message = "this is services to hall";
+//        return ['message' => $message, 'service' => $services];
+//
+//    }
     public function showservice($hall_id)
     {
-        $services = Servicetohall::where('hall_id', $hall_id)->with(['images', 'video'])->get();
-        $message = "this is services to hall";
-        return ['message' => $message, 'service' => $services];
+        $hall = Hall::findOrFail($hall_id);
 
+        $allServices = Servicetohall::where('hall_id', $hall_id)->with(['images', 'video'])->get();
+
+        // قائمة الخدمات حسب الاسم
+        $joys_names = ['buffet_service','hospitality_services','performance_service','car_service','decoration_service','photographer_service','protection_service',
+            'promo_service']; // عدّل حسب خدمات الأفراح
+        $sorrows_names = ['reader_service','condolence_photographer_service','condolence_hospitality_services']; // عدّل حسب خدمات العزاء
+
+        $response = ['message' => 'this is services to hall'];
+
+        if ($hall->type === 'joys') {
+            $response['joys_services'] = $allServices;
+        } elseif ($hall->type === 'sorrows') {
+            $response['condolences_services'] = $allServices;
+        } elseif ($hall->type === 'both') {
+            $response['joys_services'] = $allServices->filter(function ($service) use ($joys_names) {
+                return in_array($service->name, $joys_names);
+            })->values();
+
+            $response['condolences_services'] = $allServices->filter(function ($service) use ($sorrows_names) {
+                return in_array($service->name, $sorrows_names);
+            })->values();
+        }
+
+        return response()->json($response);
     }
 
     public function add_time(array $data, $hall_id)

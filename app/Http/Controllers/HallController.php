@@ -228,8 +228,7 @@ class HallController extends Controller
     public function add_service(Request $request, $hall_id)
     {
         $data = $request->validate([
-            'name' => 'required|string|in:buffet_service,hospitality_services,performance_service,car_service,decoration_service,
-            photographer_service,protection_service,promo_service,reader_service,condolence_photographer_service,condolence_hospitality_services',
+            'name' => 'required|string|in:buffet_service,hospitality_services,performance_service,car_service,decoration_service,photographer_service,protection_service,promo_service,reader_service,condolence_photographer_service,condolence_hospitality_services',
             'service_price' => 'required|numeric',
             'description' => 'required|string|max:255',
             'is_fixed' => 'required|boolean',
