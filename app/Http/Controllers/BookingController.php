@@ -68,6 +68,22 @@ class BookingController extends Controller
         return response()->json($book->load(['services','songs']));
     }
 
+    public function getHallBookings() {
+        $bookings = $this->bookingService->getHallBookings();
+        if (is_null($bookings)) {
+            return response()->json(['message' => 'this user is not an employee in any hall'], 404);
+        }
+        return response()->json($bookings);
+    }
+
+    public function getHallConfirmedBookings() {
+        $bookings = $this->bookingService->getHallConfirmedBookings();
+        if (is_null($bookings)) {
+            return response()->json(['message' => 'this user is not an employee in any hall'], 404);
+        }
+        return response()->json($bookings);
+    }
+
     public function confirm($bookingId)
     {
         return response()->json($this->bookingService->confirmBooking($bookingId));

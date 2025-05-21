@@ -72,6 +72,8 @@ Route::middleware(['auth:sanctum'])->prefix('assistant')->group(function () {
     Route::get('/chats', [AssistantController::class, 'getChat']); //get all chats
     Route::post('addserv/{id}', [HallController::class, 'add_service']); // add a service
     Route::post('updateservice/{id}', [HallController::class, 'updatservice']); // update a service
+    Route::get('/hallBookings', [BookingController::class, 'getHallBookings']);// get all bookings to the assistant hall
+    Route::get('/hallConfirmedBookings', [BookingController::class, 'getHallConfirmedBookings']);// get all Confirmed bookings to the assistant hall
 
     Route::post('addpay/{id}', [HallController::class, 'add_pay']);
     Route::post('updatepay/{id}', [HallController::class, 'updatpay']);
