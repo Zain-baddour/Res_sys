@@ -72,4 +72,9 @@ class hall extends Model
     public function bookings() {
         return $this->hasMany(Booking::class);
     }
+
+    public function video() {
+        return $this->hasMany(HallVideo::class, 'hall_id');
+    }
+
 }

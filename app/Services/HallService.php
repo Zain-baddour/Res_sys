@@ -26,7 +26,7 @@ class HallService
     public function getAll()
     {
         try {
-            return hall::with('images')
+            return hall::with(['images','video'])
                 ->withAvg('reviews', 'rating')
                 ->where('status', 'approved')
                 ->get();
@@ -279,40 +279,33 @@ class HallService
     public function add_detail(array $data, $hall_id)
     {
         if (Auth::user()->hasRole('assistant')) {
-            $exist = hall::where('id', $hall_id)->exists();
-            if ($exist) {
-                $detail = DetailsHall::create([
-                    'type_hall' => $data['type_hall'],
-                    'card_price' => $data['card_price'],
-                    'res_price' => $data['res_price'],
-                    'num_person' => $data['num_person'],
+            $hall = Hall::findOrFail($hall_id);
+            if ($hall) {
+                $hall->update([
                     'location' => $data['location'],
-                    'number' => $data['number'],
-                    'hall_id' => $hall_id
+                    'capacity' => $data['capacity'],
+                    'contact' => $data['contact'],
+                    'type' => $data['type'],
+
                 ]);
                 if (isset($data['images'])) {
                     foreach ($data['images'] as $image) {
-                        $path = uniqid() . '_images_.' . $image->getClientOriginalExtension();
-                        $image->store('detail_image', 'public');;
-                        Detail_img::create([
-                            'detail_id' => $detail->id,
-                            'image_path' => $path,
-                        ]);
+                        $imageName = uniqid() . '_hall_images_.' . $image->getClientOriginalExtension();
+                        $path = $image->move(public_path(), $imageName);
+                        $hall->images()->create(['image_path' => $imageName]);
+
                     }
                 }
                 if (isset($data['video'])) {
-                    $video = $data['video'];
-                    $videoPath = uniqid() . '_video_.' . $video->getClientOriginalExtension();
-
-                    // قم بإجراء التحقق من الفيديو هنا
-                    if ($video->isValid()) {
-                        $video->storeAs('detail_videos', $videoPath, 'public');
-                        $detail->video_path = $videoPath;
+                    foreach ($data['video'] as $video) {
+                        $videoName = uniqid() . '_hall_video_.' . $video->getClientOriginalExtension();
+                        $path = $video->move(public_path(), $videoName);
+                        $hall->video()->create(['video_path' => $videoName]);
 
                     }
                 }
-                $detail->save();
-                return $detail;
+                $hall->save();
+                return $hall->load(['images','video']);
             } else {
                 $message = "The hall does not exist.";
                 return $message;
@@ -335,50 +328,6 @@ class HallService
             return $det;
       }
 
-    }
-    public function updatedetail(array $data, $id)
-
-    {
-
-        $detail = DetailsHall::findOrFail($id);
-        // $hall_id= DetailsHall::select('details_halls.hall_id') ->where('details_halls.id', $id)->get();
-        if ($detail) {
-            $detail->update([
-                'card_price' => $data['card_price'],
-                'type_hall' => $data['type_hall'],
-                'res_price' => $data['res_price'],
-                'num_person' => $data['num_person'],
-                'location' => $data['location'],
-                'number' => $data['number'],
-            ]);
-            if (isset($data['images'])) {
-                foreach ($data['images'] as $image) {
-                    $path = uniqid() . '_images_.' . $image->getClientOriginalExtension();
-                    $image->store('detail_image', 'public');
-                    Detail_img::create([
-                        'detail_id' => $detail->id,
-                        'image_path' => $path,
-                    ]);
-                }
-            }
-            if (isset($data['video'])) {
-                $video = $data['video'];
-                $videoPath = uniqid() . '_video_.' . $video->getClientOriginalExtension();
-
-                // قم بإجراء التحقق من الفيديو هنا
-                if ($video->isValid()) {
-                    $video->storeAs('detail_videos', $videoPath, 'public');
-                    $detail->video_path = $videoPath;
-
-                }
-            }
-            $detail->save();
-            return $detail;
-        } else {
-            $message = "The detail  not found.";
-            return $message;
-
-        }
     }
 
     public function add_service($data, $hallId)

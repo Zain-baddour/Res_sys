@@ -184,14 +184,12 @@ class HallController extends Controller
     public function add_detail(Request $request, $hall_id)
     {
         $data = $request->validate([
-            'type_hall' => 'required|string|in:wedding,sorrow,both',
-            'card_price' => 'required|json',
-            'res_price' => 'required|integer|between:100,1000',
-            'location' => 'required|string|max:255',
-            'number' => 'required|string|max:255',
-            'num_person' => 'required|integer|min:1',
+            'location' => 'nullable|string|max:255',
+            'capacity' => 'nullable|integer|min:1',
+            'contact' => 'nullable|string|max:255',
+            'type' => 'nullable|string|in:joys,sorrows,both',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'video' => 'file|mimes:mp4,avi,mpg,mov,wmv|max:20480',
+            'video.*' => 'nullable|mimetypes:video/mp4,video/avi,video/mpg,video/mov,video/wmv|max:20480',
         ]);
 
         $detail = $this->hallService->add_detail($data, $hall_id);
@@ -199,31 +197,6 @@ class HallController extends Controller
     }
 
 
-    public function showdetail($id)
-    {
-
-        $detail = $this->hallService->showdetail($id);
-        return response()->json($detail);
-    }
-
-    public function updatdet(Request $request, $id)
-    {
-        $data = $request->validate([
-            'type_hall' => 'required|in:wedding,sorrow both',
-            'card_price' => 'required|json',
-            'res_price' => '|integer|between:100,1000',
-            'location' => 'required|string|max:255',
-            'number' => 'required|string|max:255',
-            'num_person' => 'required|integer|min:1',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'video' => 'file|mimes:mp4,avi,mpg,mov,wmv|max:20480',
-
-        ]);
-        $detail = $this->hallService->updatedetail($data, $id);
-
-        return response()->json($detail, 201);
-
-    }
 
     public function add_service(Request $request, $hall_id)
     {

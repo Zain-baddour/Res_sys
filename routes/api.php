@@ -74,6 +74,7 @@ Route::middleware(['auth:sanctum'])->prefix('assistant')->group(function () {
     Route::post('updateservice/{id}', [HallController::class, 'updatservice']); // update a service
     Route::get('/hallBookings', [BookingController::class, 'getHallBookings']);// get all bookings to the assistant hall
     Route::get('/hallConfirmedBookings', [BookingController::class, 'getHallConfirmedBookings']);// get all Confirmed bookings to the assistant hall
+    Route::post('updateDetail/{id}', [HallController::class, 'add_detail']); // update hall details
 
     Route::post('addpay/{id}', [HallController::class, 'add_pay']);
     Route::post('updatepay/{id}', [HallController::class, 'updatpay']);
