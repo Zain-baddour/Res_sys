@@ -7,6 +7,8 @@ use App\Models\hall;
 use App\Models\hall_employee;
 use App\Models\Hall_img;
 use App\Models\Detail_img;
+use App\Models\hallEventImages;
+use App\Models\hallEventVideos;
 use App\Models\Image_hal;
 use App\Models\inquiry;
 use App\Models\Loungetiming;
@@ -180,6 +182,13 @@ class HallService
         return $employee->delete();
     }
 
+    public function getEventImages($hallId) {
+        return hallEventImages::where('hall_id', $hallId)->get();
+    }
+
+    public function getEventVideos($hallId) {
+        return hallEventVideos::where('hall_id', $hallId)->get();
+    }
 
     //**************************************************
     // ZainHassan *************

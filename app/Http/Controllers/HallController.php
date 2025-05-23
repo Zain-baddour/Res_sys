@@ -120,6 +120,13 @@ class HallController extends Controller
         return response()->json(['message' => 'حدث خطأ اثناء عملية الحذف']);
     }
 
+    public function getEventImages ($hallId) {
+        return response()->json($this->hallService->getEventImages($hallId));
+    }
+
+    public function getEventVideos ($hallId) {
+        return response()->json($this->hallService->getEventVideos($hallId));
+    }
 
 
     //***********************************

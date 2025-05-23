@@ -35,6 +35,8 @@ Route::get('/halls/{id}/reviews', [HallController::class, 'getHallReviews']);  /
 Route::get('/halls/{id}', [HallController::class, 'show']);    // Get single hall
 Route::get('/halls/{id}/images', [HallController::class, 'getHallImagesC']);    // Get single hall images
 Route::get('showserv/{id}', [HallController::class, 'showservice']); // show a hall services
+Route::get('/halls/eventImages/{id}', [HallController::class, 'getEventImages']); // show event images
+Route::get('/halls/eventVideos/{id}', [HallController::class, 'getEventVideos']); // show event videos
 
 Route::middleware(['auth:sanctum'])->prefix('halls')->group(function () {
     Route::post('/', [HallController::class, 'store']);      // Create a hall
@@ -74,7 +76,9 @@ Route::middleware(['auth:sanctum'])->prefix('assistant')->group(function () {
     Route::post('updateservice/{id}', [HallController::class, 'updatservice']); // update a service
     Route::get('/hallBookings', [BookingController::class, 'getHallBookings']);// get all bookings to the assistant hall
     Route::get('/hallConfirmedBookings', [BookingController::class, 'getHallConfirmedBookings']);// get all Confirmed bookings to the assistant hall
-    Route::post('updateDetail/{id}', [HallController::class, 'add_detail']); // update hall details
+    Route::post('/updateDetail/{id}', [HallController::class, 'add_detail']); // update hall details
+    Route::post('/uploadImages', [AssistantController::class , 'uploadEventImages']);// upload images
+    Route::post('/uploadVideos', [AssistantController::class , 'uploadEventVideos']);// upload videos
 
     Route::post('addpay/{id}', [HallController::class, 'add_pay']);
     Route::post('updatepay/{id}', [HallController::class, 'updatpay']);

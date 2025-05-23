@@ -77,4 +77,11 @@ class hall extends Model
         return $this->hasMany(HallVideo::class, 'hall_id');
     }
 
+    public function eventVideos() {
+        return $this->hasMany(hallEventVideos::class, 'hall_id');
+    }
+
+    public function eventImages() {
+        return $this->hasMany(hallEventImages::class, 'hall_id');
+    }
 }
