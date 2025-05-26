@@ -210,7 +210,8 @@ class HallController extends Controller
         $data = $request->validate([
             'name' => 'required|string|in:buffet_service,hospitality_services,performance_service,car_service,decoration_service,photographer_service,protection_service,promo_service,reader_service,condolence_photographer_service,condolence_hospitality_services',
             'service_price' => 'required|numeric',
-            'description' => 'required|string|max:255',
+            'description' => 'required|array',
+            'description.*' => 'string',
             'is_fixed' => 'required|boolean',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'video' => 'nullable|mimetypes:video/mp4,video/avi,video/mpg,video/mov,video/wmv|max:20480',

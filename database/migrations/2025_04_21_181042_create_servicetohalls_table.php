@@ -17,7 +17,7 @@ return new class extends Migration
             $table->enum('name', ['buffet_service','hospitality_services','performance_service','car_service','decoration_service','photographer_service','protection_service',
             'promo_service','reader_service','condolence_photographer_service','condolence_hospitality_services']);
             $table->decimal('service_price', 10, 2);
-            $table->text('description');
+            $table->json('description');
             $table->boolean('is_fixed');
             $table->timestamps();
         });

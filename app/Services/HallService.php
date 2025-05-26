@@ -342,7 +342,14 @@ class HallService
     public function add_service($data, $hallId)
     {
         $data['hall_id'] = $hallId;
-        $service = Servicetohall::create($data);
+
+        $service = Servicetohall::create([
+            'hall_id' => $data['hall_id'],
+            'name' => $data['name'],
+            'service_price' => $data['service_price'],
+            'description' => $data['description'],
+            'is_fixed' => $data['is_fixed'],
+        ]);
         $service->save();
 
         if (isset($data['images'])) {

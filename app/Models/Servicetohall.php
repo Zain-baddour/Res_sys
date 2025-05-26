@@ -17,6 +17,10 @@ class Servicetohall extends Model
     'is_fixed',
 ];
 
+    protected $casts = [
+        'description' => 'array',
+    ];
+
     public function hall() {
         return $this->belongsTo(hall::class);
     }
