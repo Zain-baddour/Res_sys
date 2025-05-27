@@ -37,6 +37,8 @@ Route::get('/halls/{id}/images', [HallController::class, 'getHallImagesC']);    
 Route::get('showserv/{id}', [HallController::class, 'showservice']); // show a hall services
 Route::get('/halls/eventImages/{id}', [HallController::class, 'getEventImages']); // show event images
 Route::get('/halls/eventVideos/{id}', [HallController::class, 'getEventVideos']); // show event videos
+Route::get('polices/{id}', [HallController::class, 'showpolices']);// show hall policies
+
 
 Route::middleware(['auth:sanctum'])->prefix('halls')->group(function () {
     Route::post('/', [HallController::class, 'store']);      // Create a hall
@@ -79,6 +81,10 @@ Route::middleware(['auth:sanctum'])->prefix('assistant')->group(function () {
     Route::post('/updateDetail/{id}', [HallController::class, 'add_detail']); // update hall details
     Route::post('/uploadImages', [AssistantController::class , 'uploadEventImages']);// upload images
     Route::post('/uploadVideos', [AssistantController::class , 'uploadEventVideos']);// upload videos
+    Route::post('addpolices/{id}', [HallController::class, 'addpolices']); //add hall policies
+    Route::post('updatepolic/{id}', [HallController::class, 'updatepolices']); //update hall policies
+
+
 
     Route::post('addpay/{id}', [HallController::class, 'add_pay']);
     Route::post('updatepay/{id}', [HallController::class, 'updatpay']);
@@ -126,12 +132,9 @@ Route::middleware(['auth:sanctum'])->prefix('Booking')->group(function () {
 //*********************
 //ZainHassan ********
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::post('addpolices/{id}', [HallController::class, 'addpolices']);
     Route::post('addoffer/{id}', [HallController::class, 'addoffer']);
     Route::post('updateoffer/{id}', [HallController::class, 'updateoffer']);
     Route::get('offer/{id}', [HallController::class, 'showoffer']);
-    Route::post('updatepolic/{id}', [HallController::class, 'updatepolices']);
-    Route::get('polices/{id}', [HallController::class, 'showpolices']);
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {

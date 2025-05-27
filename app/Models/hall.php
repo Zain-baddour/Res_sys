@@ -84,4 +84,8 @@ class hall extends Model
     public function eventImages() {
         return $this->hasMany(hallEventImages::class, 'hall_id');
     }
+
+    public function policies() {
+        return $this->hasMany(Policies::class,'hall_id');
+    }
 }
