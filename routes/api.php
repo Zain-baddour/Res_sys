@@ -11,6 +11,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\OfficeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\StripeController;
 
 //***** Auth API's *****
 
@@ -128,6 +129,10 @@ Route::middleware(['auth:sanctum'])->prefix('Booking')->group(function () {
 
 
 });
+
+// ***** Stripe APIs *****
+Route::post('/stripe/payment-intent', [StripeController::class, 'createPaymentIntent']);
+
 
 //*********************
 //ZainHassan ********
