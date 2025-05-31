@@ -53,6 +53,29 @@ class AdminController extends Controller
         return response()->json($settings);
     }
 
+    public function updateOfficeSettings(Request $request)
+    {
+        $request->validate([
+            'subscription_duration_days' => 'required|integer|min:0',
+            'subscription_value' => 'required|numeric|min:0',
+            'currency' => 'required|string',
+        ]);
+
+        $this->adminService->updateOfficeSettings($request->only([
+            'subscription_duration_days',
+            'subscription_value',
+            'currency'
+        ]));
+
+        return response()->json(['message' => 'تم التحديث بنجاح']);
+    }
+
+    public function showOfficeSettings()
+    {
+        $settings = $this->adminService->getOfficeSettings();
+        return response()->json($settings);
+    }
+
     public function getAllUsers() {
         return response()->json($this->adminService->getAllUsers());
     }

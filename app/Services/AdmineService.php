@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\AppSetting;
+use App\Models\AppSettingO;
 use App\Models\hall;
 use App\Models\Hall_img;
 use App\Models\User;
@@ -55,6 +56,21 @@ class AdmineService
 
     public function getSettings () {
         return AppSetting::first();
+    }
+
+    public function updateOfficeSettings(array $data) {
+        $settings = AppSettingO::first();
+        if (!$settings) {
+            $settings = AppSettingO::create($data);
+        }
+        else {
+            $settings->update($data);
+        }
+        return $settings;
+    }
+
+    public function getOfficeSettings () {
+        return AppSettingO::first();
     }
 
     public function getAllUsers() {
