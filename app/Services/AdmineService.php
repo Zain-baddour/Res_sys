@@ -77,4 +77,8 @@ class AdmineService
         return User::all();
     }
 
+    public function getUserById($id) {
+        return User::where('id', $id)->get();
+    }
+
 }

@@ -80,4 +80,8 @@ class AdminController extends Controller
         return response()->json($this->adminService->getAllUsers());
     }
 
+    public function getUserById($id) {
+        return response()->json($this->adminService->getUserById($id));
+    }
+
 }

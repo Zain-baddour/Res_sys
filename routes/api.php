@@ -60,7 +60,9 @@ Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
     Route::put('/settings/office/update', [AdminController::class, 'updateOfficeSettings']); //update the settings for office
     Route::get('/pending', [AdminController::class, 'getPendingHalls']);    // get pending halls
     Route::post('/status/{id}', [AdminController::class, 'updateHallStatus']);    // update status from pending to approved or rejected
-    Route::get('/allUsers', [AdminController::class, 'getAllUsers']);
+    Route::get('/allUsers', [AdminController::class, 'getAllUsers']); // get all users
+    Route::get('/User/{id}', [AdminController::class, 'getUserById']); // get a user by id
+
 });
 
 
