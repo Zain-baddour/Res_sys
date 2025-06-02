@@ -41,7 +41,7 @@ Route::get('/halls/eventVideos/{id}', [HallController::class, 'getEventVideos'])
 Route::get('polices/{id}', [HallController::class, 'showpolices']);// show hall policies
 
 
-Route::middleware(['auth:sanctum'])->prefix('halls')->group(function () {
+Route::middleware(['auth:sanctum','blocked'])->prefix('halls')->group(function () {
     Route::post('/', [HallController::class, 'store']);      // Create a hall
     Route::put('/{id}', [HallController::class, 'update']);  // Update a hall
     Route::delete('/{id}', [HallController::class, 'destroy']); // Delete a hall
@@ -62,19 +62,23 @@ Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
     Route::post('/status/{id}', [AdminController::class, 'updateHallStatus']);    // update status from pending to approved or rejected
     Route::get('/allUsers', [AdminController::class, 'getAllUsers']); // get all users
     Route::get('/User/{id}', [AdminController::class, 'getUserById']); // get a user by id
+    Route::delete('delete/{id}', [AdminController::class, 'deleteUser']); //delete a user
+    Route::post('{id}/block', [AdminController::class, 'blockUser']); //block a user
+    Route::post('{id}/unblock', [AdminController::class, 'unblockUser']); //unblock a user
+    Route::get('blocked', [AdminController::class, 'blockedUsers']); // show blocked users
 
 });
 
 
 // ***** Owner APIs *****
-Route::middleware(['auth:sanctum'])->prefix('owner')->group(function () {
+Route::middleware(['auth:sanctum','blocked'])->prefix('owner')->group(function () {
     Route::get('/myhall', [OwnerController::class, 'showMyHall']);    // get the owner hall
     Route::get('/getStaffReqs', [OwnerController::class, 'getStaffReqs']);  //get staff requests
     Route::post('/staffReqs/{id}', [OwnerController::class, 'updateStaffReqStatus']); //approve or reject an assistant
 });
 
 // ***** Assistant APIs *****
-Route::middleware(['auth:sanctum'])->prefix('assistant')->group(function () {
+Route::middleware(['auth:sanctum','blocked'])->prefix('assistant')->group(function () {
     Route::post('/inquiry/response', [AssistantController::class, 'responseToInquiry']); //response to an inquiry
     Route::get('/myInquiries/{hall_id?}/{userId}', [ClientController::class, 'myInquiries']);
     Route::post('/requestStaff/{id}', [AssistantController::class, 'requestStaff']); //request to get hired at a hall
@@ -100,7 +104,7 @@ Route::middleware(['auth:sanctum'])->prefix('assistant')->group(function () {
 });
 
 // ***** Client APIs *****
-Route::middleware(['auth:sanctum'])->prefix('Client')->group(function () {
+Route::middleware(['auth:sanctum','blocked'])->prefix('Client')->group(function () {
     Route::post('/inquiry', [ClientController::class, 'store']); //send an inquiry
     Route::get('/myInquiries/{hall_id}', [ClientController::class, 'myInquiries']); //get client inquiries
     Route::post('/reviews', [ClientController::class, 'storeReview']); //review and comment on a hall
@@ -108,7 +112,7 @@ Route::middleware(['auth:sanctum'])->prefix('Client')->group(function () {
 });
 
 // ***** Booking APIs *****
-Route::middleware(['auth:sanctum'])->prefix('Booking')->group(function () {
+Route::middleware(['auth:sanctum','blocked'])->prefix('Booking')->group(function () {
 
     // حجز صالة
     Route::post('/bookings', [BookingController::class, 'create']);

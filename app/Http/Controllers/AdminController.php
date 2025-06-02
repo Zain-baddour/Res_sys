@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Services\AdmineService;
 
@@ -84,4 +85,28 @@ class AdminController extends Controller
         return response()->json($this->adminService->getUserById($id));
     }
 
+
+    public function deleteUser($id)
+    {
+        $this->adminService->deleteUser($id);
+        return response()->json(['message' => 'User deleted successfully']);
+    }
+
+    public function blockUser($id)
+    {
+        $this->adminService->blockUser($id);
+        return response()->json(['message' => 'User blocked successfully']);
+    }
+
+    public function unblockUser($id)
+    {
+        $this->adminService->unblockUser($id);
+        return response()->json(['message' => 'User unblocked successfully']);
+    }
+
+    public function blockedUsers()
+    {
+        $blockedUsers = $this->adminService->getBlockedUsers();
+        return response()->json($blockedUsers);
+    }
 }
