@@ -11,4 +11,6 @@ class AppSetting extends Model
         'subscription_duration_days',
         'currency',
     ];
+
+
 }
