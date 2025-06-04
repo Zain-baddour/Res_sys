@@ -7,6 +7,8 @@ use App\Models\hall;
 use App\Models\hall_employee;
 use App\Models\Hall_img;
 use App\Models\Detail_img;
+use App\Models\hallEventImages;
+use App\Models\hallEventVideos;
 use App\Models\Image_hal;
 use App\Models\inquiry;
 use App\Models\Loungetiming;
@@ -26,7 +28,7 @@ class HallService
     public function getAll()
     {
         try {
-            return hall::with('images')
+            return hall::with(['images','video'])
                 ->withAvg('reviews', 'rating')
                 ->where('status', 'approved')
                 ->get();
@@ -180,6 +182,13 @@ class HallService
         return $employee->delete();
     }
 
+    public function getEventImages($hallId) {
+        return hallEventImages::where('hall_id', $hallId)->get();
+    }
+
+    public function getEventVideos($hallId) {
+        return hallEventVideos::where('hall_id', $hallId)->get();
+    }
 
     //**************************************************
     // ZainHassan *************
@@ -279,40 +288,33 @@ class HallService
     public function add_detail(array $data, $hall_id)
     {
         if (Auth::user()->hasRole('assistant')) {
-            $exist = hall::where('id', $hall_id)->exists();
-            if ($exist) {
-                $detail = DetailsHall::create([
-                    'type_hall' => $data['type_hall'],
-                    'card_price' => $data['card_price'],
-                    'res_price' => $data['res_price'],
-                    'num_person' => $data['num_person'],
+            $hall = Hall::findOrFail($hall_id);
+            if ($hall) {
+                $hall->update([
                     'location' => $data['location'],
-                    'number' => $data['number'],
-                    'hall_id' => $hall_id
+                    'capacity' => $data['capacity'],
+                    'contact' => $data['contact'],
+                    'type' => $data['type'],
+
                 ]);
                 if (isset($data['images'])) {
                     foreach ($data['images'] as $image) {
-                        $path = uniqid() . '_images_.' . $image->getClientOriginalExtension();
-                        $image->store('detail_image', 'public');;
-                        Detail_img::create([
-                            'detail_id' => $detail->id,
-                            'image_path' => $path,
-                        ]);
+                        $imageName = uniqid() . '_hall_images_.' . $image->getClientOriginalExtension();
+                        $path = $image->move(public_path(), $imageName);
+                        $hall->images()->create(['image_path' => $imageName]);
+
                     }
                 }
                 if (isset($data['video'])) {
-                    $video = $data['video'];
-                    $videoPath = uniqid() . '_video_.' . $video->getClientOriginalExtension();
-
-                    // قم بإجراء التحقق من الفيديو هنا
-                    if ($video->isValid()) {
-                        $video->storeAs('detail_videos', $videoPath, 'public');
-                        $detail->video_path = $videoPath;
+                    foreach ($data['video'] as $video) {
+                        $videoName = uniqid() . '_hall_video_.' . $video->getClientOriginalExtension();
+                        $path = $video->move(public_path(), $videoName);
+                        $hall->video()->create(['video_path' => $videoName]);
 
                     }
                 }
-                $detail->save();
-                return $detail;
+                $hall->save();
+                return $hall->load(['images','video']);
             } else {
                 $message = "The hall does not exist.";
                 return $message;
@@ -336,55 +338,18 @@ class HallService
       }
 
     }
-    public function updatedetail(array $data, $id)
-
-    {
-
-        $detail = DetailsHall::findOrFail($id);
-        // $hall_id= DetailsHall::select('details_halls.hall_id') ->where('details_halls.id', $id)->get();
-        if ($detail) {
-            $detail->update([
-                'card_price' => $data['card_price'],
-                'type_hall' => $data['type_hall'],
-                'res_price' => $data['res_price'],
-                'num_person' => $data['num_person'],
-                'location' => $data['location'],
-                'number' => $data['number'],
-            ]);
-            if (isset($data['images'])) {
-                foreach ($data['images'] as $image) {
-                    $path = uniqid() . '_images_.' . $image->getClientOriginalExtension();
-                    $image->store('detail_image', 'public');
-                    Detail_img::create([
-                        'detail_id' => $detail->id,
-                        'image_path' => $path,
-                    ]);
-                }
-            }
-            if (isset($data['video'])) {
-                $video = $data['video'];
-                $videoPath = uniqid() . '_video_.' . $video->getClientOriginalExtension();
-
-                // قم بإجراء التحقق من الفيديو هنا
-                if ($video->isValid()) {
-                    $video->storeAs('detail_videos', $videoPath, 'public');
-                    $detail->video_path = $videoPath;
-
-                }
-            }
-            $detail->save();
-            return $detail;
-        } else {
-            $message = "The detail  not found.";
-            return $message;
-
-        }
-    }
 
     public function add_service($data, $hallId)
     {
         $data['hall_id'] = $hallId;
-        $service = Servicetohall::create($data);
+
+        $service = Servicetohall::create([
+            'hall_id' => $data['hall_id'],
+            'name' => $data['name'],
+            'service_price' => $data['service_price'],
+            'description' => $data['description'],
+            'is_fixed' => $data['is_fixed'],
+        ]);
         $service->save();
 
         if (isset($data['images'])) {
@@ -440,12 +405,41 @@ class HallService
 
     }
 
+//    public function showservice($hall_id)
+//    {
+//        $services = Servicetohall::where('hall_id', $hall_id)->with(['images', 'video'])->get();
+//        $message = "this is services to hall";
+//        return ['message' => $message, 'service' => $services];
+//
+//    }
     public function showservice($hall_id)
     {
-        $services = Servicetohall::where('hall_id', $hall_id)->with(['images', 'video'])->get();
-        $message = "this is services to hall";
-        return ['message' => $message, 'service' => $services];
+        $hall = Hall::findOrFail($hall_id);
 
+        $allServices = Servicetohall::where('hall_id', $hall_id)->with(['images', 'video'])->get();
+
+        // قائمة الخدمات حسب الاسم
+        $joys_names = ['buffet_service','hospitality_services','performance_service','car_service','decoration_service','photographer_service','protection_service',
+            'promo_service']; // عدّل حسب خدمات الأفراح
+        $sorrows_names = ['reader_service','condolence_photographer_service','condolence_hospitality_services']; // عدّل حسب خدمات العزاء
+
+        $response = ['message' => 'this is services to hall'];
+
+        if ($hall->type === 'joys') {
+            $response['joys_services'] = $allServices;
+        } elseif ($hall->type === 'sorrows') {
+            $response['condolences_services'] = $allServices;
+        } elseif ($hall->type === 'both') {
+            $response['joys_services'] = $allServices->filter(function ($service) use ($joys_names) {
+                return in_array($service->name, $joys_names);
+            })->values();
+
+            $response['condolences_services'] = $allServices->filter(function ($service) use ($sorrows_names) {
+                return in_array($service->name, $sorrows_names);
+            })->values();
+        }
+
+        return response()->json($response);
     }
 
     public function add_time(array $data, $hall_id)

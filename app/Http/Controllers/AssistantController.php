@@ -36,4 +36,24 @@ class AssistantController extends Controller
         return response()->json($response, 201);
     }
 
+    public function uploadEventImages(Request $request) {
+        $data = $request->validate([
+            'event_type' => 'nullable|string|in:joys,sorrows',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $response = $this->assistantService->uploadEventImages($data);
+        return response()->json($response , 200);
+    }
+
+    public function uploadEventVideos(Request $request) {
+        $data = $request->validate([
+            'event_type' => 'nullable|string|in:joys,sorrows',
+            'video.*' => 'nullable|mimetypes:video/mp4,video/avi,video/mpg,video/mov,video/wmv|max:20480',
+        ]);
+
+        $response = $this->assistantService->uploadEventVideos($data);
+        return response()->json($response , 200);
+    }
+
 }

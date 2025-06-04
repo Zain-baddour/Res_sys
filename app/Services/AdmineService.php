@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\AppSetting;
+use App\Models\AppSettingO;
 use App\Models\hall;
 use App\Models\Hall_img;
 use App\Models\User;
@@ -57,8 +58,52 @@ class AdmineService
         return AppSetting::first();
     }
 
+    public function updateOfficeSettings(array $data) {
+        $settings = AppSettingO::first();
+        if (!$settings) {
+            $settings = AppSettingO::create($data);
+        }
+        else {
+            $settings->update($data);
+        }
+        return $settings;
+    }
+
+    public function getOfficeSettings () {
+        return AppSettingO::first();
+    }
+
     public function getAllUsers() {
         return User::all();
+    }
+
+    public function getUserById($id) {
+        return User::where('id', $id)->get();
+    }
+
+    public function deleteUser($id)
+    {
+        $user = User::findOrFail($id);
+        $user->delete();
+    }
+
+    public function blockUser($id)
+    {
+        $user = User::findOrFail($id);
+        $user->is_blocked = true;
+        $user->save();
+    }
+
+    public function unblockUser($id)
+    {
+        $user = User::findOrFail($id);
+        $user->is_blocked = false;
+        $user->save();
+    }
+
+    public function getBlockedUsers()
+    {
+        return \App\Models\User::where('is_blocked', true)->get();
     }
 
 }

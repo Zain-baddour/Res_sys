@@ -68,4 +68,24 @@ class hall extends Model
     public function paymentway() {
         return $this->hasOne(Paymentway::class);
     }
+
+    public function bookings() {
+        return $this->hasMany(Booking::class);
+    }
+
+    public function video() {
+        return $this->hasMany(HallVideo::class, 'hall_id');
+    }
+
+    public function eventVideos() {
+        return $this->hasMany(hallEventVideos::class, 'hall_id');
+    }
+
+    public function eventImages() {
+        return $this->hasMany(hallEventImages::class, 'hall_id');
+    }
+
+    public function policies() {
+        return $this->hasMany(Policies::class,'hall_id');
+    }
 }

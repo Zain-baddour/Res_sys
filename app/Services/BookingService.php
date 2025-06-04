@@ -114,6 +114,33 @@ class BookingService
         });
     }
 
+    public function getHallBookings() {
+        $user = Auth::user();
+
+        $hallId = $user->hallsAsEmployee()->first()?->id;
+        if (!$hallId){
+            return null;
+        }
+
+        return Booking::where('hall_id', $hallId)
+            ->with(['services' , 'songs'])
+            ->get();
+    }
+
+    public function getHallConfirmedBookings() {
+        $user = Auth::user();
+
+        $hallId = $user->hallsAsEmployee()->first()?->id;
+        if (!$hallId){
+            return null;
+        }
+
+        return Booking::where('hall_id', $hallId)
+            ->where('status', 'confirmed')
+            ->with(['services' , 'songs'])
+            ->get();
+    }
+
     protected function storeServices($booking, $data)
     {
         $services = [];

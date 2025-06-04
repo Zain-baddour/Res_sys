@@ -11,6 +11,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\OfficeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\StripeController;
 
 //***** Auth API's *****
 
@@ -35,8 +36,12 @@ Route::get('/halls/{id}/reviews', [HallController::class, 'getHallReviews']);  /
 Route::get('/halls/{id}', [HallController::class, 'show']);    // Get single hall
 Route::get('/halls/{id}/images', [HallController::class, 'getHallImagesC']);    // Get single hall images
 Route::get('showserv/{id}', [HallController::class, 'showservice']); // show a hall services
+Route::get('/halls/eventImages/{id}', [HallController::class, 'getEventImages']); // show event images
+Route::get('/halls/eventVideos/{id}', [HallController::class, 'getEventVideos']); // show event videos
+Route::get('polices/{id}', [HallController::class, 'showpolices']);// show hall policies
 
-Route::middleware(['auth:sanctum'])->prefix('halls')->group(function () {
+
+Route::middleware(['auth:sanctum','blocked'])->prefix('halls')->group(function () {
     Route::post('/', [HallController::class, 'store']);      // Create a hall
     Route::put('/{id}', [HallController::class, 'update']);  // Update a hall
     Route::delete('/{id}', [HallController::class, 'destroy']); // Delete a hall
@@ -49,29 +54,46 @@ Route::middleware(['auth:sanctum'])->prefix('halls')->group(function () {
 // ***** Admin APIs *****
 
 Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
-    Route::get('/settings', [AdminController::class, 'showSettings']); //show the app settings (free trial , subscription price)
-    Route::put('/settings/update', [AdminController::class, 'updateSettings']); //update the settings (free trial , subscription price)
+    Route::get('/settings', [AdminController::class, 'showSettings']); //show the app settings
+    Route::put('/settings/update', [AdminController::class, 'updateSettings']); //update the settings
+    Route::get('/settings/office', [AdminController::class, 'showOfficeSettings']); //show the app settings for office
+    Route::put('/settings/office/update', [AdminController::class, 'updateOfficeSettings']); //update the settings for office
     Route::get('/pending', [AdminController::class, 'getPendingHalls']);    // get pending halls
     Route::post('/status/{id}', [AdminController::class, 'updateHallStatus']);    // update status from pending to approved or rejected
-    Route::get('/allUsers', [AdminController::class, 'getAllUsers']);
+    Route::get('/allUsers', [AdminController::class, 'getAllUsers']); // get all users
+    Route::get('/User/{id}', [AdminController::class, 'getUserById']); // get a user by id
+    Route::delete('delete/{id}', [AdminController::class, 'deleteUser']); //delete a user
+    Route::post('{id}/block', [AdminController::class, 'blockUser']); //block a user
+    Route::post('{id}/unblock', [AdminController::class, 'unblockUser']); //unblock a user
+    Route::get('blocked', [AdminController::class, 'blockedUsers']); // show blocked users
+
 });
 
 
 // ***** Owner APIs *****
-Route::middleware(['auth:sanctum'])->prefix('owner')->group(function () {
+Route::middleware(['auth:sanctum','blocked'])->prefix('owner')->group(function () {
     Route::get('/myhall', [OwnerController::class, 'showMyHall']);    // get the owner hall
     Route::get('/getStaffReqs', [OwnerController::class, 'getStaffReqs']);  //get staff requests
     Route::post('/staffReqs/{id}', [OwnerController::class, 'updateStaffReqStatus']); //approve or reject an assistant
 });
 
 // ***** Assistant APIs *****
-Route::middleware(['auth:sanctum'])->prefix('assistant')->group(function () {
+Route::middleware(['auth:sanctum','blocked'])->prefix('assistant')->group(function () {
     Route::post('/inquiry/response', [AssistantController::class, 'responseToInquiry']); //response to an inquiry
     Route::get('/myInquiries/{hall_id?}/{userId}', [ClientController::class, 'myInquiries']);
     Route::post('/requestStaff/{id}', [AssistantController::class, 'requestStaff']); //request to get hired at a hall
     Route::get('/chats', [AssistantController::class, 'getChat']); //get all chats
     Route::post('addserv/{id}', [HallController::class, 'add_service']); // add a service
     Route::post('updateservice/{id}', [HallController::class, 'updatservice']); // update a service
+    Route::get('/hallBookings', [BookingController::class, 'getHallBookings']);// get all bookings to the assistant hall
+    Route::get('/hallConfirmedBookings', [BookingController::class, 'getHallConfirmedBookings']);// get all Confirmed bookings to the assistant hall
+    Route::post('/updateDetail/{id}', [HallController::class, 'add_detail']); // update hall details
+    Route::post('/uploadImages', [AssistantController::class , 'uploadEventImages']);// upload images
+    Route::post('/uploadVideos', [AssistantController::class , 'uploadEventVideos']);// upload videos
+    Route::post('addpolices/{id}', [HallController::class, 'addpolices']); //add hall policies
+    Route::post('updatepolic/{id}', [HallController::class, 'updatepolices']); //update hall policies
+
+
 
     Route::post('addpay/{id}', [HallController::class, 'add_pay']);
     Route::post('updatepay/{id}', [HallController::class, 'updatpay']);
@@ -82,7 +104,7 @@ Route::middleware(['auth:sanctum'])->prefix('assistant')->group(function () {
 });
 
 // ***** Client APIs *****
-Route::middleware(['auth:sanctum'])->prefix('Client')->group(function () {
+Route::middleware(['auth:sanctum','blocked'])->prefix('Client')->group(function () {
     Route::post('/inquiry', [ClientController::class, 'store']); //send an inquiry
     Route::get('/myInquiries/{hall_id}', [ClientController::class, 'myInquiries']); //get client inquiries
     Route::post('/reviews', [ClientController::class, 'storeReview']); //review and comment on a hall
@@ -90,7 +112,7 @@ Route::middleware(['auth:sanctum'])->prefix('Client')->group(function () {
 });
 
 // ***** Booking APIs *****
-Route::middleware(['auth:sanctum'])->prefix('Booking')->group(function () {
+Route::middleware(['auth:sanctum','blocked'])->prefix('Booking')->group(function () {
 
     // حجز صالة
     Route::post('/bookings', [BookingController::class, 'create']);
@@ -116,15 +138,19 @@ Route::middleware(['auth:sanctum'])->prefix('Booking')->group(function () {
 
 });
 
+// ***** Stripe APIs *****
+Route::middleware('auth:sanctum')->post('/stripe/hall-subscription', [StripeController::class, 'createSubscriptionPayment']);
+Route::middleware(['auth:sanctum','role:admin'])->get('stripe/getPayments', [StripeController::class, 'listPayments']);
+
+//Route::post('/stripe/payment-intent', [StripeController::class, 'createPaymentIntent']);
+
+
 //*********************
 //ZainHassan ********
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::post('addpolices/{id}', [HallController::class, 'addpolices']);
     Route::post('addoffer/{id}', [HallController::class, 'addoffer']);
     Route::post('updateoffer/{id}', [HallController::class, 'updateoffer']);
     Route::get('offer/{id}', [HallController::class, 'showoffer']);
-    Route::post('updatepolic/{id}', [HallController::class, 'updatepolices']);
-    Route::get('polices/{id}', [HallController::class, 'showpolices']);
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
