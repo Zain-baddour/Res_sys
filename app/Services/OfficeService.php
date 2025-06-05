@@ -9,6 +9,7 @@ use App\Models\Hall_img;
 use App\Models\Office;
 use App\Models\Sendanswer;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class OfficeService
@@ -16,10 +17,10 @@ class OfficeService
     public function addservice(array $data)
     {
         $office = Office::create([
-           
+
             'num_ofcar' => $data['num_ofcar'],
             'type_car' => $data['type_car'],
-          
+
         ]);
 
         if (isset($data['car_image'])) {
@@ -38,7 +39,7 @@ $message="this is services to  office";
  }
 public function addReqReservation(array $data,$office_id){
     $req =Detail_booking::create([
-           
+
         'from' => $data['from'],
         'to' => $data['to'],
         'car_type' => $data['car_type'],
@@ -48,7 +49,7 @@ public function addReqReservation(array $data,$office_id){
         'description' => $data['description'],
         'user_id'=>Auth::id(),
         'office_id'=>$office_id
-      
+
     ]);
     return ['message'=>"the request res added succesfuly",'service'=>$req];
 }
@@ -74,12 +75,12 @@ else{
     $message="the record not found";
     return $message;
 }}
-public function add_info_contact(array $data){
+public function add_info_contact(array $data , $officeId){
 
     $contact =Contact::create([
         'phone'=> $data['phone'],
         'description' => $data['description'],
-        'office_id'=>Auth::id(),
+        'office_id'=>$officeId,
     ]);
 
     return ['message'=>"the contact info added succesfuly",'contact'=>$contact];
@@ -87,14 +88,14 @@ public function add_info_contact(array $data){
 
 }
 
-public function send_answer($detail_id,$user_id,array $data){
+public function send_answer($detail_id,$user_id , $officeId,array $data){
     $exist= Detail_booking::where('id',$detail_id)->where('user_id',$user_id)->exists();
     if($exist){
         $send=Sendanswer::create([
             'answer'=>$data['answer'],
             'user_id'=>$user_id,
             'detail_id'=>$detail_id,
-            'office_id'=>Auth::id()
+            'office_id'=>$officeId
         ]);
     }
     return ['message'=>"the message send succesfuly",'answer'=>$send];

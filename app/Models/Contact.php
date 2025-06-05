@@ -8,16 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class Contact extends Model
 {
     use HasFactory;
-    protected $fillable=[
+
+    protected $fillable = [
         'phone',
         'description',
-    'office_id'];
-    protected $hidden=[
-        'updated_at','created_at'
+        'office_id'];
+    protected $hidden = [
+        'updated_at', 'created_at'
     ];
 
-        public function office(){
-            return $this->hasOne(Office::class,'office_id');
-        }
+    public function office()
+    {
+        return $this->belongsTo(Office::class, 'office_id');
+    }
 
 }
