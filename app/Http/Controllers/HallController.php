@@ -129,8 +129,6 @@ class HallController extends Controller
     }
 
 
-    //***********************************
-    //ZainHassan *******************
 
     public function addpolices(Request $request, $hall_id)
     {

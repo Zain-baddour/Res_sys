@@ -18,4 +18,8 @@ class Office extends Model
     public function detail_booking(): HasMany {
         return $this->hasMany(Detail_booking::class, 'office_id');
     }
+
+    public function contact() {
+        return $this->hasMany(Contact::class);
+    }
 }
