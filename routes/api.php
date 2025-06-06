@@ -39,6 +39,8 @@ Route::get('showserv/{id}', [HallController::class, 'showservice']); // show a h
 Route::get('/halls/eventImages/{id}', [HallController::class, 'getEventImages']); // show event images
 Route::get('/halls/eventVideos/{id}', [HallController::class, 'getEventVideos']); // show event videos
 Route::get('polices/{id}', [HallController::class, 'showpolices']);// show hall policies
+Route::get('hallPriceCards/{id}', [HallController::class , 'getHallPrice']); // show price card
+
 
 
 Route::middleware(['auth:sanctum','blocked'])->prefix('halls')->group(function () {
@@ -92,6 +94,8 @@ Route::middleware(['auth:sanctum','blocked'])->prefix('assistant')->group(functi
     Route::post('/uploadVideos', [AssistantController::class , 'uploadEventVideos']);// upload videos
     Route::post('addpolices/{id}', [HallController::class, 'addpolices']); //add hall policies
     Route::post('updatepolic/{id}', [HallController::class, 'updatepolices']); //update hall policies
+    Route::post('addPrice/{id}', [HallController::class , 'addPrice']); // add price card
+    Route::put('updatePrice/{id}', [HallController::class , 'updatePrice']); // update price card
 
 
 

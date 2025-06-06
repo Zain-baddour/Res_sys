@@ -9,7 +9,7 @@ use App\Models\Hall_img;
 use App\Models\Detail_img;
 use App\Models\hallEventImages;
 use App\Models\hallEventVideos;
-use App\Models\Image_hal;
+use App\Models\HallPrice;
 use App\Models\inquiry;
 use App\Models\Loungetiming;
 use App\Models\Offer;
@@ -526,6 +526,45 @@ class HallService
     public function showPay($hallId) {
         return Paymentway::where('hall_id', $hallId)->get();
 
+    }
+
+    public function addPrice(array $validatedData , $hallId)
+    {
+        $price = HallPrice::create([
+            'guest_count' => $validatedData['guest_count'],
+            'price' => $validatedData['price'],
+            'hall_id' => $hallId,
+        ]);
+
+        return response()->json([
+            'message' => 'Price added successfully',
+            'data' => $price
+        ], 201);
+    }
+
+    public function updatePrice(array $validatedData, $id)
+    {
+        $hallPrice = HallPrice::findOrFail($id);
+
+        $hallPrice->update($validatedData);
+        $hallPrice->save();
+
+        return response()->json([
+            'message' => 'Price updated successfully',
+            'data' => $hallPrice
+        ]);
+    }
+
+    public function getHallPrice($hall_id)
+    {
+        $hall = Hall::findOrFail($hall_id);
+
+        $prices = $hall->prices()->orderBy('guest_count')->get();
+
+        return response()->json([
+            'hall_id' => $hall->id,
+            'prices' => $prices
+        ]);
     }
 
 }
