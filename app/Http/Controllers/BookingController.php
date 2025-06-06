@@ -65,7 +65,7 @@ class BookingController extends Controller
         ]);
 
         $book = $this->bookingService->createBooking($data);
-        return response()->json($book->load(['services','songs']));
+        return response()->json($book->load(['services','songs','payment']));
     }
 
     public function getHallBookings() {
