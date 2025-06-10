@@ -68,7 +68,7 @@ class OwnerService
             $staffReq->user->notify(new StaffRequestRejectedNotification());
         }
 
-        return $staffReq->status;
+        return $staffReq;
 
     }
 

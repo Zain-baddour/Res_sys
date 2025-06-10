@@ -31,6 +31,11 @@ class AssistantController extends Controller
         return response()->json($response, 201);
     }
 
+    public function getStaffRequest() {
+        $response = $this->assistantService->getStaffRequest();
+        return response()->json($response , 200);
+    }
+
     public function getChat () {
         $response = $this->assistantService->getChats();
         return response()->json($response, 201);

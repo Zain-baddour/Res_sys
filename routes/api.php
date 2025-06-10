@@ -84,6 +84,7 @@ Route::middleware(['auth:sanctum','blocked'])->prefix('assistant')->group(functi
     Route::post('/inquiry/response', [AssistantController::class, 'responseToInquiry']); //response to an inquiry
     Route::get('/myInquiries/{hall_id?}/{userId}', [ClientController::class, 'myInquiries']);
     Route::post('/requestStaff/{id}', [AssistantController::class, 'requestStaff']); //request to get hired at a hall
+    Route::get('getMyStaffRequests' ,[AssistantController::class , 'getStaffRequest']); // get my hall applications
     Route::get('/chats', [AssistantController::class, 'getChat']); //get all chats
     Route::post('addserv/{id}', [HallController::class, 'add_service']); // add a service
     Route::post('updateservice/{id}', [HallController::class, 'updatservice']); // update a service
