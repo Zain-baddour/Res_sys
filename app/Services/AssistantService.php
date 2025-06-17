@@ -21,6 +21,11 @@ class AssistantService
         return staff_requests::create($data);
     }
 
+    public function getStaffRequest() {
+        $userId = auth()->id();
+        return staff_requests::where('user_id', $userId)->get();
+    }
+
     public function getChats() {
         $assistantId = auth()->id();
 

@@ -88,4 +88,8 @@ class hall extends Model
     public function policies() {
         return $this->hasMany(Policies::class,'hall_id');
     }
+
+    public function prices() {
+        return $this->hasMany(HallPrice::class);
+    }
 }

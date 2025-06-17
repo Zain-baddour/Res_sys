@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\Hall;
 use App\Models\payments;
 use App\Models\Servicetohall;
+use App\Models\HallPrice;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -20,6 +21,19 @@ class BookingService
     {
 
         return DB::transaction(function () use ($data) {
+            $guestCount = $data['guest_count'];
+            $hallI = hall::find($data['hall_id']);
+            if (!$hallI) {
+                return response()->json(['message' => 'no hall found with that id'], 404);
+
+            }
+            $guestMax = $hallI->capacity;
+
+            if ($guestMax < $guestCount) {
+                return response()->json(['message' => 'the hall cannot take all the guest']);
+            }
+
+
             $conflictingBooking = Booking::where('hall_id', $data['hall_id'])
                 ->whereDate('event_date', $data['event_date'])
                 ->where(function ($query) use ($data) {
@@ -33,6 +47,8 @@ class BookingService
             if ($conflictingBooking) {
                 return response()->json(['message' => 'تم حجز هذه القاعة بالفعل خلال الوقت المحدد'], 422);
             }
+
+
 
             $booking = Booking::create([
                 'user_id' => Auth::id(),
@@ -70,9 +86,9 @@ class BookingService
                         'from_hall' => $data[$serviceKey]['from_hall'] ?? null,
                         'details' => isset($data[$serviceKey]['details']) ? json_encode($data[$serviceKey]['details']) : null,
                     ]);
-                    $service = Servicetohall::where('hall_id', $booking->id)->where('name', $serviceKey)->first();
+                    $service = Servicetohall::where('hall_id', $data['hall_id'])->where('name', $serviceKey)->first();
                     if($service) {
-                        $total_price += $service->price;
+                        $total_price += $service->service_price;
                     }
                 }
             }
@@ -95,6 +111,15 @@ class BookingService
             if (isset($data['condolence_additional_notes'])) {
                 $booking->update(['condolence_additional_notes' => $data['condolence_additional_notes']]);
             }
+
+            $priceRow = HallPrice::where('hall_id', $data['hall_id'])
+                ->where('guest_count', '>=', $guestCount)
+                ->orderBy('guest_count', 'asc')
+                ->value('price');
+
+
+            $GuestCost = $guestCount * $priceRow;
+            $total_price += $GuestCost;
 
             payments::create([
                 'user_id' => Auth::id(),
