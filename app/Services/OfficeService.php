@@ -6,6 +6,7 @@ use App\Models\Contact;
 use App\Models\Detail_booking;
 use App\Models\hall;
 use App\Models\Hall_img;
+use App\Models\Office_service;
 use App\Models\Office;
 use App\Models\Sendanswer;
 use Illuminate\Support\Facades\Auth;
@@ -14,48 +15,100 @@ use Illuminate\Support\Facades\Storage;
 
 class OfficeService
 {
-    public function addservice(array $data)
+    public function addOffice(array $data)
     {
         $office = Office::create([
 
-            'num_ofcar' => $data['num_ofcar'],
+            'name' => $data['name'],
+            'number' => $data['number'],
+            'location' => $data['location'],
+
+        ]);
+
+        if (isset($data['photo'])) {
+            $imagePath = $data['photo']->store('office' , 'public');
+            $office->photo = $imagePath;
+        }
+        $office->save();
+        return ['message'=>"the service added succesfuly",'service'=>$office];
+}
+public function showOffice(){
+    $office = Office::select('name','photo')->get();
+    $message="all office";
+    return ['message'=>$message,'office'=>$office];
+}
+
+public function getOfficeDetailsWithServices($officeId)
+{
+    // الحصول على المكتب مع الخدمات
+    $office = Office::with('services')->findOrFail($officeId);
+
+     if (!$office) {
+         return response()->json(['message' => 'Office not found'], 404);
+ }
+    $officeDetails = [
+        'name' => $office->name,
+        'location' => $office->location,
+        'number' => $office->number,
+        'services' => $office->services->map(function ($service) {
+            return [
+                'type_car' => $service->type_car,
+                'car_image' => $service->car_image,
+            ];
+        }),
+    ];
+
+    return response()->json($officeDetails);
+}
+
+
+    public function addservice(array $data,$office_id)
+    {
+       $id= Office::where('id',$office_id)->exists();
+       if($id){
+        $officeSer = Office_service::create([
             'type_car' => $data['type_car'],
+            'office_id'=>$office_id
 
         ]);
 
         if (isset($data['car_image'])) {
             $imagePath = $data['car_image']->store('car_image' , 'public');
-            $office->car_image = $imagePath;
+            $officeSer->car_image = $imagePath;
         }
-        $office->save();
-        return ['message'=>"the service added succesfuly",'service'=>$office];
+        $officeSer->save();
+        return ['message'=>"the service added succesfuly",'service'=>$officeSer];
+       }
+       else{
+        return ['message'=>"the office not found"];
+       }
+        
 }
 
 public function showserviceoffice(){
-    $services= Office::all();
+    $services= Office_service::all();
 $message="this is services to  office";
     return ['message'=>$message,'service'=>$services];
 
  }
-public function addReqReservation(array $data,$office_id){
+public function addReqReservation(array $data,$service_id){
     $req =Detail_booking::create([
-
         'from' => $data['from'],
         'to' => $data['to'],
         'car_type' => $data['car_type'],
         'num_car' => $data['num_car'],
-        'date' => $data['date'],
+        'time' => $data['time'],
         'date_day' =>date('Y-m-d') ,
         'description' => $data['description'],
         'user_id'=>Auth::id(),
-        'office_id'=>$office_id
+        'office_service_id'=>$service_id
 
     ]);
     return ['message'=>"the request res added succesfuly",'service'=>$req];
 }
 public function showReqReservation(){
     $show=Detail_booking::join('users','users.id','Detail_bookings.user_id')
-    ->select('users.id','users.name','users.number','users.photo','Detail_bookings.date')
+    ->select('users.id','users.name','users.number','users.photo','Detail_bookings.time')
     ->get();
     return $show;
 }
@@ -75,7 +128,7 @@ else{
     $message="the record not found";
     return $message;
 }}
-public function add_info_contact(array $data , $officeId){
+public function add_info_contact(array $data ,$officeId){
 
     $contact =Contact::create([
         'phone'=> $data['phone'],
@@ -100,5 +153,29 @@ public function send_answer($detail_id,$user_id , $officeId,array $data){
     }
     return ['message'=>"the message send succesfuly",'answer'=>$send];
 
+}
+//get answer to user reservation
+public function getAnswer($user_id){
+    $exist= Sendanswer::where('user_id',$user_id)->exists();
+    if($exist){
+        $office=Office::with('answer')->first();
+        if (!$office) {
+            return response()->json(['message' => 'Office not found'], 404);
+    }
+    if (!$office->answer) {
+        return response()->json(['message' => 'No answer found for this office'], 404);
+    }
+       $answerForreservation = [
+           'name'=> $office->name,
+          'photo'=>$office->photo,
+           'answer' => $office->answer->answer    
+           
+       ];
+   
+       return response()->json($answerForreservation);
 
-}}
+}
+return response()->json(['message' => 'you are not reservation in this office'], 404);
+
+}
+}

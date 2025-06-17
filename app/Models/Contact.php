@@ -2,24 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Contact extends Model
 {
-    use HasFactory;
-
-    protected $fillable = [
-        'phone',
-        'description',
-        'office_id'];
-    protected $hidden = [
-        'updated_at', 'created_at'
+    protected $fillable=[
+'phone','description','office_id'
     ];
-
-    public function office()
-    {
-        return $this->belongsTo(Office::class, 'office_id');
+    protected $hidden=[
+        'created_at','updated_at'
+    ];
+    public function office(){
+        return $this->belongsTo(Office::class,'office_id');
     }
-
 }

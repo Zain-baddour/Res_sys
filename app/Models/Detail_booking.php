@@ -10,8 +10,8 @@ class Detail_booking extends Model
     use HasFactory;
     protected $fillable=[
       'from',
-      'to','date',
-      'office_id',
+      'to','time',
+      'office_service_id',
       'user_id',
       'description','car_type','num_car','date_day'
       

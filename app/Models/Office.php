@@ -2,24 +2,22 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Office extends Model
-{
-    use HasFactory;
-    protected $fillable=[
-        'car_image',
-        'type_car',
-        'num_ofcar'
-
+{ protected $fillable=[
+        'name',
+        'location',
+       'photo','number'
     ];
-    public function detail_booking(): HasMany {
-        return $this->hasMany(Detail_booking::class, 'office_id');
+    public function services(){
+      return $this->hasMany(Office_service::class) ;
+    }
+    public function contact(){
+       return  $this->hasOne(Contact::class) ;
+     }
+     public function answer(){
+      return  $this->hasOne(Sendanswer::class) ;
     }
 
-    public function contact() {
-        return $this->hasMany(Contact::class);
-    }
 }

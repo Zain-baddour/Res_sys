@@ -16,14 +16,40 @@ class OfficeController extends Controller
         $this->officeService = $officeService;
     }
 
-    public function addserv(Request $request)
+    public function addoffice(Request $request)
+    {
+        $data = $request->validate([
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'name' => 'required|string|max:255',
+            'location' => 'required|string|max:255',
+            'number' => 'required|string|min:9',
+        ]);
+
+        $office = $this->officeService->addOffice($data);
+        return response()->json($office);
+    }
+    public function showoffice(){
+        $office = $this->officeService->showOffice();
+        return response()->json($office);
+    }
+
+//get detail the office
+    public function showDetailOffice($office_id){
+        $detail=$this->officeService->getOfficeDetailsWithServices($office_id);
+        return response()->json($detail);
+    }
+
+    
+
+    public function addserv(Request $request,$office_id)
     {
         $data = $request->validate([
             'car_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'type_car' => 'required|string|max:255',
-            'num_ofcar' => 'required|integer|min:1',]);
+           // 'num_ofcar' => 'required|integer|min:1',
+        ]);
 
-        $office = $this->officeService->addservice($data);
+        $office = $this->officeService->addservice($data,$office_id);
         return response()->json($office);
     }
 
@@ -33,20 +59,20 @@ class OfficeController extends Controller
         return response()->json($service);
     }
 
-    public function addReqReservation(Request $request, $office_id)
+    public function addReqReservation(Request $request, $service_id)
     {
         $data = $request->validate([
             'from' => 'required|string|max:255',
             'to' => 'required|string|max:255',
             'description' => 'required|string|max:255',
-            'date' => 'required|date_format:H:i',
+            'time' => 'required|date_format:H:i',
             'car_type' => 'nullable|string|max:255|',
             'num_car' => 'required|integer|min:1',
             // 'user_id'=>'required',
             // 'office_id'=>'required'
         ]);
 
-        $reservation = $this->officeService->addReqReservation($data, $office_id);
+        $reservation = $this->officeService->addReqReservation($data, $service_id);
         return response()->json($reservation);
     }
 
@@ -72,6 +98,8 @@ class OfficeController extends Controller
         return response()->json($contact);
     }
 
+
+    
     public function send_answer($detail_id, $user_id ,$officeId , Request $request)
     {
         $data = $request->validate([
@@ -80,5 +108,13 @@ class OfficeController extends Controller
         ]);
         $answer = $this->officeService->send_answer($detail_id, $user_id, $officeId , $data);
         return response()->json($answer);
+    }
+
+
+
+    public function getAnswer($user_id){
+        $answer = $this->officeService->getAnswer($user_id);
+        return response()->json($answer);
+
     }
 }
