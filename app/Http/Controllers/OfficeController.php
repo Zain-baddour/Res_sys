@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\OfficeService;
-
+use Symfony\Contracts\Service\Attribute\Required;
 
 class OfficeController extends Controller
 {
@@ -28,6 +28,8 @@ class OfficeController extends Controller
         $office = $this->officeService->addOffice($data);
         return response()->json($office);
     }
+
+
     public function showoffice(){
         $office = $this->officeService->showOffice();
         return response()->json($office);
@@ -66,6 +68,7 @@ class OfficeController extends Controller
             'to' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'time' => 'required|date_format:H:i',
+            'date_day'=>'Required|date',
             'car_type' => 'nullable|string|max:255|',
             'num_car' => 'required|integer|min:1',
             // 'user_id'=>'required',

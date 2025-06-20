@@ -32,6 +32,8 @@ class OfficeService
         $office->save();
         return ['message'=>"the service added succesfuly",'service'=>$office];
 }
+
+
 public function showOffice(){
     $office = Office::select('name','photo')->get();
     $message="all office";
@@ -98,7 +100,7 @@ public function addReqReservation(array $data,$service_id){
         'car_type' => $data['car_type'],
         'num_car' => $data['num_car'],
         'time' => $data['time'],
-        'date_day' =>date('Y-m-d') ,
+        'date_day' =>$data['date_day'] ,
         'description' => $data['description'],
         'user_id'=>Auth::id(),
         'office_service_id'=>$service_id
