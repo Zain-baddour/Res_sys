@@ -6,6 +6,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\HallController;
+use App\Http\Controllers\HallDashboardController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\OfficeController;
@@ -149,6 +151,11 @@ Route::middleware(['auth:sanctum','role:admin'])->get('stripe/getPayments', [Str
 
 //Route::post('/stripe/payment-intent', [StripeController::class, 'createPaymentIntent']);
 
+// ***** Owner Dashboard APIs *****
+Route::middleware('auth:sanctum')->get('/Owner-dashboard/statistics', [HallDashboardController::class, 'getStatistics']);
+
+// ***** Notification APIs *****
+Route::middleware('auth:sanctum')->get('/notifications', [NotificationController::class, 'index']);
 
 //*********************
 //ZainHassan ********
@@ -182,5 +189,5 @@ Route::middleware(['auth:sanctum'])->prefix('office')->group(function () {
     Route::get('/getanswer/{user_id}', [OfficeController::class, 'getAnswer']); //get answer to user
     Route::get('/showoffice', [OfficeController::class, 'showoffice']);//get all office
     Route::get('/detailoffice/{off_id}', [OfficeController::class, 'showDetailOffice']);//get all office
-  
+
 });
