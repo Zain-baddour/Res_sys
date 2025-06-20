@@ -34,7 +34,7 @@ class StripeService
 
         $price = $setting->subscription_value;
 
-        Log::info('Subscription Price:', ['price' => $price]);
+
         if ($price < 0.50) {
             throw new \Exception('the amount is low');
         }

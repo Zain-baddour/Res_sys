@@ -16,4 +16,8 @@ class offer extends Model
       //  'description',
         'hall_id'
     ];
+
+    public function hall() {
+        return $this->belongsTo(hall::class);
+    }
 }
