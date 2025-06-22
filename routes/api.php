@@ -11,6 +11,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\OfficeController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\StripeController;
@@ -30,6 +31,14 @@ Route::controller(AuthController::class)->group(function (){
     });
 
 });
+
+// *****  User API's *****
+Route::middleware(['auth:sanctum','blocked'])->prefix('user')->group(function () {
+
+    Route::get('/profile', [UserController::class, 'getProfile']); //show my profile
+    Route::post('/update', [UserController::class, 'updateProfile']); //edit profile
+});
+
 
 // *****  Hall API's *****
 

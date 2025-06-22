@@ -17,8 +17,8 @@ class HallDashboardController extends Controller
 
     public function getStatistics(Request $request)
     {
-        $userId =  auth()->user()->id;
-        $hallId = hall::where('owner_id',$userId)->value('id'); // أو حسب نظامك لو في علاقة
+        $userId = auth()->user()->id;
+        $hallId = hall::where('owner_id', $userId)->value('id');
         $stats = $this->dashboardService->getStatistics($hallId);
 
         return response()->json([
