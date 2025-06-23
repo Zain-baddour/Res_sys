@@ -30,12 +30,12 @@ class UserController extends Controller
     {
         $user = auth()->user();
 
-        // تحقق من صحة البيانات
+        // تحقق من صحة البيانات بس للحقول يلي اجت
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'location' => 'required|string|max:255',
-            'number' => 'required|string|max:20',
+            'name' => 'sometimes|required|string|max:255',
+            'email' => 'sometimes|required|email|unique:users,email,' . $user->id,
+            'number' => 'sometimes|required|string|max:20',
+            'photo' => 'sometimes|nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         // حدث البيانات

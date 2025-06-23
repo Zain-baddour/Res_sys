@@ -15,13 +15,34 @@ class UserProfileService
 
     public function updateProfile(User $user, array $data)
     {
-        // بس حدث الحقول يلي بدنا ياها
-        $user->update([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'location' => $data['location'],
-            'number' => $data['number'],
-        ]);
+        // تحديث الحقول الموجودة فقط
+        if (isset($data['name'])) {
+            $user->name = $data['name'];
+        }
+
+        if (isset($data['email'])) {
+            $user->email = $data['email'];
+        }
+
+
+        if (isset($data['number'])) {
+            $user->number = $data['number'];
+        }
+
+        // معالجة الصورة إن وجدت
+        if (isset($data['photo'])) {
+            // حذف الصورة القديمة إن وجدت
+            if ($user->photo && file_exists(public_path($user->photo))) {
+                unlink(public_path($user->photo));
+            }
+
+            // تخزين الصورة الجديدة
+            $photoName = uniqid() . '_photo_.' . $data['photo']->getClientOriginalExtension();
+            $data['photo']->move(public_path(), $photoName);
+            $user->photo = $photoName;
+        }
+
+        $user->save();
 
         return $user;
     }
