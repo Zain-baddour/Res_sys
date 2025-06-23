@@ -12,23 +12,49 @@ class HallDashboardService
 
     public function getStatistics($hallId)
     {
-        $bookingCount = Booking::where('hall_id', $hallId)->count();
-        $averageRating = Review::where('hall_id', $hallId)->avg('rating');
-        $employeeCount = hall_employee::where('hall_id', $hallId)->count();
+        $now = now();
+        $currentMonth = $now->month;
+        $lastMonth = $now->subMonth()->month;
 
-        $totalRevenue = Booking::where('hall_id', $hallId)
-            ->whereHas('payment') // تأكد أن الحجز إله دفع
+        // عدد الحجوزات للشهر الحالي
+        $currentMonthBookings = Booking::where('hall_id', $hallId)
+            ->whereMonth('created_at', $currentMonth)
+            ->count();
+
+        // عدد الحجوزات للشهر الماضي
+        $lastMonthBookings = Booking::where('hall_id', $hallId)
+            ->whereMonth('created_at', $lastMonth)
+            ->count();
+
+        // حساب نسبة الزيادة أو النقصان
+        if ($lastMonthBookings > 0) {
+            $bookingChange = (($currentMonthBookings - $lastMonthBookings) / $lastMonthBookings) * 100;
+        } else {
+            $bookingChange = $currentMonthBookings > 0 ? 100 : 0; // إذا ما في حجوزات الشهر الماضي
+        }
+
+        // العائدات لكل شهر (آخر 6 أشهر مثلاً)
+        $monthlyRevenues = Booking::where('hall_id', $hallId)
+            ->whereHas('payment')
             ->with('payment')
             ->get()
-            ->sum(function($booking) {
-                return $booking->payment->amount ?? 0;
+            ->groupBy(function($booking) {
+                return $booking->created_at->format('Y-m');
+            })
+            ->map(function($group) {
+                return $group->sum(function($booking) {
+                    return $booking->payment->amount ?? 0;
+                });
             });
 
+        // متوسط التقييمات
+        $averageRating = Review::where('hall_id', $hallId)->avg('rating');
+
         return [
-            'Confirmed Bookings' => $bookingCount,
-            'ratings' => $averageRating,
-            'employees' => $employeeCount,
-            'revenue' => $totalRevenue
+            'monthly_bookings' => $currentMonthBookings,
+            'booking_change_percentage' => round($bookingChange, 2),
+            'monthly_revenues' => $monthlyRevenues,
+            'average_rating' => round($averageRating, 1)
         ];
     }
 }

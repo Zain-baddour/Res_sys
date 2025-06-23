@@ -159,8 +159,8 @@ class HallController extends Controller
     public function addoffer(Request $request, $hall_id)
     {
         $data = $request->validate([
-            'period_offer' => 'required|date',
             'start_offer' => 'required|date',
+            'end_offer' => 'required|date',
             'offer_val' => 'required|decimal:2',
 
         ]);
@@ -171,7 +171,7 @@ class HallController extends Controller
     public function updateoffer($offer_id, Request $request)
     {
         $data = $request->validate([
-            'period_offer' => 'required|date',
+            'end_offer' => 'required|date',
             'start_offer' => 'required|date',
             'offer_val' => 'required|decimal:2',
         ]);
