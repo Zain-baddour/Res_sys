@@ -221,7 +221,7 @@ class HallService
             $exist = hall::where('id', $hall_id)->exists();
             if ($exist) {
                 return Offer::create(
-                    ['period_offer' => $data['period_offer'],
+                    ['end_offer' => $data['end_offer'],
                         'start_offer' => $data['start_offer'],
 
                         'offer_val' => $data['offer_val'],
@@ -256,7 +256,7 @@ class HallService
     {
         $offers = Offer::where('hall_id', $hall_id)->get();
         $message = "this is offers to hall";
-        return ['message' => $message, 'service' => $offers];
+        return ['message' => $message, 'offers' => $offers];
 
     }
 

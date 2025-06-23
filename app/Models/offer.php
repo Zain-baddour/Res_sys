@@ -9,8 +9,8 @@ class offer extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'period_offer',
         'start_offer',
+        'end_offer',
         'offer_val',
         //'removable',
       //  'description',

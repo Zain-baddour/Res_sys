@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('offers', function (Blueprint $table) {
             $table->id();
             $table->string('description');
-            $table->timestamp('period_offer')->nullable();
             $table->timestamp('start_offer')->nullable();
+            $table->timestamp('end_offer')->nullable();
             $table->foreignId('hall_id')->constrained('halls')->cascadeOnDelete('');
             $table->timestamps();
         });
