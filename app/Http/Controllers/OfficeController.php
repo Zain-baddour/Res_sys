@@ -48,7 +48,7 @@ class OfficeController extends Controller
         $data = $request->validate([
             'car_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'type_car' => 'required|string|max:255',
-           // 'num_ofcar' => 'required|integer|min:1',
+           'number_ofcar' => 'required|integer|min:1',
         ]);
 
         $office = $this->officeService->addservice($data,$office_id);

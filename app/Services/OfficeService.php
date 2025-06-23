@@ -26,16 +26,18 @@ class OfficeService
         ]);
 
         if (isset($data['photo'])) {
-            $imagePath = $data['photo']->store('office' , 'public');
-            $office->photo = $imagePath;
+          //  $imagePath = $data['photo']->store('office' , 'public');
+            $imageName = uniqid() . '_office_images_.' . $data['photo']->getClientOriginalExtension();
+             $data['photo']->move(public_path(), $imageName);
+            $office->photo = $imageName;
         }
         $office->save();
-        return ['message'=>"the service added succesfuly",'service'=>$office];
+        return ['message'=>"the office added succesfuly",'service'=>$office];
 }
 
 
 public function showOffice(){
-    $office = Office::select('name','photo')->get();
+    $office = Office::select('id','name','photo')->get();
     $message="all office";
     return ['message'=>$message,'office'=>$office];
 }
@@ -52,6 +54,7 @@ public function getOfficeDetailsWithServices($officeId)
         'name' => $office->name,
         'location' => $office->location,
         'number' => $office->number,
+        'officeId'=>$officeId,
         'services' => $office->services->map(function ($service) {
             return [
                 'type_car' => $service->type_car,
@@ -70,13 +73,16 @@ public function getOfficeDetailsWithServices($officeId)
        if($id){
         $officeSer = Office_service::create([
             'type_car' => $data['type_car'],
+            'number_ofcar' => $data['number_ofcar'],
             'office_id'=>$office_id
 
         ]);
 
         if (isset($data['car_image'])) {
-            $imagePath = $data['car_image']->store('car_image' , 'public');
-            $officeSer->car_image = $imagePath;
+           // $imagePath = $data['car_image']->store('car_image' , 'public');
+           $imageName = uniqid() . '_office_images_.' . $data['car_image']->getClientOriginalExtension();
+           $data['car_image']->move(public_path(), $imageName);
+            $officeSer->car_image = $imageName;
         }
         $officeSer->save();
         return ['message'=>"the service added succesfuly",'service'=>$officeSer];

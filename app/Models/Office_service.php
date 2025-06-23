@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Office_service extends Model
 {
     protected $fillable=[
-'type_car','car_image','office_id'
+'type_car','car_image','office_id','number_ofcar'
     ];
     public function office()
     {
