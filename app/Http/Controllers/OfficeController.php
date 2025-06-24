@@ -41,7 +41,13 @@ class OfficeController extends Controller
         return response()->json($detail);
     }
 
-    
+
+    public function showMyOffice(){
+
+        $myoffice = $this->officeService->getmyoffice();
+        return response()->json($myoffice);
+    }
+
 
     public function addserv(Request $request,$office_id)
     {
@@ -55,9 +61,9 @@ class OfficeController extends Controller
         return response()->json($office);
     }
 
-    public function showservice()
+    public function showservice($officeId)
     {
-        $service = $this->officeService->showserviceoffice();
+        $service = $this->officeService->showserviceoffice($officeId);
         return response()->json($service);
     }
 

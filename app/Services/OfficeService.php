@@ -22,6 +22,7 @@ class OfficeService
             'name' => $data['name'],
             'number' => $data['number'],
             'location' => $data['location'],
+            'owner_id' => Auth::id()
 
         ]);
 
@@ -66,6 +67,12 @@ public function getOfficeDetailsWithServices($officeId)
     return response()->json($officeDetails);
 }
 
+public function getmyoffice(){
+    $office = Office::where('owner_id', Auth::id())->select('id','name','photo')->get();
+    $message="my office";
+    return ['message'=>$message,'office'=>$office];
+}
+
 
     public function addservice(array $data,$office_id)
     {
@@ -93,12 +100,37 @@ public function getOfficeDetailsWithServices($officeId)
         
 }
 
-public function showserviceoffice(){
-    $services= Office_service::all();
-$message="this is services to  office";
-    return ['message'=>$message,'service'=>$services];
+// public function showserviceoffice(){
+//     $services= Office_service::all();
+// $message="this is services to  office";
+//     return ['message'=>$message,'service'=>$services];
+
+//  }
+
+ public function showserviceoffice($officeId){
+    $office = Office::with('services')->findOrFail($officeId);
+
+     if (!$office) {
+         return response()->json(['message' => 'Office not found'], 404);
+ }
+    $officeDetails = [
+        'name' => $office->name,
+        'location' => $office->location,
+        'number' => $office->number,
+        'officeId'=>$officeId,
+        'services' => $office->services->map(function ($service) {
+            return [
+                'type_car' => $service->type_car,
+                'car_image' => $service->car_image,
+            ];
+        }),
+    ];
+
+    return response()->json($officeDetails);
 
  }
+
+
 public function addReqReservation(array $data,$service_id){
     $req =Detail_booking::create([
         'from' => $data['from'],
@@ -184,6 +216,5 @@ public function getAnswer($user_id){
 
 }
 return response()->json(['message' => 'you are not reservation in this office'], 404);
-
 }
 }

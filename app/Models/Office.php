@@ -8,7 +8,7 @@ class Office extends Model
 { protected $fillable=[
         'name',
         'location',
-       'photo','number'
+       'photo','number', 'owner_id',
     ];
     public function services(){
       return $this->hasMany(Office_service::class) ;
