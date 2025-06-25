@@ -46,7 +46,7 @@ class OwnerService
         $staffReq = staff_requests::findOrFail($staffReqId);
         if ($staffReq->status !== 'pending') {
             throw ValidationException::withMessages([
-                'status' => 'لا يمكن تعديل هذا الطلب لأنه ليس قيد الانتظار.'
+                'status' => 'You cannot modify this request , its not pending.'
             ]);
         }
         if(!in_array($status,['approved','rejected'])){
