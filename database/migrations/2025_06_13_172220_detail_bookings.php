@@ -19,10 +19,11 @@ return new class extends Migration
             $table->string('car_type');
             $table->integer('num_car');
             $table->date('date_day');
-            $table->time('time');       
+            $table->time('time');
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('office_service_id')->constrained('office_services')->cascadeOnDelete();
-    });
+            $table->timestamps();
+        });
     }
     /**
      * Reverse the migrations.
