@@ -171,9 +171,9 @@ class HallController extends Controller
     public function updateoffer($offer_id, Request $request)
     {
         $data = $request->validate([
-            'end_offer' => 'required|date',
-            'start_offer' => 'required|date',
-            'offer_val' => 'required|decimal:2',
+            'end_offer' => 'sometimes|required|date',
+            'start_offer' => 'sometimes|required|date',
+            'offer_val' => 'sometimes|required|decimal:2',
         ]);
         $offer = $this->hallService->updateoffer($offer_id, $data);
 

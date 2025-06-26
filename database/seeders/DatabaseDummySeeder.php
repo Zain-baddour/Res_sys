@@ -21,12 +21,14 @@ class DatabaseDummySeeder extends Seeder
             'email' => 'owner1@example.com',
             'role' => 'owner'
         ]);
+        $owner1->assignRole('owner');
 
         $owner2 = User::factory()->create([
             'name' => 'Owner Two',
             'email' => 'owner2@example.com',
             'role' => 'owner'
         ]);
+        $owner2->assignRole('owner');
 
         // 2 assistants
         $assistant1 = User::factory()->create([
@@ -34,25 +36,29 @@ class DatabaseDummySeeder extends Seeder
             'email' => 'assistant1@example.com',
             'role' => 'assistant'
         ]);
+        $assistant1->assignRole('assistant');
 
         $assistant2 = User::factory()->create([
             'name' => 'Assistant Two',
             'email' => 'assistant2@example.com',
             'role' => 'assistant'
         ]);
+        $assistant2->assignRole('assistant');
 
         // 2 clients
-        User::factory()->create([
+        $client1 = User::factory()->create([
             'name' => 'Client One',
             'email' => 'client1@example.com',
             'role' => 'client'
         ]);
+        $client1->assignRole('client');
 
-        User::factory()->create([
+        $client2 = User::factory()->create([
             'name' => 'Client Two',
             'email' => 'client2@example.com',
             'role' => 'client'
         ]);
+        $client2->assignRole('client');
 
         // ومنولد الصالات
         $hall1 = hall::create([
