@@ -51,6 +51,8 @@ Route::get('/halls/eventImages/{id}', [HallController::class, 'getEventImages'])
 Route::get('/halls/eventVideos/{id}', [HallController::class, 'getEventVideos']); // show event videos
 Route::get('polices/{id}', [HallController::class, 'showpolices']);// show hall policies
 Route::get('hallPriceCards/{id}', [HallController::class , 'getHallPrice']); // show price card
+Route::get('offer/{id}', [HallController::class, 'showoffer']); // show offer
+
 
 
 
@@ -108,7 +110,8 @@ Route::middleware(['auth:sanctum','blocked'])->prefix('assistant')->group(functi
     Route::post('updatepolic/{id}', [HallController::class, 'updatepolices']); //update hall policies
     Route::post('addPrice/{id}', [HallController::class , 'addPrice']); // add price card
     Route::put('updatePrice/{id}', [HallController::class , 'updatePrice']); // update price card
-
+    Route::post('addoffer/{id}', [HallController::class, 'addoffer']); // add offer
+    Route::post('updateoffer/{id}', [HallController::class, 'updateoffer']); // update offer
 
 
     Route::post('addpay/{id}', [HallController::class, 'add_pay']);
@@ -169,9 +172,7 @@ Route::middleware('auth:sanctum')->get('/notifications', [NotificationController
 //*********************
 //ZainHassan ********
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::post('addoffer/{id}', [HallController::class, 'addoffer']);
-    Route::post('updateoffer/{id}', [HallController::class, 'updateoffer']);
-    Route::get('offer/{id}', [HallController::class, 'showoffer']);
+
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {

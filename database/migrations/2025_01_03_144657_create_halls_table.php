@@ -22,9 +22,9 @@ return new class extends Migration
             $table->string('contact');
             $table->enum('type' , ['joys' , 'sorrows' , 'both']);
             $table->json('events')->nullable();
-            $table->json('pay_methods')->nullable();
+            $table->json('pay_methods')->nullable()->default(null);
             $table->enum('status' , ['pending' , 'approved' , 'rejected'])->default('pending');
-            $table->enum('rate', [1 , 2 , 3 , 4 , 5]);
+            $table->enum('rate', [1 , 2 , 3 , 4 , 5])->nullable()->default(null);
             $table->timestamps();
         });
     }
