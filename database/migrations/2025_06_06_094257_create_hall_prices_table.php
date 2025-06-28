@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('hall_id')->constrained()->cascadeOnDelete();
             $table->integer('guest_count');
             $table->decimal('price', 10, 2);
+            $table->string('type');
             $table->timestamps();
         });
     }

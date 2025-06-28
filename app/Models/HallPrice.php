@@ -13,6 +13,7 @@ class HallPrice extends Model
         'hall_id',
         'guest_count',
         'price',
+        'type',
     ];
 
     public function hall() {

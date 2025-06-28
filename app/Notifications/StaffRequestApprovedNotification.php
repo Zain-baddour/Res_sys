@@ -15,9 +15,11 @@ class StaffRequestApprovedNotification extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+
+    protected $hall;
+    public function __construct($hall)
     {
-        //
+        $this->hall = $hall;
     }
 
     /**
@@ -34,8 +36,8 @@ class StaffRequestApprovedNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'title' => 'تم قبول طلب التوظيف',
-            'body' => 'تم قبولك كموظف في إحدى الصالات. يمكنك الآن البدء بالعمل.',
+            'title' => 'Your job request has been approved .',
+            'body' => 'you have been approved to work in the lounge :'. $this->hall->name,
         ];
     }
 

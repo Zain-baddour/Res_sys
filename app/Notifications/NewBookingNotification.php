@@ -32,11 +32,12 @@ class NewBookingNotification extends Notification
     {
         return [
             'type'=> 'booking',
-            'title' => 'حجز جديد',
-            'body' => 'تم حجز الصالة من قبل ' . $this->booking->user->name .
-                ' بتاريخ ' . $this->booking->event_date,
+            'title' => 'New reservation',
+            'body' => 'There is a new reservation by' . $this->booking->user->name .
+                ' Date : ' . $this->booking->event_date,
             'booking_id' => $this->booking->id,
-            'hall_id' => $this->booking->hall_id
+            'hall_id' => $this->booking->hall_id,
+            'Client pic' => $this->booking->user->photo ,
         ];
     }
 

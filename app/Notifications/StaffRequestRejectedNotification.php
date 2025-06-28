@@ -16,9 +16,11 @@ class StaffRequestRejectedNotification extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+
+    protected $hall;
+    public function __construct($hall)
     {
-        //
+        $this->hall = $hall;
     }
 
     /**
@@ -35,8 +37,8 @@ class StaffRequestRejectedNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'title' => 'لم يتم قبول طلب التوظيف',
-            'body' => 'للأسف لم يتم قبول طلب توظيفك',
+            'title' => 'job request denied',
+            'body' => 'unfortunately, your request to work in a lounge'. $this->hall->name .'has been rejected ',
         ];
     }
 

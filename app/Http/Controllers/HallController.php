@@ -297,14 +297,14 @@ class HallController extends Controller
         return response()->json($pay);
     }
 
-    public function addPrice(Request $request , $hallId)
+    public function addPrice(Request $request , $hallId , $type)
     {
         $validated = $request->validate([
             'guest_count' => 'required|integer|min:1',
             'price' => 'required|numeric|min:0',
         ]);
 
-        return $this->hallService->addPrice($validated , $hallId);
+        return $this->hallService->addPrice($validated ,$hallId ,$type);
     }
 
     public function updatePrice(Request $request, $id)

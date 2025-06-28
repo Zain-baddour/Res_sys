@@ -62,10 +62,11 @@ class OwnerService
             }
 
             // إرسال إشعار للمستخدم المقبول
-            $staffReq->user->notify(new StaffRequestApprovedNotification());
+            $staffReq->user->notify(new StaffRequestApprovedNotification($hall));
         }
         else{
-            $staffReq->user->notify(new StaffRequestRejectedNotification());
+            $hall = Hall::findOrFail($staffReq->hall_id);
+            $staffReq->user->notify(new StaffRequestRejectedNotification($hall));
         }
 
         return $staffReq;

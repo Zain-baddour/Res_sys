@@ -108,7 +108,7 @@ Route::middleware(['auth:sanctum','blocked'])->prefix('assistant')->group(functi
     Route::post('/uploadVideos', [AssistantController::class , 'uploadEventVideos']);// upload videos
     Route::post('addpolices/{id}', [HallController::class, 'addpolices']); //add hall policies
     Route::post('updatepolic/{id}', [HallController::class, 'updatepolices']); //update hall policies
-    Route::post('addPrice/{id}', [HallController::class , 'addPrice']); // add price card
+    Route::post('addPrice/{id}/{type}', [HallController::class , 'addPrice']); // add price card
     Route::put('updatePrice/{id}', [HallController::class , 'updatePrice']); // update price card
     Route::post('addoffer/{id}', [HallController::class, 'addoffer']); // add offer
     Route::post('updateoffer/{id}', [HallController::class, 'updateoffer']); // update offer

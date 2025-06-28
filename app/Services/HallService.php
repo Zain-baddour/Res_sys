@@ -28,7 +28,7 @@ class HallService
     public function getAll()
     {
         try {
-            return hall::with(['images','video'])
+            return hall::with(['images','video','prices'])
                 ->withAvg('reviews', 'rating')
                 ->where('status', 'approved')
                 ->get();
@@ -63,7 +63,7 @@ class HallService
     public function getById($id)
     {
         try {
-            return hall::with(['images', 'owner:id,photo'])
+            return hall::with(['images', 'owner:id,photo' , 'video' , 'prices'])
                 ->withAvg('reviews', 'rating')
                 ->where('id', $id)
                 ->get();
@@ -528,12 +528,13 @@ class HallService
 
     }
 
-    public function addPrice(array $validatedData , $hallId)
+    public function addPrice(array $validatedData , $hallId , $type)
     {
         $price = HallPrice::create([
             'guest_count' => $validatedData['guest_count'],
             'price' => $validatedData['price'],
             'hall_id' => $hallId,
+            'type' => $type,
         ]);
 
         return response()->json([
