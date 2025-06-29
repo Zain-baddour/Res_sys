@@ -49,14 +49,16 @@ class DatabaseDummySeeder extends Seeder
         $client1 = User::factory()->create([
             'name' => 'Client One',
             'email' => 'client1@example.com',
-            'role' => 'client'
+            'role' => 'client',
+            'location' => 'latakia-AlZeraaa'
         ]);
         $client1->assignRole('client');
 
         $client2 = User::factory()->create([
             'name' => 'Client Two',
             'email' => 'client2@example.com',
-            'role' => 'client'
+            'role' => 'client',
+            'location' => 'Damascus-AlMidan'
         ]);
         $client2->assignRole('client');
 
@@ -65,7 +67,7 @@ class DatabaseDummySeeder extends Seeder
             'name' => 'Hall One',
             'hall_image' => null,  // أو fake()->imageUrl() لو بدك صورة وهمية
             'owner_id' => $owner1->id,
-            'location' => 'damascus',
+            'location' => 'damascus-AlMidan',
             'capacity' => 300,
             'contact' => '0999888777',
             'type' => 'joys',
@@ -77,7 +79,7 @@ class DatabaseDummySeeder extends Seeder
             'name' => 'Hall Two',
             'hall_image' => null,
             'owner_id' => $owner2->id,
-            'location' => 'Latakia',
+            'location' => 'Latakia-AlMontazah',
             'capacity' => 200,
             'contact' => '0988777666',
             'type' => 'sorrows',

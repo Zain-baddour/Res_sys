@@ -15,7 +15,9 @@ use App\Models\Loungetiming;
 use App\Models\Offer;
 use App\Models\Paymentway;
 use App\Models\Policies;
+use App\Models\Review;
 use App\Models\Servicetohall;
+use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -56,6 +58,8 @@ class HallService
         }
 
     }
+
+
 
     /**
      * Get a single hall by ID.
@@ -154,8 +158,11 @@ class HallService
             $query->latest()->with('user');
         }])->findOrFail($hall_id);
 
+        $avgRating = Review::where('hall_id',$hall_id)->avg('rating');
+
         return response()->json([
-            'reviews' => $hall->reviews
+            'reviews' => $hall->reviews,
+            'average_rating' => round($avgRating, 2)
         ]);
     }
 

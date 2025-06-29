@@ -56,6 +56,7 @@ Route::get('offer/{id}', [HallController::class, 'showoffer']); // show offer
 
 
 
+
 Route::middleware(['auth:sanctum','blocked'])->prefix('halls')->group(function () {
     Route::post('/', [HallController::class, 'store']);      // Create a hall
     Route::put('/{id}', [HallController::class, 'update']);  // Update a hall
@@ -63,12 +64,13 @@ Route::middleware(['auth:sanctum','blocked'])->prefix('halls')->group(function (
     Route::get('/{hallId}/inquiries', [HallController::class, 'getHallInquiries']); //get this hall inquiries
     Route::get('/{hallId}/employees', [HallController::class, 'getHallEmployees']); //get this hall employees with there info
     Route::delete('/employee/{employeeId}', [HallController::class, 'delHallEmployees']); //delete an employee by id
+
 });
 
 
 // ***** Admin APIs *****
 
-Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
+Route::middleware(['auth:sanctum','role:admin'])->prefix('admin')->group(function () {
     Route::get('/settings', [AdminController::class, 'showSettings']); //show the app settings
     Route::put('/settings/update', [AdminController::class, 'updateSettings']); //update the settings
     Route::get('/settings/office', [AdminController::class, 'showOfficeSettings']); //show the app settings for office
@@ -128,6 +130,7 @@ Route::middleware(['auth:sanctum','blocked'])->prefix('Client')->group(function 
     Route::get('/myInquiries/{hall_id}', [ClientController::class, 'myInquiries']); //get client inquiries
     Route::post('/reviews', [ClientController::class, 'storeReview']); //review and comment on a hall
     Route::get('/myBookings', [ClientController::class, 'getMyBook']); // get all client's bookings
+    Route::get('/nearby', [ClientController::class, 'nearbyHalls']);
 });
 
 // ***** Booking APIs *****

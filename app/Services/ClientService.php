@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\hall;
 use App\Models\inquiry;
 use App\Models\Review;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -75,7 +76,7 @@ class ClientService
     public function handleReview(Request $request)
     {
         if (!$this->isCommentClean($request->comment)) {
-            return response()->json(['message' => 'تم رفض التعليق لاحتوائه على كلمات غير لائقة.'], 403);
+            return response()->json(['message' => 'Comment was rejected due to using Bad Words'], 403);
         }
 
         $review = Review::create([
@@ -85,7 +86,7 @@ class ClientService
             'comment' => $request->comment,
         ]);
 
-        return response()->json(['message' => 'تم إرسال التقييم بنجاح.', 'review' => $review]);
+        return response()->json(['message' => 'Your review was successfully stored', 'review' => $review]);
     }
 
     protected function isCommentClean(string $comment): bool
@@ -103,6 +104,23 @@ class ClientService
         $id = Auth::id();
         $bookings = Booking::where('user_id', $id)->get();
         return $bookings;
+    }
+
+    public function getHallsSortedByLocationSimilarity()
+    {
+        $id = Auth::id();
+        $clientLoc = User::where('id' , $id)->value('location');
+        if (!$id || !$clientLoc) {
+            return response()->json(['error' => 'User location not set.'], 400);
+        }
+        $halls = hall::all();
+        foreach ($halls as $hall) {
+            similar_text($clientLoc, $hall->location, $percent);
+            $hall->similarity = $percent;
+        }
+
+        // ترتيب تنازلي حسب نسبة التشابه
+        return $halls->sortByDesc('similarity')->values();
     }
 
 }

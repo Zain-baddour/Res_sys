@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\hall;
+use App\Models\User;
 use http\Env\Response;
 use Illuminate\Http\Request;
 use App\Services\HallService;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class HallController extends Controller
 {
+
     protected $hallService;
 
     public function __construct(HallService $hallService)
@@ -23,6 +28,8 @@ class HallController extends Controller
         $halls = $this->hallService->getAll();
         return response()->json($halls);
     }
+
+
 
     /**
      * Get a single hall by ID.
