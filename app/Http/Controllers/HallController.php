@@ -190,7 +190,7 @@ class HallController extends Controller
     public function showoffer($id)
     {
         $offer = $this->hallService->showoffer($id);
-        return response()->json($offer);
+        return response()->json($offer->load('hall'));
     }
 
     public function add_detail(Request $request, $hall_id)

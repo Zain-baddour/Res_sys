@@ -261,9 +261,7 @@ class HallService
 
     public function showoffer($hall_id)
     {
-        $offers = Offer::where('hall_id', $hall_id)->get();
-        $message = "this is offers to hall";
-        return ['message' => $message, 'offers' => $offers];
+        return Offer::where('hall_id', $hall_id)->get();
 
     }
 

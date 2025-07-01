@@ -130,7 +130,9 @@ Route::middleware(['auth:sanctum','blocked'])->prefix('Client')->group(function 
     Route::get('/myInquiries/{hall_id}', [ClientController::class, 'myInquiries']); //get client inquiries
     Route::post('/reviews', [ClientController::class, 'storeReview']); //review and comment on a hall
     Route::get('/myBookings', [ClientController::class, 'getMyBook']); // get all client's bookings
-    Route::get('/nearby', [ClientController::class, 'nearbyHalls']);
+    Route::get('/nearby', [ClientController::class, 'nearbyHalls']); // get nearby halls
+    Route::post('/complaint/{id}', [ClientController::class, 'storeComplaint']); //store a complaint
+    Route::get('/myComplaint', [ClientController::class, 'getComplaint']); //show my complaint
 });
 
 // ***** Booking APIs *****
