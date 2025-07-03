@@ -51,7 +51,8 @@ Route::get('/halls/eventImages/{id}', [HallController::class, 'getEventImages'])
 Route::get('/halls/eventVideos/{id}', [HallController::class, 'getEventVideos']); // show event videos
 Route::get('polices/{id}', [HallController::class, 'showpolices']);// show hall policies
 Route::get('hallPriceCards/{id}', [HallController::class , 'getHallPrice']); // show price card
-Route::get('offer/{id}', [HallController::class, 'showoffer']); // show offer
+Route::get('offer/{id}', [HallController::class, 'showHallOffer']); // show offer
+Route::get('activeOfferHalls' ,[HallController::class, 'activeOfferHalls']);
 
 
 

@@ -18,7 +18,9 @@ use App\Models\Policies;
 use App\Models\Review;
 use App\Models\Servicetohall;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
+use Illuminate\Container\Attributes\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -259,10 +261,23 @@ class HallService
 
     }
 
-    public function showoffer($hall_id)
+    public function showHallOffer($hall_id)
     {
         return Offer::where('hall_id', $hall_id)->get();
 
+    }
+
+    public function getHallsWithActiveOffers()
+    {
+        $now = Carbon::now();
+
+        return hall::whereHas('offer', function ($query) use ($now) {
+            $query->where('start_offer', '<=', $now)
+                ->where('end_offer', '>=', $now);
+        })->with(['offer' => function ($query) use ($now) {
+            $query->where('start_offer', '<=', $now)
+                ->where('end_offer', '>=', $now);
+        }])->get();
     }
 
 
@@ -341,6 +356,9 @@ class HallService
 
             return $det;
       }
+        else {
+            return ['message' => 'no details'];
+        }
 
     }
 
