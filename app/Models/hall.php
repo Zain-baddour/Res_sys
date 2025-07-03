@@ -92,4 +92,8 @@ class hall extends Model
     public function prices() {
         return $this->hasMany(HallPrice::class);
     }
+
+    public function complaint() {
+        return $this->hasMany(Complaint::class);
+    }
 }

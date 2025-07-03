@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Services\HallService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class HallController extends Controller
 {
@@ -187,10 +188,21 @@ class HallController extends Controller
         return response()->json($offer, 201);
     }
 
-    public function showoffer($id)
+    public function showHallOffer($id)
     {
-        $offer = $this->hallService->showoffer($id);
+        $offer = $this->hallService->showHallOffer($id);
         return response()->json($offer);
+    }
+
+    public function activeOfferHalls()
+    {
+        $halls = $this->hallService->getHallsWithActiveOffers();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Halls with active offers retrieved successfully.',
+            'data' => $halls
+        ]);
     }
 
     public function add_detail(Request $request, $hall_id)

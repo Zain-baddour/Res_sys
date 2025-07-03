@@ -75,4 +75,16 @@ class ClientController extends Controller
             'halls' => $halls
         ]);
     }
+
+    public function storeComplaint(Request $request , $hall_id) {
+        $request->validate([
+            'complaint' => 'required|string|max:10000'
+        ]);
+        return $this->clientService->storeComplaint($request , $hall_id);
+
+    }
+
+    public function getComplaint() {
+        return $this->clientService->getComplaint();
+    }
 }

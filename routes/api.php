@@ -51,7 +51,8 @@ Route::get('/halls/eventImages/{id}', [HallController::class, 'getEventImages'])
 Route::get('/halls/eventVideos/{id}', [HallController::class, 'getEventVideos']); // show event videos
 Route::get('polices/{id}', [HallController::class, 'showpolices']);// show hall policies
 Route::get('hallPriceCards/{id}', [HallController::class , 'getHallPrice']); // show price card
-Route::get('offer/{id}', [HallController::class, 'showoffer']); // show offer
+Route::get('offer/{id}', [HallController::class, 'showHallOffer']); // show offer
+Route::get('activeOfferHalls' ,[HallController::class, 'activeOfferHalls']);
 
 
 
@@ -130,7 +131,9 @@ Route::middleware(['auth:sanctum','blocked'])->prefix('Client')->group(function 
     Route::get('/myInquiries/{hall_id}', [ClientController::class, 'myInquiries']); //get client inquiries
     Route::post('/reviews', [ClientController::class, 'storeReview']); //review and comment on a hall
     Route::get('/myBookings', [ClientController::class, 'getMyBook']); // get all client's bookings
-    Route::get('/nearby', [ClientController::class, 'nearbyHalls']);
+    Route::get('/nearby', [ClientController::class, 'nearbyHalls']); // get nearby halls
+    Route::post('/complaint/{id}', [ClientController::class, 'storeComplaint']); //store a complaint
+    Route::get('/myComplaint', [ClientController::class, 'getComplaint']); //show my complaint
 });
 
 // ***** Booking APIs *****

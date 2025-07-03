@@ -1,15 +1,15 @@
 <?php
 
-use App\Console\Commands\offersdel;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Schedule;
-use App\Models\Offer;
+use Illuminate\Console\Scheduling\Schedule;
+use App\Console\Commands\DeleteExpiredOffers;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote')->hourly();
 
-Schedule::command(offersdel::class)->everyMinute();
-
+return function (Schedule $schedule) {
+    $schedule->command(DeleteExpiredOffers::class)->daily();
+};
 

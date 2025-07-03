@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Booking;
+use App\Models\Complaint;
 use App\Models\hall;
 use App\Models\inquiry;
 use App\Models\Review;
@@ -121,6 +122,23 @@ class ClientService
 
         // ترتيب تنازلي حسب نسبة التشابه
         return $halls->sortByDesc('similarity')->values();
+    }
+
+    public function storeComplaint(Request $request , $hall_id) {
+
+        $complaint = Complaint::create([
+            'user_id' => auth()->id(),
+            'hall_id' => $hall_id,
+            'complaint' => $request->complaint,
+        ]);
+
+        return response()->json(['message' => 'Your complaint was successfully stored and will be reviewed', 'review' => $complaint]);
+    }
+
+    public function getComplaint() {
+        $comps = Complaint::where('user_id' , auth()->id())->with('hall')->get();
+
+        return response()->json($comps);
     }
 
 }
