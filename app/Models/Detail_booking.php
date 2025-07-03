@@ -12,6 +12,7 @@ class Detail_booking extends Model
       'from',
       'to','time',
       'office_service_id',
+      'office_id',
       'user_id',
       'description','car_type','num_car','date_day'
       
@@ -19,5 +20,18 @@ class Detail_booking extends Model
     public function user(){
       return $this->belongsTo(User::class);
   }
+  public function office()
+  {
+      return $this->belongsTo(Office::class);
+  }
 
+  public function office_service()
+  {
+      return $this->belongsTo(Office_service::class);
+  }
+
+  public function sendanswers()
+  {
+      return $this->hasMany(Sendanswer::class); 
+  }
 }

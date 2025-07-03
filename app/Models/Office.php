@@ -19,5 +19,7 @@ class Office extends Model
      public function answer(){
       return  $this->hasOne(Sendanswer::class) ;
     }
-
+    public function detail_booking(){
+      return $this->hasMany(Detail_booking::class);
+  }
 }

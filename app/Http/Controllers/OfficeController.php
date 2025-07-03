@@ -67,7 +67,7 @@ class OfficeController extends Controller
         return response()->json($service);
     }
 
-    public function addReqReservation(Request $request, $service_id)
+    public function addReqReservation(Request $request, $service_id,$office_id)
     {
         $data = $request->validate([
             'from' => 'required|string|max:255',
@@ -81,13 +81,13 @@ class OfficeController extends Controller
             // 'office_id'=>'required'
         ]);
 
-        $reservation = $this->officeService->addReqReservation($data, $service_id);
+        $reservation = $this->officeService->addReqReservation($data, $service_id,$office_id);
         return response()->json($reservation);
     }
 
-    public function showReqReservation()
+    public function showReqReservation($office_id)
     {
-        $show = $this->officeService->showReqReservation();
+        $show = $this->officeService->showReqReservation($office_id);
         return response()->json($show);
     }
 
@@ -96,6 +96,8 @@ class OfficeController extends Controller
         $detail = $this->officeService->get_detail($det_id);
         return response()->json($detail);
     }
+
+
 
     public function add_info_contact(Request $request , $officeId)
     {

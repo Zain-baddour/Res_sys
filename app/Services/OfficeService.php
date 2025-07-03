@@ -131,7 +131,7 @@ public function getmyoffice(){
  }
 
 
-public function addReqReservation(array $data,$service_id){
+public function addReqReservation(array $data,$service_id,$office_id){
     $req =Detail_booking::create([
         'from' => $data['from'],
         'to' => $data['to'],
@@ -141,33 +141,80 @@ public function addReqReservation(array $data,$service_id){
         'date_day' =>$data['date_day'] ,
         'description' => $data['description'],
         'user_id'=>Auth::id(),
-        'office_service_id'=>$service_id
+        'office_service_id'=>$service_id,
+        'office_id'=>$office_id,
+
 
     ]);
     return ['message'=>"the request res added succesfuly",'service'=>$req];
 }
-public function showReqReservation(){
-    $show=Detail_booking::join('users','users.id','Detail_bookings.user_id')
-    ->select('users.id','users.name','users.number','users.photo','Detail_bookings.time')
-    ->get();
-    return $show;
+// public function showReqReservation(){
+//     $show=Detail_booking::join('users','users.id','Detail_bookings.user_id')
+//     ->select('users.id','users.name','users.number','users.photo','Detail_bookings.time')
+//     ->get();
+//     return $show;
+// }
+
+public function showReqReservation($office_id){
+    $office = Office::with('detail_booking.user')->findOrFail($office_id);
+
+    $bookings = $office->detail_booking->map(function ($booking) {
+        return [
+            'user_name' => $booking->user->name,
+            'user_image' => $booking->user->photo, 
+            'booking_date' => $booking->created_at,
+            'booking_id' => $booking->id,
+        ];
+    });
+
+    return response()->json($bookings);
 }
 
+
+
+// public function get_detail($det_id) {
+//     $exist= Detail_booking::where('id',$det_id)->exists();
+//     if($exist){
+//     $det= Detail_booking::join('users', 'detail_bookings.user_id', 'users.id')
+//     -> select('detail_bookings.*', 'users.number', 'users.name','users.photo')
+//                         ->where('detail_bookings.id', $det_id)
+//                         ->get();
+
+//     return $det;
+// }
+// else{
+//     $message="the record not found";
+//     return $message;
+// }}
 
 public function get_detail($det_id) {
-    $exist= Detail_booking::where('id',$det_id)->exists();
-    if($exist){
-    $det= Detail_booking::join('users', 'detail_bookings.user_id', 'users.id')
-    -> select('detail_bookings.*', 'users.number', 'users.name','users.photo')
-                        ->where('detail_bookings.id', $det_id)
-                        ->get();
+    $booking = Detail_booking::with(['office','sendanswers'])->findOrFail($det_id);
 
-    return $det;
+    $response = [
+        'office_name' => $booking->office->name,
+        'office_image' => $booking->office->photo, 
+        'booking_details' => [
+            'from' => $booking->from,
+            'date_day' => $booking->date_day,
+            'to'=>$booking->to,
+            'time'=>$booking->time,
+            'car_type'=>$booking->car_type,
+            'num_car'=>$booking->num_car,
+            'description'=>$booking->description,
+            'id'=> $booking->id
+        
+        ],
+        'responses' => $booking->sendanswers->map(function ($response) {
+            return [
+                'response_content' => $response->answer, // تأكد من أن لديك الحقل الصحيح للرد
+                'response_date' => $response->created_at,
+            ];
+        }),
+    ];
+
+    return response()->json($response);
+
 }
-else{
-    $message="the record not found";
-    return $message;
-}}
 public function add_info_contact(array $data ,$officeId){
 
     $contact =Contact::create([
@@ -182,12 +229,12 @@ public function add_info_contact(array $data ,$officeId){
 }
 
 public function send_answer($detail_id,$user_id , $officeId,array $data){
-    $exist= Detail_booking::where('id',$detail_id)->where('user_id',$user_id)->exists();
+    $exist= Detail_booking::where('id',$detail_id)->where('user_id',$user_id)->where('office_id',$officeId)->exists();
     if($exist){
         $send=Sendanswer::create([
             'answer'=>$data['answer'],
             'user_id'=>$user_id,
-            'detail_id'=>$detail_id,
+            'detail_booking_id'=>$detail_id,
             'office_id'=>$officeId
         ]);
     }

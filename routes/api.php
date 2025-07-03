@@ -193,9 +193,9 @@ Route::get('showtime/{id}', [HallController::class, 'showtime']);
 Route::middleware(['auth:sanctum'])->prefix('office')->group(function () {
     Route::post('/', [OfficeController::class, 'addoffice']);      // Create an Office
     Route::post('/service/{id}', [OfficeController::class, 'addserv']);      // Create an Office
-    Route::post('/addreq/{id}', [OfficeController::class, 'addReqReservation']); //add req
-    Route::get('/show', [OfficeController::class, 'showReqReservation']);
-    Route::get('/show/{id}', [OfficeController::class, 'get_detail']); //show detail request of booking
+    Route::post('/addreq/{id}/{office_id}', [OfficeController::class, 'addReqReservation']); //add req
+    Route::get('/show/{office_id}', [OfficeController::class, 'showReqReservation']);
+    Route::get('/showdet/{id}', [OfficeController::class, 'get_detail']); //show detail request of booking
     Route::get('showserv/{id}', [OfficeController::class, 'showservice']);//show service office
     Route::post('/addcont/{id}', [OfficeController::class, 'add_info_contact']);
     Route::post('/send/{det_id}/{user_id}/{officeId}', [OfficeController::class, 'send_answer']); //send response to bookings user

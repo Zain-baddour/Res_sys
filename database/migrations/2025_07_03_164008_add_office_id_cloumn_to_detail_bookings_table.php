@@ -11,13 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sendanswers', function (Blueprint $table) {
-            $table->id();
-            $table->string('answer');
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+        Schema::table('detail_bookings', function (Blueprint $table) {
             $table->foreignId('office_id')->constrained('offices')->cascadeOnDelete();
-            $table->foreignId('detail_booking_id')->constrained('detail_bookings')->cascadeOnDelete();
-            $table->timestamps();
         });
     }
 
@@ -26,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sendanswers');
+        Schema::table('detail_bookings', function (Blueprint $table) {
+            //
+        });
     }
 };
