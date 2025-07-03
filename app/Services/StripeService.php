@@ -10,19 +10,7 @@ use Stripe\PaymentIntent;
 
 class StripeService
 {
-//    public function __construct()
-//    {
-//        Stripe::setApiKey(config('services.stripe.secret'));
-//    }
-//
-//    public function createPaymentIntent($amount, $currency = 'usd')
-//    {
-//        return PaymentIntent::create([
-//            'amount' => $amount * 100, // Stripe uses cents
-//            'currency' => $currency,
-//            'payment_method_types' => ['card'],
-//        ]);
-//    }
+
 
     public function createHallSubscriptionIntent($hall, $user)
     {
@@ -44,7 +32,7 @@ class StripeService
         return PaymentIntent::create([
             'amount' => $price * 100, // cents
             'currency' => 'usd',
-            'payment_method_types' => ['card'],
+            'automatic_payment_methods' => ['enabled' => true],
             'metadata' => [
                 'hall_id' => $hall->id,
                 'user_id' => $user->id,

@@ -39,7 +39,7 @@ class StripeController extends Controller
 
     public function listPayments(Request $request)
     {
-        $limit = $request->get('limit', 10); // ممكن يمرر عدد العمليات
+        $limit = $request->get('limit', 10);
         $payments = $this->stripeService->listPaymentIntents($limit);
 
         return response()->json($payments);
@@ -47,18 +47,7 @@ class StripeController extends Controller
 
 
 
-//    public function createPaymentIntent(Request $request)
-//    {
-//        $request->validate([
-//            'amount' => 'required|numeric|min:1',
-//        ]);
-//
-//        $paymentIntent = $this->stripeService->createPaymentIntent($request->amount);
-//
-//        return response()->json([
-//            'client_secret' => $paymentIntent->client_secret
-//        ]);
-//    }
+
 
 
 
