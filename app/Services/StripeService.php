@@ -34,7 +34,8 @@ class StripeService
         return PaymentIntent::create([
             'amount' => $price * 100, // cents
             'currency' => 'usd',
-            'automatic_payment_methods' => ['enabled' => true],
+            'payment_method_types' => ['card'],
+//            'automatic_payment_methods' => ['enabled' => true],
             'metadata' => [
                 'hall_id' => $hall->id,
                 'user_id' => $user->id,
