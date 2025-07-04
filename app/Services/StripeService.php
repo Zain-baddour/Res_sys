@@ -6,6 +6,8 @@ namespace App\Services;
 use App\Models\AppSetting;
 use Illuminate\Support\Facades\Log;
 use Stripe\Stripe;
+use Stripe\Customer;
+use Stripe\Subscription;
 use Stripe\PaymentIntent;
 
 class StripeService
@@ -39,6 +41,31 @@ class StripeService
                 'type' => 'subscription_renewal'
             ]
         ]);
+//        $user = auth()->user(); // أو User::find(id)
+//
+//        $priceId = 'price_1Rh7imRL6N1AQkjGp3nViS7Q'; // ← السعر من Stripe Dashboard
+//
+//        try {
+//            $subscription = $user->newSubscription('default', $priceId)->create();
+//
+//            if (
+//                $subscription->latest_invoice &&
+//                $subscription->latest_invoice->payment_intent &&
+//                isset($subscription->latest_invoice->payment_intent->client_secret)
+//            ) {
+//                return response()->json([
+//                    'client_secret' => $subscription->latest_invoice->payment_intent->client_secret
+//                ]);
+//            } else {
+//                return response()->json([
+//                    'error' => 'No payment intent was generated'
+//                ], 400);
+//            }
+//        } catch (\Exception $e) {
+//            return response()->json([
+//                'error' => $e->getMessage()
+//            ], 500);
+//        }
     }
 
 
