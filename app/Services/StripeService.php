@@ -30,7 +30,7 @@ class StripeService
         Stripe::setApiKey(config('services.stripe.secret'));
 
         return PaymentIntent::create([
-            'amount' => $price * 100, // cents
+            'amount' => $price, // cents
             'currency' => 'usd',
             'automatic_payment_methods' => ['enabled' => true],
             'metadata' => [
