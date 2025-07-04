@@ -166,6 +166,7 @@ Route::middleware(['auth:sanctum','blocked'])->prefix('Booking')->group(function
 // ***** Stripe APIs *****
 Route::middleware('auth:sanctum')->post('/stripe/hall-subscription', [StripeController::class, 'createSubscriptionPayment']);
 Route::middleware(['auth:sanctum','role:admin'])->get('stripe/getPayments', [StripeController::class, 'listPayments']);
+Route::get('/test-stripe', [StripeController::class, 'testStripeCurl']);
 
 //Route::post('/stripe/payment-intent', [StripeController::class, 'createPaymentIntent']);
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\hall;
 use Illuminate\Http\Request;
 use App\Services\StripeService;
+use Illuminate\Support\Facades\Http;
 
 class StripeController extends Controller
 {
@@ -45,6 +46,18 @@ class StripeController extends Controller
         return response()->json($payments);
     }
 
+
+    public function testStripeCurl()
+    {
+        $response = Http::withBasicAuth(config('services.stripe.secret'), '')
+            ->asForm()
+            ->post('https://api.stripe.com/v1/payment_intents', [
+                'amount' => 1000, // 10.00 USD
+                'currency' => 'usd',
+            ]);
+
+        return $response->json();
+    }
 
 
 
