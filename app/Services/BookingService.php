@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Booking;
 use App\Models\Hall;
+use App\Models\offer;
 use App\Models\payments;
 use App\Models\Servicetohall;
 use App\Models\HallPrice;
@@ -45,7 +46,7 @@ class BookingService
                 ->exists();
 
             if ($conflictingBooking) {
-                return response()->json(['message' => 'تم حجز هذه القاعة بالفعل خلال الوقت المحدد'], 422);
+                return response()->json(['message' => 'there is another reservation at this time'], 422);
             }
 
 
@@ -112,14 +113,35 @@ class BookingService
                 $booking->update(['condolence_additional_notes' => $data['condolence_additional_notes']]);
             }
 
-            $priceRow = HallPrice::where('hall_id', $data['hall_id'])
-                ->where('guest_count', '>=', $guestCount)
-                ->orderBy('guest_count', 'asc')
-                ->value('price');
+            // اضافة السعر المحدد من الصالة في حال ساعات اة بطاقات حسب عدد الحضور
+            $hallPrice1 = HallPrice::where('hall_id', $data['hall_id'])->first();
+            $hallPriceType = $hallPrice1->type;
+            if($hallPriceType == 'cards'){
+                $priceRow = HallPrice::where('hall_id', $data['hall_id'])
+                    ->where('guest_count', '>=', $guestCount)
+                    ->orderBy('guest_count', 'asc')
+                    ->value('price');
+                $addCost = $guestCount * $priceRow;
+            }
+            elseif ($hallPriceType == 'hours'){
+                $fromT = Carbon::createFromTimeString($booking->from);
+                $toT = Carbon::createFromTimeString($booking->to);
+                $diffH = $fromT->diffInHours($toT);
+                $addCost = $diffH * $hallPrice1->price / $hallPrice1->guest_count;
+            }
 
+            $total_price += $addCost;
 
-            $GuestCost = $guestCount * $priceRow;
-            $total_price += $GuestCost;
+            // تحقق من وجود عرض
+            $now = Carbon::now();
+            $offer = offer::where('hall_id', $data['hall_id'])
+                ->where('start_offer', '<=', $now)
+                ->where('end_offer', '>=' , $now)
+                ->first();
+            if($offer){
+                $total_price -= $total_price * $offer->offer_val / 100 ;
+            }
+
 
             payments::create([
                 'user_id' => Auth::id(),
