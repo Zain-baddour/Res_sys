@@ -65,6 +65,10 @@ class ClientController extends Controller
         $books = $this->clientService->getMyBookings();
         return response()->json($books->load(['hall','payment','services','songs']));
     }
+    public function getABook($id) {
+        $book = $this->clientService->getABooking($id);
+        return response()->json($book->load(['hall','payment','services','songs']));
+    }
 
     public function nearbyHalls()
     {
