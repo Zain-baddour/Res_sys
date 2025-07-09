@@ -131,6 +131,7 @@ Route::middleware(['auth:sanctum','blocked'])->prefix('Client')->group(function 
     Route::get('/myInquiries/{hall_id}', [ClientController::class, 'myInquiries']); //get client inquiries
     Route::post('/reviews', [ClientController::class, 'storeReview']); //review and comment on a hall
     Route::get('/myBookings', [ClientController::class, 'getMyBook']); // get all client's bookings
+    Route::get('/Booking/{id}', [ClientController::class, 'getABook']); // get a client's booking
     Route::get('/nearby', [ClientController::class, 'nearbyHalls']); // get nearby halls
     Route::post('/complaint/{id}', [ClientController::class, 'storeComplaint']); //store a complaint
     Route::get('/myComplaint', [ClientController::class, 'getComplaint']); //show my complaint
@@ -166,6 +167,7 @@ Route::middleware(['auth:sanctum','blocked'])->prefix('Booking')->group(function
 // ***** Stripe APIs *****
 Route::middleware('auth:sanctum')->post('/stripe/hall-subscription', [StripeController::class, 'createSubscriptionPayment']);
 Route::middleware(['auth:sanctum','role:admin'])->get('stripe/getPayments', [StripeController::class, 'listPayments']);
+Route::get('/test-stripe', [StripeController::class, 'testStripeCurl']);
 
 //Route::post('/stripe/payment-intent', [StripeController::class, 'createPaymentIntent']);
 

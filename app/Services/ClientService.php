@@ -107,6 +107,11 @@ class ClientService
         return $bookings;
     }
 
+    public function getABooking($id) {
+        $bookings = Booking::where('id', $id)->get();
+        return $bookings;
+    }
+
     public function getHallsSortedByLocationSimilarity()
     {
         $id = Auth::id();

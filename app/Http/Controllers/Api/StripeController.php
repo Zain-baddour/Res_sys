@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\hall;
 use Illuminate\Http\Request;
 use App\Services\StripeService;
+use Illuminate\Support\Facades\Http;
 
 class StripeController extends Controller
 {
@@ -39,26 +40,27 @@ class StripeController extends Controller
 
     public function listPayments(Request $request)
     {
-        $limit = $request->get('limit', 10); // ممكن يمرر عدد العمليات
+        $limit = $request->get('limit', 10);
         $payments = $this->stripeService->listPaymentIntents($limit);
 
         return response()->json($payments);
     }
 
 
+    public function testStripeCurl()
+    {
+        $response = Http::withBasicAuth(config('services.stripe.secret'), '')
+            ->asForm()
+            ->post('https://api.stripe.com/v1/payment_intents', [
+                'amount' => 1000, // 10.00 USD
+                'currency' => 'usd',
+            ]);
 
-//    public function createPaymentIntent(Request $request)
-//    {
-//        $request->validate([
-//            'amount' => 'required|numeric|min:1',
-//        ]);
-//
-//        $paymentIntent = $this->stripeService->createPaymentIntent($request->amount);
-//
-//        return response()->json([
-//            'client_secret' => $paymentIntent->client_secret
-//        ]);
-//    }
+        return $response->json();
+    }
+
+
+
 
 
 
