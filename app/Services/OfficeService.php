@@ -148,12 +148,12 @@ public function addReqReservation(array $data,$service_id,$office_id){
     ]);
     return ['message'=>"the request res added succesfuly",'service'=>$req];
 }
-// public function showReqReservation(){
-//     $show=Detail_booking::join('users','users.id','Detail_bookings.user_id')
-//     ->select('users.id','users.name','users.number','users.photo','Detail_bookings.time')
-//     ->get();
-//     return $show;
-// }
+public function showReqReservationforoffice(){
+    $show=Detail_booking::join('users','users.id','Detail_bookings.user_id')
+    ->select('users.id','users.name','users.number','users.photo','Detail_bookings.time')
+    ->get();
+    return $show;
+}
 
 public function showReqReservation($office_id){
     $office = Office::with('detail_booking.user')->findOrFail($office_id);
@@ -172,20 +172,20 @@ public function showReqReservation($office_id){
 
 
 
-// public function get_detail($det_id) {
-//     $exist= Detail_booking::where('id',$det_id)->exists();
-//     if($exist){
-//     $det= Detail_booking::join('users', 'detail_bookings.user_id', 'users.id')
-//     -> select('detail_bookings.*', 'users.number', 'users.name','users.photo')
-//                         ->where('detail_bookings.id', $det_id)
-//                         ->get();
+public function get_detailforoffice($det_id) {
+    $exist= Detail_booking::where('id',$det_id)->exists();
+    if($exist){
+    $det= Detail_booking::join('users', 'detail_bookings.user_id', 'users.id')
+    -> select('detail_bookings.*', 'users.number', 'users.name','users.photo')
+                        ->where('detail_bookings.id', $det_id)
+                        ->get();
 
-//     return $det;
-// }
-// else{
-//     $message="the record not found";
-//     return $message;
-// }}
+    return $det;
+}
+else{
+    $message="the record not found";
+    return $message;
+}}
 
 public function get_detail($det_id) {
     $booking = Detail_booking::with(['office','sendanswers'])->findOrFail($det_id);
