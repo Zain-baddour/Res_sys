@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AssistantController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
@@ -170,6 +171,16 @@ Route::middleware(['auth:sanctum','role:admin'])->get('stripe/getPayments', [Str
 Route::get('/test-stripe', [StripeController::class, 'testStripeCurl']);
 
 //Route::post('/stripe/payment-intent', [StripeController::class, 'createPaymentIntent']);
+
+// ***** Admin Dashboard APIs *****
+Route::prefix('admin/dashboard')
+    ->middleware(['auth:sanctum', 'role:admin'])
+    ->group(function () {
+        Route::get('/general',  [AdminDashboardController::class, 'general']);
+        Route::get('/lounges',  [AdminDashboardController::class, 'lounges']);
+        Route::get('/offices',  [AdminDashboardController::class, 'offices']);
+    });
+
 
 // ***** Owner Dashboard APIs *****
 Route::middleware('auth:sanctum')->get('/Owner-dashboard/statistics', [HallDashboardController::class, 'getStatistics']);
