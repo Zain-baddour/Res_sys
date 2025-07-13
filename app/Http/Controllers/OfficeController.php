@@ -96,6 +96,8 @@ class OfficeController extends Controller
         $detail = $this->officeService->get_detail($det_id);
         return response()->json($detail);
     }
+
+    
     public function showReqReservationforoffice(){
         $show = $this->officeService->showReqReservationforoffice();
         return response()->json($show);

@@ -160,6 +160,7 @@ public function showReqReservation($office_id){
 
     $bookings = $office->detail_booking->map(function ($booking) {
         return [
+            'user_id' => $booking->user->id,
             'user_name' => $booking->user->name,
             'user_image' => $booking->user->photo, 
             'booking_date' => $booking->created_at,
