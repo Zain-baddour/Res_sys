@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\AppSetting;
 use App\Models\AppSettingO;
+use App\Models\Complaint;
 use App\Models\hall;
 use App\Models\Hall_img;
 use App\Models\User;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Storage;
 class AdmineService
 {
     public function getPendingHalls(){
-        return hall::with('images')->where('status', 'pending')->get();
+        return hall::with(['images','owner'])->where('status', 'pending')->get();
 //            ->map(function ($hall){
 //            return [
 //                'id' => $hall->id,
@@ -104,6 +105,16 @@ class AdmineService
     public function getBlockedUsers()
     {
         return \App\Models\User::where('is_blocked', true)->get();
+    }
+
+    public function getUsersComplaint() {
+        return Complaint::with(['user','hall'])->get();
+    }
+
+    public function getAUserComplaint($id) {
+        return Complaint::with(['user','hall'])
+            ->where('user_id', $id)
+            ->get();
     }
 
 }

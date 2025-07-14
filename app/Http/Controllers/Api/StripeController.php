@@ -46,18 +46,26 @@ class StripeController extends Controller
         return response()->json($payments);
     }
 
-
-    public function testStripeCurl()
+    public function confirmPayment(Request $request)
     {
-        $response = Http::withBasicAuth(config('services.stripe.secret'), '')
-            ->asForm()
-            ->post('https://api.stripe.com/v1/payment_intents', [
-                'amount' => 1000, // 10.00 USD
-                'currency' => 'usd',
-            ]);
+        $request->validate([
+            'payment_intent_id' => 'required|string',
+        ]);
 
-        return $response->json();
+        try {
+            $this->stripeService->confirmAndRecord($request->payment_intent_id);
+
+            return response()->json([
+                'message' => 'Payment confirmed and subscription updated ✅',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 422);
+        }
     }
+
+
 
 
 

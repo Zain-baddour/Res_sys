@@ -109,4 +109,12 @@ class AdminController extends Controller
         $blockedUsers = $this->adminService->getBlockedUsers();
         return response()->json($blockedUsers);
     }
+
+    public function getUsersComplaint() {
+        return response()->json($this->adminService->getUsersComplaint());
+    }
+
+    public function getAUserComplaint($id) {
+        return response()->json($this->adminService->getAUserComplaint($id));
+    }
 }
