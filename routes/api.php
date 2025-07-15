@@ -221,4 +221,5 @@ Route::middleware(['auth:sanctum'])->prefix('office')->group(function () {
     Route::get('/showoffice', [OfficeController::class, 'showoffice']);//get all office
     Route::get('/detailoffice/{off_id}', [OfficeController::class, 'showDetailOffice']);//get all office
     Route::get('/showmyoffice', [OfficeController::class, 'showMyOffice']);
+    Route::post('/updateReqs/{id}', [OfficeController::class, 'updateReqStatus']);
 });

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('detail_bookings', function (Blueprint $table) {
-            $table->foreignId('office_id')->constrained('offices')->cascadeOnDelete();
+            $table->enum('status' , ['pending' , 'approved' , 'rejected'])->default('pending');
         });
     }
 

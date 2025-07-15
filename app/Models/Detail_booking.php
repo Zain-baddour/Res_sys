@@ -13,6 +13,7 @@ class Detail_booking extends Model
       'to','time',
       'office_service_id',
       'office_id',
+      'status',
       'user_id',
       'description','car_type','num_car','date_day'
       

@@ -12,6 +12,8 @@ use App\Models\Sendanswer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
+
 
 class OfficeService
 {
@@ -148,6 +150,20 @@ public function addReqReservation(array $data,$service_id,$office_id){
     ]);
     return ['message'=>"the request res added succesfuly",'service'=>$req];
 }
+public function approveOrRejectRequest($ReqId,$status) {
+    $RequestStatus = Detail_booking::findOrFail($ReqId);
+    if ($RequestStatus->status !== 'pending') {
+        throw ValidationException::withMessages([
+            'status' => 'You cannot modify this request , its not pending.'
+        ]);
+    }
+    if(!in_array($status,['approved','rejected'])){
+        throw new \InvalidArgumentException('status is not Right');
+    }
+    $RequestStatus->update(['status' => $status]);
+    return ['message'=>"the request updated succesfuly",'Request'=>$RequestStatus] ;
+}
+
 public function showReqReservationforoffice(){
     $show=Detail_booking::join('users','users.id','Detail_bookings.user_id')
     ->select('users.id','users.name','users.number','users.photo','Detail_bookings.time')

@@ -85,6 +85,14 @@ class OfficeController extends Controller
         return response()->json($reservation);
     }
 
+    public function updateReqStatus(Request $request, $id) {
+        $request->validate([
+            'status' => 'sometimes|string|in:approved,rejected'
+        ]);
+        $Reques = $this->officeService->approveOrRejectRequest($id, $request->status);
+        return response()->json($Reques);
+    }
+
     public function showReqReservation($office_id)
     {
         $show = $this->officeService->showReqReservation($office_id);
