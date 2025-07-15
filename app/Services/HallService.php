@@ -32,7 +32,7 @@ class HallService
     public function getAll()
     {
         try {
-            return hall::with(['images','video','prices'])
+            return hall::with(['images','video','prices','reviews'])
                 ->withAvg('reviews', 'rating')
                 ->where('status', 'approved')
                 ->get();
@@ -69,7 +69,7 @@ class HallService
     public function getById($id)
     {
         try {
-            return hall::with(['images', 'owner:id,photo' , 'video' , 'prices'])
+            return hall::with(['images', 'owner:id,photo' , 'video' , 'prices','reviews'])
                 ->withAvg('reviews', 'rating')
                 ->where('id', $id)
                 ->get();

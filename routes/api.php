@@ -85,6 +85,8 @@ Route::middleware(['auth:sanctum','role:admin'])->prefix('admin')->group(functio
     Route::post('{id}/block', [AdminController::class, 'blockUser']); //block a user
     Route::post('{id}/unblock', [AdminController::class, 'unblockUser']); //unblock a user
     Route::get('blocked', [AdminController::class, 'blockedUsers']); // show blocked users
+    Route::get('complaints', [AdminController::class, 'getUsersComplaint']); // show users complaints
+    Route::get('complaints/{id}', [AdminController::class, 'getAHallComplaint']); // show a user complaints
 
 });
 
@@ -168,7 +170,7 @@ Route::middleware(['auth:sanctum','blocked'])->prefix('Booking')->group(function
 // ***** Stripe APIs *****
 Route::middleware('auth:sanctum')->post('/stripe/hall-subscription', [StripeController::class, 'createSubscriptionPayment']);
 Route::middleware(['auth:sanctum','role:admin'])->get('stripe/getPayments', [StripeController::class, 'listPayments']);
-Route::get('/test-stripe', [StripeController::class, 'testStripeCurl']);
+Route::post('/stripe/payment-confirm', [StripeController::class, 'confirmPayment']);
 
 //Route::post('/stripe/payment-intent', [StripeController::class, 'createPaymentIntent']);
 

@@ -9,6 +9,9 @@ use Stripe\Stripe;
 use Stripe\Customer;
 use Stripe\Subscription;
 use Stripe\PaymentIntent;
+use App\Models\hall;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class StripeService
 {
@@ -77,5 +80,51 @@ class StripeService
         return PaymentIntent::all([
             'limit' => $limit,
         ]);
+    }
+
+    public function confirmAndRecord($paymentIntentId): void
+    {
+        // -- 1) جلب الـ PaymentIntent من Stripe
+        $intent = PaymentIntent::retrieve($paymentIntentId);
+
+        if ($intent->status !== 'succeeded') {
+            throw new \Exception('Payment not completed (status: '.$intent->status.')');
+        }
+
+        // -- 2) استخراج الـ metadata
+        $hallId = $intent->metadata->hall_id ?? null;
+        $userId = $intent->metadata->user_id ?? null;
+
+        if (!$hallId || !$userId) {
+            throw new \Exception('Missing metadata (hall_id / user_id).');
+        }
+
+        // -- 3) تسجيل الدفع وتحديث الاشتراك في معاملة واحدة
+        DB::transaction(function () use ($intent, $hallId, $userId) {
+
+            // 3-أ) سجل الدفع (إن لم يكن مسجَّلاً سابقاً)
+            Payment::firstOrCreate(
+                ['payment_intent_id' => $intent->id],
+                [
+                    'hall_id'  => $hallId,
+                    'user_id'  => $userId,
+                    'amount'   => $intent->amount,   // بالسنت
+                    'currency' => $intent->currency,
+                    'status'   => $intent->status,
+                ]
+            );
+
+            // 3-ب) حدّث اشتراك القاعة لشهر إضافي
+            $hall = Hall::findOrFail($hallId);
+
+            $now           = Carbon::now();
+            $currentExpiry = $hall->subscription_expires_at;
+
+            $hall->subscription_expires_at = $currentExpiry && $currentExpiry->isFuture()
+                ? $currentExpiry->addMonth()
+                : $now->addMonth();
+
+            $hall->save();
+        });
     }
 }
