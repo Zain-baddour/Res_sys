@@ -114,6 +114,7 @@ class BookingService
             }
 
             // اضافة السعر المحدد من الصالة في حال ساعات اة بطاقات حسب عدد الحضور
+            $addCost = 0;
             $hallPrice1 = HallPrice::where('hall_id', $data['hall_id'])->first();
             $hallPriceType = $hallPrice1->type;
             if($hallPriceType == 'cards'){
