@@ -111,9 +111,9 @@ class AdmineService
         return Complaint::with(['user','hall'])->get();
     }
 
-    public function getAUserComplaint($id) {
-        return Complaint::with(['user','hall'])
-            ->where('user_id', $id)
+    public function getAHallComplaint($id) {
+        return Complaint::with('user')
+            ->where('hall_id', $id)
             ->get();
     }
 

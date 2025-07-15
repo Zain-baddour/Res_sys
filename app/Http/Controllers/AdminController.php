@@ -114,7 +114,7 @@ class AdminController extends Controller
         return response()->json($this->adminService->getUsersComplaint());
     }
 
-    public function getAUserComplaint($id) {
-        return response()->json($this->adminService->getAUserComplaint($id));
+    public function getAHallComplaint($id) {
+        return response()->json($this->adminService->getAHallComplaint($id));
     }
 }

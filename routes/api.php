@@ -86,7 +86,7 @@ Route::middleware(['auth:sanctum','role:admin'])->prefix('admin')->group(functio
     Route::post('{id}/unblock', [AdminController::class, 'unblockUser']); //unblock a user
     Route::get('blocked', [AdminController::class, 'blockedUsers']); // show blocked users
     Route::get('complaints', [AdminController::class, 'getUsersComplaint']); // show users complaints
-    Route::get('complaints/{id}', [AdminController::class, 'getAUserComplaint']); // show a user complaints
+    Route::get('complaints/{id}', [AdminController::class, 'getAHallComplaint']); // show a user complaints
 
 });
 
