@@ -93,9 +93,9 @@ class OfficeController extends Controller
         return response()->json($Reques);
     }
 
-    public function showReqReservation($office_id)
+    public function showReqReservation($office_id,$user_id)
     {
-        $show = $this->officeService->showReqReservation($office_id);
+        $show = $this->officeService->showReqReservation($office_id,$user_id);
         return response()->json($show);
     }
 

@@ -170,9 +170,12 @@ public function showReqReservationforoffice(){
     ->get();
     return $show;
 }
-
-public function showReqReservation($office_id){
-    $office = Office::with('detail_booking.user')->findOrFail($office_id);
+//->where('user_id',Auth::id())
+public function showReqReservation($office_id,$user_id){
+    
+    $office = Office::with(['detail_booking'=>function ($query) use ($user_id) {
+        $query->where('user_id', $user_id);}])->
+    findOrFail($office_id);
 
     $bookings = $office->detail_booking->map(function ($booking) {
         return [
