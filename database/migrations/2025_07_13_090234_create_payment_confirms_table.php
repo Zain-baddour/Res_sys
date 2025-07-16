@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('payment_confirms', function (Blueprint $table) {
             $table->id();
+            $table->string('payment_intent_id');
+            $table->foreignId('hall_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->decimal('amount');
+            $table->string('currency');
+            $table->text('status');
             $table->timestamps();
         });
     }

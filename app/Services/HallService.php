@@ -128,6 +128,8 @@ class HallService
                 ]);
             }
         }
+        $now           = Carbon::now();
+        $hall->subscription_expires_at = $now->addMonth();
 
         $hall->save();
         return $hall;

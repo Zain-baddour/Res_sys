@@ -23,6 +23,7 @@ class hall extends Model
         'pay_methods',
         'status',
         'rate',
+        'subscription_expires_at',
     ];
 
 
@@ -95,5 +96,9 @@ class hall extends Model
 
     public function complaint() {
         return $this->hasMany(Complaint::class);
+    }
+
+    public function paymentConfirm() {
+        return $this->hasMany(paymentConfirm::class);
     }
 }

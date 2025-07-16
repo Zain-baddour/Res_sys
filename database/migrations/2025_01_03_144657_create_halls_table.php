@@ -25,6 +25,7 @@ return new class extends Migration
             $table->json('pay_methods')->nullable()->default(null);
             $table->enum('status' , ['pending' , 'approved' , 'rejected'])->default('pending');
             $table->enum('rate', [1 , 2 , 3 , 4 , 5])->nullable()->default(null);
+            $table->timestamp('subscription_expires_at')->default('2025-01-01 00:00:00');
             $table->timestamps();
         });
     }
