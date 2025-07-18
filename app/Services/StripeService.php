@@ -83,7 +83,7 @@ class StripeService
         ]);
     }
 
-    public function confirmAndRecord($paymentIntentId): void
+    public function confirmAndRecord($paymentIntentId)
     {
 
         Stripe::setApiKey(config('services.stripe.secret'));
@@ -124,6 +124,9 @@ class StripeService
                 : $now->addMonth();
 
             $hall->save();
+            return $hall;
         });
+        $hall = hall::findOrFail($hallId);
+        return $hall;
     }
 }

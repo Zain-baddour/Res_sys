@@ -53,10 +53,11 @@ class StripeController extends Controller
         ]);
 
         try {
-            $this->stripeService->confirmAndRecord($request->payment_intent_id);
+            $hall = $this->stripeService->confirmAndRecord($request->payment_intent_id);
 
             return response()->json([
                 'message' => 'Payment confirmed and subscription updated ✅',
+                'hall'    => $hall,
             ]);
         } catch (\Exception $e) {
             return response()->json([
