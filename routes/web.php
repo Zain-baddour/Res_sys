@@ -19,3 +19,7 @@ Route::get('/image/{filename}', function ($filename) {
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/check-key', function () {
+    return env('HUGGINGFACE_API_KEY', 'not found');
+});

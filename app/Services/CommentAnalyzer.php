@@ -7,9 +7,19 @@ use Illuminate\Support\Facades\Http;
 class CommentAnalyzer
 {
 
+    protected ?string $apiKey;
+
+    public function __construct()
+    {
+        $this->apiKey = config('services.huggingface.api_key');
+
+        if (!$this->apiKey) {
+            throw new \Exception('Hugging Face API key not found in .env');
+        }
+    }
     protected string $apiUrl = 'https://router.huggingface.co/hf-inference/models/distilbert/distilbert-base-uncased-finetuned-sst-2-english';
     protected string $api2Url = 'https://router.huggingface.co/hf-inference/models/unitary/toxic-bert';
-    protected string $apiKey = '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'; // استبدل بمفتاحك إذا تغير
+
 
     public function analyze(string $comment): string
     {
