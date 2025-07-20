@@ -10,9 +10,13 @@ use App\Models\Review;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Services\CommentAnalyzer;
+
 
 class ClientService
 {
+
+
     public function createInquiry($data) {
         return inquiry::create($data);
     }
@@ -74,20 +78,26 @@ class ClientService
         'kiss my ass','blowjob','nigger','nigga'
     ];
 
-    public function handleReview(Request $request)
+    public function handleReview(Request $request , CommentAnalyzer $analyzer)
     {
-        if (!$this->isCommentClean($request->comment)) {
+
+        $comment = $request->comment;
+        $result = $analyzer->analyze($comment);
+
+        if($result === 'Bad'){
             return response()->json(['message' => 'Comment was rejected due to using Bad Words'], 403);
         }
-
         $review = Review::create([
             'user_id' => auth()->id(),
             'hall_id' => $request->hall_id,
             'rating' => $request->rating,
             'comment' => $request->comment,
+            'sentiment' => $result,
         ]);
 
-        return response()->json(['message' => 'Your review was successfully stored', 'review' => $review]);
+        return response()->json(['message' => 'Your review was successfully stored',
+            'review' => $review,
+            ]);
     }
 
     protected function isCommentClean(string $comment): bool

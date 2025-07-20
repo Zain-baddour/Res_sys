@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('hall_id')->constrained()->cascadeOnDelete();
             $table->integer('rating');
             $table->text('comment');
+            $table->text('sentiment');
             $table->timestamps();
         });
     }
