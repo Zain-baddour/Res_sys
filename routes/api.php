@@ -175,17 +175,7 @@ Route::middleware('auth:sanctum')->post('/stripe/payment-confirm', [StripeContro
 
 //Route::post('/stripe/payment-intent', [StripeController::class, 'createPaymentIntent']);
 
-//****** hugging face *****
-Route::get('/test-sentiment', function () {
-    $response = Http::withHeaders([
-        'Authorization' => 'Bearer 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',
-        'Content-Type'  => 'application/json',
-    ])->post('https://router.huggingface.co/hf-inference/models/distilbert/distilbert-base-uncased-finetuned-sst-2-english', [
-        'inputs' => 'I like you. I love you',
-    ]);
 
-    return $response->json();
-});
 
 // ***** Admin Dashboard APIs *****
 Route::prefix('admin/dashboard')
