@@ -78,8 +78,8 @@ public function getmyoffice(){
 
     public function addservice(array $data,$office_id)
     {
-       $id= Office::where('id',$office_id)->exists();
-       if($id){
+       $exist= Office::where('id',$office_id)->exists();
+       if($exist){
         $officeSer = Office_service::create([
             'type_car' => $data['type_car'],
             'number_ofcar' => $data['number_ofcar'],
@@ -145,11 +145,10 @@ public function addReqReservation(array $data,$service_id,$office_id){
         'user_id'=>Auth::id(),
         'office_service_id'=>$service_id,
         'office_id'=>$office_id,
-
-
     ]);
     return ['message'=>"the request res added succesfuly",'service'=>$req];
 }
+
 public function approveOrRejectRequest($ReqId,$status) {
     $RequestStatus = Detail_booking::findOrFail($ReqId);
     if ($RequestStatus->status !== 'pending') {
