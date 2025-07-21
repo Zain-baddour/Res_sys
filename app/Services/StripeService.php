@@ -4,6 +4,7 @@
 namespace App\Services;
 
 use App\Models\AppSetting;
+use App\Models\paymentConfirm;
 use Illuminate\Support\Facades\Log;
 use Stripe\Stripe;
 use Stripe\Customer;
@@ -82,16 +83,16 @@ class StripeService
         ]);
     }
 
-    public function confirmAndRecord($paymentIntentId): void
+    public function confirmAndRecord($paymentIntentId)
     {
-        // -- 1) جلب الـ PaymentIntent من Stripe
+
+        Stripe::setApiKey(config('services.stripe.secret'));
         $intent = PaymentIntent::retrieve($paymentIntentId);
 
         if ($intent->status !== 'succeeded') {
             throw new \Exception('Payment not completed (status: '.$intent->status.')');
         }
 
-        // -- 2) استخراج الـ metadata
         $hallId = $intent->metadata->hall_id ?? null;
         $userId = $intent->metadata->user_id ?? null;
 
@@ -99,12 +100,10 @@ class StripeService
             throw new \Exception('Missing metadata (hall_id / user_id).');
         }
 
-        // -- 3) تسجيل الدفع وتحديث الاشتراك في معاملة واحدة
         DB::transaction(function () use ($intent, $hallId, $userId) {
 
-            // 3-أ) سجل الدفع (إن لم يكن مسجَّلاً سابقاً)
-            Payment::firstOrCreate(
-                ['payment_intent_id' => $intent->id],
+            paymentConfirm::firstOrCreate(
+                ['payment_intent_id' => $intent->id,],
                 [
                     'hall_id'  => $hallId,
                     'user_id'  => $userId,
@@ -114,17 +113,20 @@ class StripeService
                 ]
             );
 
-            // 3-ب) حدّث اشتراك القاعة لشهر إضافي
-            $hall = Hall::findOrFail($hallId);
+            $hall = hall::findOrFail($hallId);
 
             $now           = Carbon::now();
             $currentExpiry = $hall->subscription_expires_at;
+            $currentExpiry = Carbon::parse($currentExpiry);
 
             $hall->subscription_expires_at = $currentExpiry && $currentExpiry->isFuture()
                 ? $currentExpiry->addMonth()
                 : $now->addMonth();
 
             $hall->save();
+            return $hall;
         });
+        $hall = hall::findOrFail($hallId);
+        return $hall;
     }
 }

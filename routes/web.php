@@ -19,3 +19,5 @@ Route::get('/image/{filename}', function ($filename) {
 Route::get('/', function () {
     return view('welcome');
 });
+
+

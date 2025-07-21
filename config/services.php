@@ -40,4 +40,7 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
+    'huggingface' => [
+        'api_key' => env('HUGGINGFACE_API_KEY'),
+    ],
 ];

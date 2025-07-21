@@ -14,4 +14,12 @@ class paymentConfirm extends Model
         'currency',
         'status',
     ];
+
+    public function hall() {
+        return $this->belongsTo(hall::class);
+    }
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
 }

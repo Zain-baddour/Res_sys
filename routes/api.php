@@ -15,6 +15,7 @@ use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\Api\StripeController;
 
 //***** Auth API's *****
@@ -170,9 +171,11 @@ Route::middleware(['auth:sanctum','blocked'])->prefix('Booking')->group(function
 // ***** Stripe APIs *****
 Route::middleware('auth:sanctum')->post('/stripe/hall-subscription', [StripeController::class, 'createSubscriptionPayment']);
 Route::middleware(['auth:sanctum','role:admin'])->get('stripe/getPayments', [StripeController::class, 'listPayments']);
-Route::post('/stripe/payment-confirm', [StripeController::class, 'confirmPayment']);
+Route::middleware('auth:sanctum')->post('/stripe/payment-confirm', [StripeController::class, 'confirmPayment']);
 
 //Route::post('/stripe/payment-intent', [StripeController::class, 'createPaymentIntent']);
+
+
 
 // ***** Admin Dashboard APIs *****
 Route::prefix('admin/dashboard')

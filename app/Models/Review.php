@@ -14,6 +14,7 @@ class Review extends Model
         'hall_id',
         'rating',
         'comment',
+        'sentiment',
     ];
 
     // علاقات

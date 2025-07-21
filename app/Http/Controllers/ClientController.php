@@ -7,14 +7,17 @@ use Illuminate\Http\Request;
 use App\Services\ClientService;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Services\CommentAnalyzer;
 
 
 class ClientController extends Controller
 {
     protected $clientService;
+    protected $analyzer;
 
-    public function __construct(ClientService $clientService) {
+    public function __construct(ClientService $clientService, CommentAnalyzer $analyzer) {
         $this->clientService = $clientService;
+        $this->analyzer = $analyzer;
     }
 
     public function store(Request $request) {
@@ -50,7 +53,7 @@ class ClientController extends Controller
         return response()->json($this->clientService->getMyInquiries($userId, $hallId));
     }
 
-    public function storeReview(Request $request)
+    public function storeReview(Request $request ,CommentAnalyzer $analyzer)
     {
         $request->validate([
             'hall_id' => 'required|exists:halls,id',
@@ -58,7 +61,7 @@ class ClientController extends Controller
             'comment' => 'required|string|max:1000',
         ]);
 
-        return $this->clientService->handleReview($request);
+        return $this->clientService->handleReview($request , $analyzer);
     }
 
     public function getMyBook() {
