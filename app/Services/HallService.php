@@ -227,7 +227,6 @@ class HallService
 
     public function addoffer(array $data, $hall_id)
     {
-
         if (Auth::user()->hasRole('assistant')) {
             $exist = hall::where('id', $hall_id)->exists();
             if ($exist) {
