@@ -32,7 +32,7 @@ class HallService
     public function getAll()
     {
         try {
-            return hall::with(['images','video','prices','reviews'])
+            return hall::with(['images','video','prices','reviews','eventImages','eventVideos'])
                 ->withAvg('reviews', 'rating')
                 ->where('status', 'approved')
                 ->get();
