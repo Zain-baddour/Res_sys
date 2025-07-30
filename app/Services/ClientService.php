@@ -64,19 +64,7 @@ class ClientService
         return $result;
     }
 
-    protected $badWords = [
-        // كلمات نابية بالعربية
-        'كلب','حمار','حقير','تافه','غبي','سخيف','خرا','قذر','نجس','وسخ','تفو','تباً',
-        'يلعن','حيوان','ابن كلب','ابن حرام','منيك','مخنث','شاذ','زامل','قحبة','عاهرة',
-        'شرموطة','نيك','عرص','كس','طيز','زب','لوطي','متناك','مقرف','منيوك','أبوك',
-        'أمك','انقلع','انطم','انكتم','اقطع','كسمك','الطم','عوي',
 
-        // English bad words
-        'fuck','shit','bitch','asshole','dick','pussy','fag','faggot','retard','crap',
-        'bastard','slut','whore','cunt','damn','jerk','moron','suck','douche','prick',
-        'balls','tits','boobs','nuts','shithead','arse','fucking','freak','homo',
-        'kiss my ass','blowjob','nigger','nigga'
-    ];
 
     public function handleReview(Request $request , CommentAnalyzer $analyzer)
     {

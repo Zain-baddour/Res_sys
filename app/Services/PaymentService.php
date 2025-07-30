@@ -19,14 +19,13 @@ class PaymentService
                 'amount' => $data['amount'],
                 'status' => 'pending',
                 ]);
-            return response()->json(['message' => 'تم إنشاء الدفع بنجاح.', 'payment_id' => $payment->id]);
+            return response()->json(['message' => 'payment create success', 'payment_id' => $payment->id]);
         });
     }
 
     public function confirmPayment($paymentId) {
-        try {
+
             $payment = payments::where('id', $paymentId)
-                ->where('status', 'pending')
                 ->firstOrFail();
             if ($payment) {
                 $payment->status = 'completed';
@@ -37,12 +36,9 @@ class PaymentService
                 $booking->payment_confirmed = true;
                 $booking->save();
             }
-            return response()->json(['message' => 'تم تأكيد الدفع يمكنك الان تاكيد الحجز.']);
-        }
-        catch (Exception $e){
-            Log::error('error :' . $e->getMessage());
-            return response()->json(['error' => 'error'], 500);
-        }
+            return response()->json(['message' => 'payment confirmed']);
+
+
     }
 
     public function confirmPenaltyPayment($paymentId)
@@ -58,7 +54,7 @@ class PaymentService
                 $booking->delete();
             }
 
-            return response()->json(['message' => 'تم تأكيد الدفع والحجز تم حذفه.']);
+            return response()->json(['message' => 'payment success and booking deleted']);
         });
     }
 

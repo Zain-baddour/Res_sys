@@ -147,7 +147,7 @@ Route::middleware(['auth:sanctum','blocked'])->prefix('Booking')->group(function
     // حجز صالة
     Route::post('/bookings', [BookingController::class, 'create']);
 
-    // تأكيد الحجز
+    // تأكيد الحجز مع الدفع في الصالة مباشر
     Route::post('/bookings/{id}/confirm', [BookingController::class, 'confirm']);
 
     // تعديل الحجز
@@ -162,8 +162,7 @@ Route::middleware(['auth:sanctum','blocked'])->prefix('Booking')->group(function
     // تأكيد دفع الغرامة
     Route::post('/payments/{id}/confirmPenalty', [PaymentController::class, 'confirmPenaltyPayment']);
 
-    // تأكيد دفع حجز
-    Route::post('/payments/{paymentId}/confirm', [PaymentController::class, 'confirmPayment']);
+
 
 
 });

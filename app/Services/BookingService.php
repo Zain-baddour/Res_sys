@@ -15,12 +15,18 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\NewBookingNotification;
 use Illuminate\Validation\ValidationException;
+use App\Services\PaymentService;
 
 class BookingService
 {
+    protected $paymentService;
+
+    public function __construct(PaymentService $paymentService)
+    {
+        $this->paymentService = $paymentService;
+    }
     public function createBooking($data)
     {
-
         return DB::transaction(function () use ($data) {
             $guestCount = $data['guest_count'];
             $hallI = hall::find($data['hall_id']);
@@ -160,6 +166,7 @@ class BookingService
 
             return $booking;
         });
+
     }
 
     public function getHallBookings() {
@@ -293,13 +300,16 @@ class BookingService
     public function confirmBooking($bookingId)
     {
         $booking = Booking::where('id', $bookingId)->where('user_id', Auth::id())->firstOrFail();
-        if (!$booking->payment_confirmed) {
-            return response()->json('يجب دفع المبلغ إلكترونياً أو في الصالة قبل تأكيد الحجز.');
+        $paymentId = payments::where('booking_id' , $bookingId)->value('id');
+        $message = $this->paymentService->confirmPayment($paymentId);
+        $booking->refresh();
+        if(!$booking->payment_confirmed){
+            return response()->json('payment error');
         }
-
         $booking->status = 'confirmed';
         $booking->save();
-        return $booking;
+        return response()->json(['message' => $message,
+            'booking' => $booking]);
     }
 
     public function updateBooking($bookingId, $data)
