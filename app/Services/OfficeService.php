@@ -165,7 +165,7 @@ public function approveOrRejectRequest($ReqId,$status) {
 
 public function showReqReservationforoffice(){
     $show=Detail_booking::join('users','users.id','Detail_bookings.user_id')
-    ->select('users.id','users.name','users.number','users.photo','Detail_bookings.time')
+    ->select('users.id','users.name','users.number','users.photo','Detail_bookings.time','Detail_bookings.id as booking_id')
     ->get();
     return $show;
 }
