@@ -234,6 +234,10 @@ public function get_detail($det_id) {
     return response()->json($response);
 
 }
+
+public function getapprovedOffices(){
+    return Office::where('status', 'approved')->get();
+}
 public function add_info_contact(array $data ,$officeId){
 
     $contact =Contact::create([

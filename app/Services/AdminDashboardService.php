@@ -122,17 +122,20 @@ class AdminDashboardService
         ];
     }
 
-    public function approveOrRejectOffice($Id,$status) {
-        $RequestStatus = Office::findOrFail($Id);
-        if ($RequestStatus->status !== 'pending') {
-            throw ValidationException::withMessages([
-                'status' => 'You cannot modify this request , its not pending.'
-            ]);
-        }
-        if(!in_array($status,['approved','rejected'])){
-            throw new \InvalidArgumentException('status is not Right');
-        }
-        $RequestStatus->update(['status' => $status]);
-        return ['message'=>"the request updated succesfuly",'Request'=>$RequestStatus] ;
-    }
+    // public function approveOrRejectOffice($Id,$status) {
+    //     $RequestStatus = Office::findOrFail($Id);
+    //     if ($RequestStatus->status !== 'pending') {
+    //         throw ValidationException::withMessages([
+    //             'status' => 'You cannot modify this request , its not pending.'
+    //         ]);
+    //     }
+    //     if(!in_array($status,['approved','rejected'])){
+    //         throw new \InvalidArgumentException('status is not Right');
+    //     }
+    //     $RequestStatus->update(['status' => $status]);
+    //     return ['message'=>"the request updated succesfuly",'Request'=>$RequestStatus] ;
+    // }
+    public function getPendingOffices(){
+        return Office::where('status', 'pending')->get();
+}
 }

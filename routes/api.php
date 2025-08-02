@@ -185,7 +185,8 @@ Route::prefix('admin/dashboard')
         Route::get('/general',  [AdminDashboardController::class, 'general']);
         Route::get('/lounges',  [AdminDashboardController::class, 'lounges']);
         Route::get('/offices',  [AdminDashboardController::class, 'offices']);
-        Route::post('/updateoffice/{id}', [AdminDashboardController::class, 'updateOfficeStatus']);
+      //  Route::post('/updateoffice/{id}', [AdminDashboardController::class, 'updateOfficeStatus']);
+      Route::get('/pendingoffice',  [AdminDashboardController::class, 'getPendingOffices']);
     });
 
 
@@ -229,4 +230,5 @@ Route::middleware(['auth:sanctum'])->prefix('office')->group(function () {
     Route::get('/detailoffice/{off_id}', [OfficeController::class, 'showDetailOffice']);//get all office
     Route::get('/showmyoffice', [OfficeController::class, 'showMyOffice']);
     Route::post('/updateReqs/{id}', [OfficeController::class, 'updateReqStatus']);
+    Route::get('/approvedoffice', [OfficeController::class, 'getApprovedOffices']);
 });

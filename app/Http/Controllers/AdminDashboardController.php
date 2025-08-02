@@ -41,11 +41,17 @@ class AdminDashboardController extends Controller
             'data'   => $this->dashboardService->getOfficeStatistics()
         ]);
     }
-    public function updateOfficeStatus(Request $request, $id) {
-        $request->validate([
-            'status' => 'sometimes|string|in:approved,rejected'
-        ]);
-        $Reques = $this->dashboardService->approveOrRejectOffice($id, $request->status);
-        return response()->json($Reques);
+    // public function updateOfficeStatus(Request $request, $id) {
+    //     $request->validate([
+    //         'status' => 'sometimes|string|in:approved,rejected'
+    //     ]);
+    //     $Reques = $this->dashboardService->approveOrRejectOffice($id, $request->status);
+    //     return response()->json($Reques);
+    // }
+
+    public function getPendingOffices()
+    {
+        $office = $this->dashboardService->getPendingOffices();
+        return response()->json($office);
     }
 }

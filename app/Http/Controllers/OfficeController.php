@@ -114,6 +114,11 @@ class OfficeController extends Controller
         $show = $this->officeService->get_detailforoffice($det_id);
         return response()->json($show);
     }
+    public function getApprovedOffices(){
+        $office = $this->officeService->getapprovedOffices();
+        return response()->json($office);
+
+    }
 
     public function add_info_contact(Request $request , $officeId)
     {

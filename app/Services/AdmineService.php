@@ -7,6 +7,7 @@ use App\Models\AppSettingO;
 use App\Models\Complaint;
 use App\Models\hall;
 use App\Models\Hall_img;
+use App\Models\Office;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -116,5 +117,6 @@ class AdmineService
             ->where('hall_id', $id)
             ->get();
     }
+   
 
 }
