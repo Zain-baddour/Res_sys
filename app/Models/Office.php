@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Office extends Model
 { protected $fillable=[
         'name',
-        'location',
+        'location','status',
        'photo','number', 'owner_id',
     ];
     public function services(){

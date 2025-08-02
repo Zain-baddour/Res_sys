@@ -184,6 +184,7 @@ Route::prefix('admin/dashboard')
         Route::get('/general',  [AdminDashboardController::class, 'general']);
         Route::get('/lounges',  [AdminDashboardController::class, 'lounges']);
         Route::get('/offices',  [AdminDashboardController::class, 'offices']);
+        Route::post('/updateoffice/{id}', [AdminDashboardController::class, 'updateOfficeStatus']);
     });
 
 

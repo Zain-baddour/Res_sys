@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('detail_bookings', function (Blueprint $table) {
-            $table->foreignId('office_id')->constrained('offices')->cascadeOnDelete();
+        Schema::table('offices', function (Blueprint $table) {
+            $table->enum('status' , ['pending' , 'approved' , 'rejected'])->default('pending');
         });
     }
 
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('detail_bookings', function (Blueprint $table) {
+        Schema::table('offices', function (Blueprint $table) {
             //
         });
     }
