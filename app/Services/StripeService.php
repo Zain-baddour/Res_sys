@@ -5,8 +5,11 @@ namespace App\Services;
 
 use App\Models\AppSetting;
 use App\Models\paymentConfirm;
+use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Stripe\Stripe;
+use Stripe\Account;
+use Stripe\AccountLink;
 use Stripe\Customer;
 use Stripe\Subscription;
 use Stripe\PaymentIntent;
@@ -128,5 +131,77 @@ class StripeService
         });
         $hall = hall::findOrFail($hallId);
         return $hall;
+    }
+
+    public function createExpressAccount($user)
+    {
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        $account = Account::create([
+            'type' => 'express',
+            'country' => 'US',
+            'email' => $user->email,
+            'capabilities' => [
+                'card_payments' => ['requested' => true],
+                'transfers' => ['requested' => true],
+            ],
+        ]);
+
+        // حفظ account id
+        $user->stripe_account_id = $account->id;
+        $user->save();
+
+        return $account;
+    }
+
+    public function generateAccountLink($accountId, $refreshUrl, $returnUrl)
+    {
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        return AccountLink::create([
+            'account' => $accountId,
+            'refresh_url' => $refreshUrl,
+            'return_url' => $returnUrl,
+            'type' => 'account_onboarding',
+        ]);
+    }
+
+    public function verifyAccount(User $user): array
+    {
+        if (!$user->stripe_account_id) {
+            return [
+                'status' => false,
+                'message' => 'User does not have a connected Stripe account.'
+            ];
+        }
+
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        $account = Account::retrieve($user->stripe_account_id);
+
+        $chargesEnabled = $account->charges_enabled;
+        $detailsSubmitted = $account->details_submitted;
+
+        if ($chargesEnabled && $detailsSubmitted) {
+            $user->update(['is_stripe_verified' => true]);
+
+            return [
+                'status' => true,
+                'message' => 'Account verified successfully.',
+                'account' => [
+                    'charges_enabled' => $chargesEnabled,
+                    'details_submitted' => $detailsSubmitted
+                ]
+            ];
+        }
+
+        return [
+            'status' => false,
+            'message' => 'Account is not fully verified.',
+            'account' => [
+                'charges_enabled' => $chargesEnabled,
+                'details_submitted' => $detailsSubmitted
+            ]
+        ];
     }
 }

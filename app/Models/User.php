@@ -39,7 +39,10 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-
+    /**
+     * @var mixed
+     */
+    private $stripe_account_id;
 
 
     /**
