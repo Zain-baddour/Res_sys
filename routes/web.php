@@ -20,4 +20,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/stripe/return', function () {
+    return '✅ تم الرجوع من Stripe بنجاح!';
+});
+
+Route::get('/stripe/refresh', function () {
+    return '🔁 تم إعادة المحاولة من Stripe!';
+});
+
 

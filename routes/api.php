@@ -147,7 +147,7 @@ Route::middleware(['auth:sanctum','blocked'])->prefix('Booking')->group(function
     // حجز صالة
     Route::post('/bookings', [BookingController::class, 'create']);
 
-    // تأكيد الحجز
+    // تأكيد الحجز مع الدفع في الصالة مباشر
     Route::post('/bookings/{id}/confirm', [BookingController::class, 'confirm']);
 
     // تعديل الحجز
@@ -162,8 +162,7 @@ Route::middleware(['auth:sanctum','blocked'])->prefix('Booking')->group(function
     // تأكيد دفع الغرامة
     Route::post('/payments/{id}/confirmPenalty', [PaymentController::class, 'confirmPenaltyPayment']);
 
-    // تأكيد دفع حجز
-    Route::post('/payments/{paymentId}/confirm', [PaymentController::class, 'confirmPayment']);
+
 
 
 });
@@ -172,6 +171,8 @@ Route::middleware(['auth:sanctum','blocked'])->prefix('Booking')->group(function
 Route::middleware('auth:sanctum')->post('/stripe/hall-subscription', [StripeController::class, 'createSubscriptionPayment']);
 Route::middleware(['auth:sanctum','role:admin'])->get('stripe/getPayments', [StripeController::class, 'listPayments']);
 Route::middleware('auth:sanctum')->post('/stripe/payment-confirm', [StripeController::class, 'confirmPayment']);
+Route::middleware('auth:sanctum')->get('/stripe/onboard', [StripeController::class, 'onboard']);
+Route::middleware('auth:sanctum')->get('/stripe/verify', [StripeController::class, 'verifyAccount']);
 
 //Route::post('/stripe/payment-intent', [StripeController::class, 'createPaymentIntent']);
 

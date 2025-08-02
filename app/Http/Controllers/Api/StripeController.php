@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\hall;
 use Illuminate\Http\Request;
 use App\Services\StripeService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
 class StripeController extends Controller
@@ -64,6 +65,33 @@ class StripeController extends Controller
                 'error' => $e->getMessage(),
             ], 422);
         }
+    }
+
+    public function onboard(Request $request)
+    {
+        $user = auth()->user();
+
+        // إذا ماعندو حساب Stripe مسبقاً، أنشئ حساب جديد
+        if (!$user->stripe_account_id) {
+            $this->stripeService->createExpressAccount($user);
+        }
+
+        // حط روابط مؤقتة إلى حين مايوصلك رد من الفرونت
+        $refreshUrl = 'http://localhost:8000/stripe/return';
+        $returnUrl = 'https://localhost:8000/stripe/refresh';
+
+        $link = $this->stripeService->generateAccountLink($user->stripe_account_id, $refreshUrl, $returnUrl);
+
+        return response()->json(['url' => $link->url]);
+    }
+
+    public function verifyAccount(Request $request)
+    {
+        $user = Auth::user(); // أو حسب حالتك، مثلاً من token أو session
+
+        $result = $this->stripeService->verifyAccount($user);
+
+        return response()->json($result);
     }
 
 

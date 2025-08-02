@@ -65,6 +65,9 @@ class BookingController extends Controller
         ]);
 
         $book = $this->bookingService->createBooking($data);
+        if (!($book instanceof \Illuminate\Database\Eloquent\Model)) {
+            return $book;
+        }
         return response()->json($book->load(['services','songs','payment']));
     }
 
