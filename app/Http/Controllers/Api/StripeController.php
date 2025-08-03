@@ -71,14 +71,14 @@ class StripeController extends Controller
     {
         $user = auth()->user();
 
-        // إذا ماعندو حساب Stripe مسبقاً، أنشئ حساب جديد
+        // إذا ماعندو حساب Stripe
         if (!$user->stripe_account_id) {
             $this->stripeService->createExpressAccount($user);
         }
 
         // حط روابط مؤقتة إلى حين مايوصلك رد من الفرونت
-        $refreshUrl = 'http://localhost:8000/stripe/return';
-        $returnUrl = 'https://localhost:8000/stripe/refresh';
+        $refreshUrl = 'myapp://stripe-failure';
+        $returnUrl = 'myapp://stripe-success';
 
         $link = $this->stripeService->generateAccountLink($user->stripe_account_id, $refreshUrl, $returnUrl);
 
