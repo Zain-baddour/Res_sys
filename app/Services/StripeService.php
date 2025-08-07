@@ -204,4 +204,21 @@ class StripeService
             ]
         ];
     }
+
+    public function createPaymentIntentForHall($amount, $connectedAccountId)
+    {
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        $paymentIntent = PaymentIntent::create([
+            'amount' => $amount * 100, // بالمراكز (100 = 1 دولار)
+            'currency' => 'usd',
+            'payment_method_types' => ['card'],
+            'application_fee_amount' => 0, // عمولتك أنت إن وجدت
+            'transfer_data' => [
+                'destination' => $connectedAccountId, // حساب صاحب الصالة
+            ],
+        ]);
+
+        return $paymentIntent;
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Booking;
 use App\Models\hall;
 use Illuminate\Http\Request;
 use App\Services\StripeService;
@@ -77,8 +78,8 @@ class StripeController extends Controller
         }
 
         // حط روابط مؤقتة إلى حين مايوصلك رد من الفرونت
-        $refreshUrl = 'myapp://stripe-failure';
-        $returnUrl = 'myapp://stripe-success';
+        $refreshUrl = 'http://localhost:8000/stripe/refresh';
+        $returnUrl = 'http://localhost:8000/stripe/return';
 
         $link = $this->stripeService->generateAccountLink($user->stripe_account_id, $refreshUrl, $returnUrl);
 
@@ -94,9 +95,29 @@ class StripeController extends Controller
         return response()->json($result);
     }
 
+    public function payForHall($bookingId)
+    {
+        $booking = Booking::findOrFail($bookingId);
+        $hall = $booking->hall;
+        $owner = $hall->owner;
 
 
 
+        // بدنا نتأكد إنو عندو Stripe Account ID
+        if (!$owner->stripe_account_id) {
+            return response()->json(['error' => 'Hall owner does not have a Stripe account connected.'], 400);
+        }
+
+
+        $paymentIntent = (new StripeService())->createPaymentIntentForHall(
+            $booking->payment->amount,
+            $owner->stripe_account_id
+        );
+
+        return response()->json([
+            'clientSecret' => $paymentIntent->client_secret,
+        ]);
+    }
 
 
 

@@ -55,7 +55,10 @@ class BookingService
                 return response()->json(['message' => 'there is another reservation at this time'], 422);
             }
 
-
+            $addNote = "nothing";
+            if ($data['additional_notes']) {
+                $addNote = $data['additional_notes'];
+            }
 
             $booking = Booking::create([
                 'user_id' => Auth::id(),
@@ -65,7 +68,7 @@ class BookingService
                 'to' => $data['to'],
                 'guest_count' => $data['guest_count'],
                 'event_type' => $data['event_type'],
-                'additional_notes' => $data['additional_notes'],
+                'additional_notes' => $addNote,
                 'status' => 'unconfirmed',
             ]);
 

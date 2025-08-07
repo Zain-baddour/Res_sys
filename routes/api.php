@@ -173,6 +173,7 @@ Route::middleware(['auth:sanctum','role:admin'])->get('stripe/getPayments', [Str
 Route::middleware('auth:sanctum')->post('/stripe/payment-confirm', [StripeController::class, 'confirmPayment']);
 Route::middleware('auth:sanctum')->get('/stripe/onboard', [StripeController::class, 'onboard']);
 Route::middleware('auth:sanctum')->get('/stripe/verify', [StripeController::class, 'verifyAccount']);
+Route::middleware('auth:sanctum')->post('/stripe/pay_for_Booking/{id}', [StripeController::class, 'payForHall']);
 
 //Route::post('/stripe/payment-intent', [StripeController::class, 'createPaymentIntent']);
 
