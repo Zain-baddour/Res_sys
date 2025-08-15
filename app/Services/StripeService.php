@@ -4,6 +4,7 @@
 namespace App\Services;
 
 use App\Models\AppSetting;
+use App\Models\Booking;
 use App\Models\paymentConfirm;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
@@ -16,9 +17,18 @@ use Stripe\PaymentIntent;
 use App\Models\hall;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Services\BookingService;
+
 
 class StripeService
 {
+
+    protected $bookingService;
+
+    public function __construct(BookingService $bookingService)
+    {
+        $this->bookingService = $bookingService;
+    }
 
 
     public function createHallSubscriptionIntent($hall, $user)
@@ -205,20 +215,107 @@ class StripeService
         ];
     }
 
-    public function createPaymentIntentForHall($amount, $connectedAccountId)
+    public function createPaymentIntentForHall($booking,$hall)
     {
         Stripe::setApiKey(config('services.stripe.secret'));
 
-        $paymentIntent = PaymentIntent::create([
-            'amount' => $amount * 100, // بالمراكز (100 = 1 دولار)
+
+        $price = $booking->payment->amount ;
+
+        return PaymentIntent::create([
+            'amount' => $price * 100, // cents
             'currency' => 'usd',
             'payment_method_types' => ['card'],
-            'application_fee_amount' => 0, // عمولتك أنت إن وجدت
-            'transfer_data' => [
-                'destination' => $connectedAccountId, // حساب صاحب الصالة
-            ],
+//            'automatic_payment_methods' => ['enabled' => true],
+            'metadata' => [
+                'hall_id' => $hall->id,
+                'booking_id' => $booking->id,
+                'type' => 'Booking payment'
+            ]
         ]);
 
-        return $paymentIntent;
+//        $paymentIntent = PaymentIntent::create([
+//            'amount' => $amount * 100, // بالمراكز (100 = 1 دولار)
+//            'currency' => 'usd',
+//            'payment_method_types' => ['card'],
+//            'application_fee_amount' => 0, // عمولتك أنت إن وجدت
+//            'transfer_data' => [
+//                'destination' => $connectedAccountId, // حساب صاحب الصالة
+//            ],
+//        ]);
+
+    }
+
+//    public function handleWebhook($payload, $sigHeader)
+//    {
+//        $endpointSecret = config('services.stripe.webhook_secret');
+//
+//        try {
+//            $event = \Stripe\Webhook::constructEvent(
+//                $payload,
+//                $sigHeader,
+//                $endpointSecret
+//            );
+//        } catch (\UnexpectedValueException $e) {
+//            // JSON غير صالح
+//            Log::error('Invalid payload: ' . $e->getMessage());
+//            return response('Invalid payload', 400);
+//        } catch (\Stripe\Exception\SignatureVerificationException $e) {
+//            // التوقيع غلط
+//            Log::error('Invalid signature: ' . $e->getMessage());
+//            return response('Invalid signature', 400);
+//        }
+//
+//        // التحقق من نوع الحدث
+//        if ($event->type === 'payment_intent.succeeded') {
+//            $paymentIntent = $event->data->object;
+//
+//            // هنا بتحط لوجيك تأكيد الحجز (السطر يلي عندك جاهز)
+//            // مثال: $this->confirmBooking($paymentIntent->metadata->booking_id);
+//            Log::info('✅ Payment succeeded for booking ID: ' . $paymentIntent->metadata->booking_id);
+//
+//            $this->confirmBooking($paymentIntent->metadata->booking_id);
+//        }
+//
+//        return response('Webhook handled', 200);
+//    }
+
+    public function checkPaymentAndConfirmBooking($paymentIntentId, $bookingId)
+    {
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        try {
+            // استرجاع معلومات الدفع
+            $paymentIntent = PaymentIntent::retrieve($paymentIntentId);
+            $booking = Booking::findOrFail($bookingId);
+
+            // إذا الدفع ناجح
+            if ($paymentIntent->status === 'succeeded') {
+                // هون منستدعي لوجيك تأكيد الحجز
+                $this->confirmBooking($bookingId);
+
+                return [
+                    'status' => true,
+                    'message' => 'Payment succeeded and booking confirmed',
+                    'booking' => $booking
+                ];
+            }
+
+            return [
+                'status' => false,
+                'message' => 'Payment not completed yet',
+                'payment_status' => $paymentIntent->status
+            ];
+        } catch (\Exception $e) {
+            return [
+                'status' => false,
+                'message' => $e->getMessage()
+            ];
+        }
+    }
+
+    private function confirmBooking($bookingId)
+    {
+        $this->bookingService->confirmBooking($bookingId);
     }
 }

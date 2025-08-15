@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\hall;
+use GPBMetadata\Google\Api\Log;
 use Illuminate\Http\Request;
 use App\Services\StripeService;
 use Illuminate\Support\Facades\Auth;
@@ -98,21 +99,20 @@ class StripeController extends Controller
     public function payForHall($bookingId)
     {
         $booking = Booking::findOrFail($bookingId);
-        $hall = $booking->hall;
-        $owner = $hall->owner;
+        $hallId = $booking->hall->id;
+        $hall = hall::findOrFail($hallId);
 
 
 
         // بدنا نتأكد إنو عندو Stripe Account ID
-        if (!$owner->stripe_account_id) {
-            return response()->json(['error' => 'Hall owner does not have a Stripe account connected.'], 400);
-        }
+//        if (!$owner->stripe_account_id) {
+//            return response()->json(['error' => 'Hall owner does not have a Stripe account connected.'], 400);
+//        }
+//            $booking->payment->amount,
+//            $owner->stripe_account_id,
 
 
-        $paymentIntent = (new StripeService())->createPaymentIntentForHall(
-            $booking->payment->amount,
-            $owner->stripe_account_id
-        );
+        $paymentIntent = $this->stripeService->createPaymentIntentForHall($booking,$hall);
 
         return response()->json([
             'clientSecret' => $paymentIntent->client_secret,
@@ -120,6 +120,20 @@ class StripeController extends Controller
     }
 
 
+    public function checkAndConfirmBooking(Request $request)
+    {
+        $request->validate([
+            'payment_intent_id' => 'required|string',
+            'booking_id' => 'required|integer'
+        ]);
+
+        $result = $this->stripeService->checkPaymentAndConfirmBooking(
+            $request->payment_intent_id,
+            $request->booking_id
+        );
+
+        return response()->json($result);
+    }
 
 
 }

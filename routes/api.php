@@ -174,6 +174,7 @@ Route::middleware('auth:sanctum')->post('/stripe/payment-confirm', [StripeContro
 Route::middleware('auth:sanctum')->get('/stripe/onboard', [StripeController::class, 'onboard']);
 Route::middleware('auth:sanctum')->get('/stripe/verify', [StripeController::class, 'verifyAccount']);
 Route::middleware('auth:sanctum')->post('/stripe/pay_for_Booking/{id}', [StripeController::class, 'payForHall']);
+Route::middleware('auth:sanctum')->post('/stripe/check-Booking_Payment', [StripeController::class, 'checkAndConfirmBooking']);
 
 //Route::post('/stripe/payment-intent', [StripeController::class, 'createPaymentIntent']);
 
