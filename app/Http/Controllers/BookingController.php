@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\BookingService;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class BookingController extends Controller
 {
@@ -64,6 +65,20 @@ class BookingController extends Controller
             'condolence_additional_notes' => 'nullable|string',
         ]);
 
+        $bookingDate = Carbon::parse($data['event_date']);
+        $now = Carbon::now();
+
+        if ($bookingDate->lt($now)) {
+            return response()->json([
+                'message' => 'you cannot book in the past'
+            ], 422); // كود خطأ مناسب
+        }
+        $minBookingDate = $now->copy()->addDays(7); // الحد الأدنى للتاريخ
+        if ($bookingDate->lt($minBookingDate)) {
+            return response()->json([
+                'message' => 'you cannot book on such short notice.please book at least 7 days in advance or contact the hall'
+            ], 422);
+        }
         $book = $this->bookingService->createBooking($data);
         if (!($book instanceof \Illuminate\Database\Eloquent\Model)) {
             return $book;
