@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use App\Models\DeviceToken;
+use App\Services\FirebaseNotificationService;
 
 class NotificationController extends Controller
 {
@@ -40,4 +41,22 @@ class NotificationController extends Controller
 
         return response()->json(['message' => 'Token saved successfully']);
     }
+
+    public function send(Request $request, FirebaseNotificationService $fcm)
+    {
+        $request->validate([
+            'device_token' => 'required|string',
+            'title' => 'required|string',
+            'body' => 'required|string',
+        ]);
+
+        $response = $fcm->sendNotification(
+            $request->device_token,
+            $request->title,
+            $request->body
+        );
+
+        return response()->json($response);
+    }
+
 }
