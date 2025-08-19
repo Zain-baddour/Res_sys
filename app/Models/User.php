@@ -78,6 +78,14 @@ class User extends Authenticatable
         return $this->hasMany(paymentConfirm::class);
     }
 
+    public function deviceToken () {
+        return $this->hasOne(DeviceToken::class);
+    }
+
+    public function notifications () {
+        return $this->hasMany(Notifications::class);
+    }
+
 
     public function getPhotoUrlAttribute()
     {

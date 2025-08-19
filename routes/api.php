@@ -179,6 +179,9 @@ Route::middleware('auth:sanctum')->post('/stripe/check-Booking_Payment', [Stripe
 //Route::post('/stripe/payment-intent', [StripeController::class, 'createPaymentIntent']);
 
 
+// ***** FireBase APIs *****
+Route::post('/save-device-token', [NotificationController::class, 'saveToken'])->middleware('auth:sanctum');
+
 
 // ***** Admin Dashboard APIs *****
 Route::prefix('admin/dashboard')
