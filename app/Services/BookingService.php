@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Booking;
+use App\Models\DeviceToken;
 use App\Models\Hall;
 use App\Models\offer;
 use App\Models\payments;
@@ -161,12 +162,19 @@ class BookingService
             ]);
 
             // إرسال إشعارات
-            $hall = Hall::with('owner', 'employees')->find($data['hall_id']);
-            $recipients = collect([$hall->owner])->merge($hall->employees);
-            foreach ($recipients as $recipient) {
-                $recipient->notify(new NewBookingNotification($booking));
+//            $hall = Hall::with('owner', 'employees')->find($data['hall_id']);
+//            $recipients = collect([$hall->owner])->merge($hall->employees);
+//            foreach ($recipients as $recipient) {
+//                $recipient->notify(new NewBookingNotification($booking));
+//            }
+            $deviceTokens = DeviceToken::where('user_id', $booking->user_id)->pluck('device_token');
+            foreach ($deviceTokens as $token) {
+                FirebaseNotificationService::sendNotification(
+                    $token,
+                    "Booking Confirmed ✅",
+                    "Your booking has been saved successfully. Please confirm by paying online or at the hall."
+                );
             }
-
             return $booking;
         });
 

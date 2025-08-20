@@ -50,7 +50,7 @@ class NotificationController extends Controller
             'body' => 'required|string',
         ]);
 
-        $response = $fcm->sendNotification(
+        $response = $fcm->sendN(
             $request->device_token,
             $request->title,
             $request->body

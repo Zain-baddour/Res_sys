@@ -5,6 +5,7 @@ namespace App\Services;
 
 use Google\Client;
 use GuzzleHttp\Client as HttpClient;
+use Illuminate\Support\Facades\Http;
 
 
 class FirebaseNotificationService
@@ -34,7 +35,7 @@ class FirebaseNotificationService
         return $client->fetchAccessTokenWithAssertion()['access_token'];
     }
 
-    public function sendNotification($deviceToken, $title, $body)
+    public function sendN($deviceToken, $title, $body)
     {
         $payload = [
             'message' => [
@@ -58,5 +59,23 @@ class FirebaseNotificationService
         ]);
 
         return json_decode($res->getBody()->getContents(), true);
+    }
+
+    public static function sendNotification($deviceToken, $title, $body)
+    {
+        $serverKey = config('services.firebase.server_key'); // من ملف config/services.php
+
+        $response = Http::withHeaders([
+            'Authorization' => 'key=' . $serverKey,
+            'Content-Type' => 'application/json',
+        ])->post('https://fcm.googleapis.com/fcm/send', [
+            'to' => $deviceToken,
+            'notification' => [
+                'title' => $title,
+                'body'  => $body,
+            ],
+        ]);
+
+        return $response->json();
     }
 }
