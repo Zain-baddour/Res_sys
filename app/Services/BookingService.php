@@ -171,10 +171,30 @@ class BookingService
             foreach ($deviceTokens as $token) {
                 FirebaseNotificationService::sendNotification(
                     $token,
-                    "Booking Confirmed ✅",
+                    "Booking Stored",
                     "Your booking has been saved successfully. Please confirm by paying online or at the hall."
                 );
             }
+
+            $hallN = hall::findOrFail($booking->hall_id);
+            // توكنات الأونر
+            $ownerTokens = DeviceToken::where('user_id', $hallN->owner_id)->pluck('device_token');
+
+            // توكنات الموظفين
+            $staffTokens = DeviceToken::whereIn('user_id', $hallN->employee()->pluck('user_id'))->pluck('device_token');
+
+            // دمج الكل بمصفوفة وحدة
+            $allTokens = $ownerTokens->merge($staffTokens);
+
+            foreach ($allTokens as $token) {
+                FirebaseNotificationService::sendNotification(
+                    $token,
+                    "New Booking Request",
+                    "A new booking has been made for {$hallN->name} on {$booking->event_date}. Please review it."
+                );
+            }
+
+
             return $booking;
         });
 
@@ -310,15 +330,28 @@ class BookingService
 
     public function confirmBooking($bookingId)
     {
-        $booking = Booking::where('id', $bookingId)->firstOrFail();
+        $booking = Booking::where('id', $bookingId)->with('hall')->firstOrFail();
         $paymentId = payments::where('booking_id' , $bookingId)->value('id');
         $message = $this->paymentService->confirmPayment($paymentId);
-        $booking->refresh();
+        $booking->refresh()->load('hall');
         if(!$booking->payment_confirmed){
             return response()->json('payment error');
         }
         $booking->status = 'confirmed';
         $booking->save();
+
+        $clientTokens = DeviceToken::where('user_id', $booking->user_id)->pluck('device_token');
+
+        $firebase = new FirebaseNotificationService();
+
+        foreach ($clientTokens as $token) {
+            $firebase->sendNotification(
+                $token,
+                "Booking Confirmed ✅",
+                "Your booking for {$booking->hall->name} on {$booking->date} has been confirmed."
+            );
+        }
+
         return response()->json(['message' => $message,
             'booking' => $booking]);
     }
@@ -328,15 +361,43 @@ class BookingService
         $booking = Booking::where('id', $bookingId)->where('user_id', Auth::id())->firstOrFail();
 
         if ($booking->status == 'confirmed') {
-            return response()->json('لا يمكنك تعديل الحجز بعد تأكيده يمكنك التواصل مع الصالة وحذفه ثم انشاء حجز جديد بعد موافقة الصالة لتجنب خسارة مالك.');
+            return response()->json('Sorry You cannot update a booking after confirmation');
         }
 
         $bookingDate = Carbon::parse($booking->event_date);
         if (now()->diffInDays($bookingDate,false) < 2) {
-            return response()->json('لا يمكنك تعديل الحجز قبل يومين من الموعد.');
+            return response()->json('you cannot update a booking in such short notice');
         }
 
         $booking->update($data);
+
+        $deviceTokens = DeviceToken::where('user_id', $booking->user_id)->pluck('device_token');
+        foreach ($deviceTokens as $token) {
+            FirebaseNotificationService::sendNotification(
+                $token,
+                "Booking Updated",
+                "Your booking has been updated successfully."
+            );
+        }
+
+        $hallN = hall::findOrFail($booking->hall_id);
+        // توكنات الأونر
+        $ownerTokens = DeviceToken::where('user_id', $hallN->owner_id)->pluck('device_token');
+
+        // توكنات الموظفين
+        $staffTokens = DeviceToken::whereIn('user_id', $hallN->employee()->pluck('user_id'))->pluck('device_token');
+
+        // دمج الكل بمصفوفة وحدة
+        $allTokens = $ownerTokens->merge($staffTokens);
+
+        foreach ($allTokens as $token) {
+            FirebaseNotificationService::sendNotification(
+                $token,
+                "Booking Updated",
+                "A booking has been Updated for {$hallN->name} on {$booking->event_date}. Please review it."
+            );
+        }
+
         return $booking;
     }
 
@@ -346,7 +407,7 @@ class BookingService
         $booking = Booking::where('id', $bookingId)->where('user_id', Auth::id())->firstOrFail();
 
         if ($booking->status == 'confirmed') {
-            return response()->json('لا يمكنك حذف الحجز بعد تأكيده يمكنك التواصل مع الصالة لتجنب خسارة مالك.');
+            return response()->json('You cannot delete a booking after confirmation, Contact the hall to avoid loosing your money if possible');
         }
         $bookingDate = Carbon::parse($booking->event_date);
         $daysBeforeEvent = now()->diffInDays($bookingDate);
@@ -354,7 +415,7 @@ class BookingService
         if ($daysBeforeEvent < 2) {
             if (!$confirmPenalty) {
                 return response()->json([
-                    'message' => 'إلغاء الحجز قبل 2 يوم يتطلب دفع غرامة مالية. هل ترغب في المتابعة؟',
+                    'message' => 'to delete a booking before 2 days it require a fee , would you like to proceed!',
                     'confirm_penalty_required' => true
                 ], 400);
             }

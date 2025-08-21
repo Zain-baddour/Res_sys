@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\DeviceToken;
 use App\Models\hall;
 use App\Models\Hall_img;
 use App\Models\staff_requests;
@@ -62,11 +63,31 @@ class OwnerService
             }
 
             // إرسال إشعار للمستخدم المقبول
-            $staffReq->user->notify(new StaffRequestApprovedNotification($hall));
+            $clientTokens = DeviceToken::where('user_id', $staffReq->user_id)->pluck('device_token');
+
+            $firebase = new FirebaseNotificationService();
+
+            foreach ($clientTokens as $token) {
+                $firebase->sendNotification(
+                    $token,
+                    "Staff request approved",
+                    "Your Staff request for hall :{$hall->name}  has been approved."
+                );
+            }
         }
         else{
             $hall = Hall::findOrFail($staffReq->hall_id);
-            $staffReq->user->notify(new StaffRequestRejectedNotification($hall));
+            $clientTokens = DeviceToken::where('user_id', $staffReq->user_id)->pluck('device_token');
+
+            $firebase = new FirebaseNotificationService();
+
+            foreach ($clientTokens as $token) {
+                $firebase->sendNotification(
+                    $token,
+                    "Staff request Rejected",
+                    "Your Staff request for hall :{$hall->name}  has been Rejected."
+                );
+            }
         }
 
         return $staffReq;

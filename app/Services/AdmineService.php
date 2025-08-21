@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\AppSetting;
 use App\Models\AppSettingO;
 use App\Models\Complaint;
+use App\Models\DeviceToken;
 use App\Models\hall;
 use App\Models\Hall_img;
 use App\Models\Office;
@@ -42,6 +43,30 @@ class AdmineService
 
         $hall->status = $status;
         $hall->save();
+
+        $clientTokens = DeviceToken::where('user_id', $hall->owner_id)->pluck('device_token');
+
+        $firebase = new FirebaseNotificationService();
+
+        if($status == 'approved'){
+            foreach ($clientTokens as $token) {
+                $firebase->sendNotification(
+                    $token,
+                    "Your hall was approved",
+                    "Your hall :{$hall->name}  has been approved. Congrats!"
+                );
+            }
+        }
+        if($status == 'rejected'){
+            foreach ($clientTokens as $token) {
+                $firebase->sendNotification(
+                    $token,
+                    "Your hall was rejected",
+                    "Your hall :{$hall->name}  has been rejected. contact the admin!"
+                );
+            }
+        }
+
         return $hall;
     }
 
@@ -94,6 +119,19 @@ class AdmineService
         $user = User::findOrFail($id);
         $user->is_blocked = true;
         $user->save();
+
+        $clientTokens = DeviceToken::where('user_id', $user->id)->pluck('device_token');
+
+        $firebase = new FirebaseNotificationService();
+
+        foreach ($clientTokens as $token) {
+            $firebase->sendNotification(
+                $token,
+                "You were Blocked",
+                "you were blocked by the admin, contact the admin for more information"
+            );
+        }
+
     }
 
     public function unblockUser($id)
@@ -101,6 +139,18 @@ class AdmineService
         $user = User::findOrFail($id);
         $user->is_blocked = false;
         $user->save();
+
+        $clientTokens = DeviceToken::where('user_id', $user->id)->pluck('device_token');
+
+        $firebase = new FirebaseNotificationService();
+
+        foreach ($clientTokens as $token) {
+            $firebase->sendNotification(
+                $token,
+                "You were UnBlocked",
+                "you were Unblocked by the admin, you can continue to use the app"
+            );
+        }
     }
 
     public function getBlockedUsers()
@@ -117,6 +167,6 @@ class AdmineService
             ->where('hall_id', $id)
             ->get();
     }
-   
+
 
 }
