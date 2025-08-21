@@ -310,7 +310,7 @@ class BookingService
 
     public function confirmBooking($bookingId)
     {
-        $booking = Booking::where('id', $bookingId)->where('user_id', Auth::id())->firstOrFail();
+        $booking = Booking::where('id', $bookingId)->firstOrFail();
         $paymentId = payments::where('booking_id' , $bookingId)->value('id');
         $message = $this->paymentService->confirmPayment($paymentId);
         $booking->refresh();
