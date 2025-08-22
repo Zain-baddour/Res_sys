@@ -124,13 +124,15 @@ class AdmineService
 
         $firebase = new FirebaseNotificationService();
 
+
         foreach ($clientTokens as $token) {
-            $firebase->sendNotification(
+            $res = $firebase->sendNotification(
                 $token,
                 "You were Blocked",
                 "you were blocked by the admin, contact the admin for more information"
             );
         }
+        return $res;
 
     }
 

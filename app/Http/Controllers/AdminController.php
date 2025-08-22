@@ -94,8 +94,9 @@ class AdminController extends Controller
 
     public function blockUser($id)
     {
-        $this->adminService->blockUser($id);
-        return response()->json(['message' => 'User blocked successfully']);
+        $res = $this->adminService->blockUser($id);
+        return response()->json(['message' => 'User blocked successfully',
+            'res'=> $res]);
     }
 
     public function unblockUser($id)

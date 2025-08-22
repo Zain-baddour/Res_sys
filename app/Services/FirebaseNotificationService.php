@@ -63,18 +63,31 @@ class FirebaseNotificationService
 
     public static function sendNotification($deviceToken, $title, $body)
     {
-        $serverKey = config('services.firebase.server_key'); // من ملف config/services.php
+        // مسار ملف الكريدنشلز
+        $credentialsPath = config('services.firebase.credentials');
 
-        $response = Http::withHeaders([
-            'Authorization' => 'key=' . $serverKey,
-            'Content-Type' => 'application/json',
-        ])->post('https://fcm.googleapis.com/fcm/send', [
-            'to' => $deviceToken,
-            'notification' => [
-                'title' => $title,
-                'body'  => $body,
-            ],
-        ]);
+        // نجيب access token من Google
+        $client = new Client();
+        $client->setAuthConfig($credentialsPath);
+        $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
+        $token = $client->fetchAccessTokenWithAssertion();
+
+        $accessToken = $token['access_token'];
+
+        // project id من ملف الكريدنشلز
+        $projectId = json_decode(file_get_contents($credentialsPath), true)['project_id'];
+
+        // إرسال الإشعار
+        $response = Http::withToken($accessToken)
+            ->post("https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send", [
+                'message' => [
+                    'token' => $deviceToken,
+                    'notification' => [
+                        'title' => $title,
+                        'body'  => $body,
+                    ],
+                ],
+            ]);
 
         return $response->json();
     }
