@@ -10,6 +10,7 @@ use App\Models\hall;
 use App\Models\Hall_img;
 use App\Models\Office;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -42,6 +43,12 @@ class AdmineService
         }
 
         $hall->status = $status;
+
+        $freeDays = AppSetting::value('subscription_duration_days',0);
+        if($freeDays > 0) {
+            $hall->subscription_expires_at = Carbon::now()->addDays($freeDays);
+        }
+
         $hall->save();
 
         $clientTokens = DeviceToken::where('user_id', $hall->owner_id)->pluck('device_token');
@@ -53,7 +60,7 @@ class AdmineService
                 $firebase->sendNotification(
                     $token,
                     "Your hall was approved",
-                    "Your hall :{$hall->name}  has been approved. Congrats!"
+                    "Your hall :{$hall->name}  has been approved. Congrats! you have {$freeDays} free  subscription days"
                 );
             }
         }
