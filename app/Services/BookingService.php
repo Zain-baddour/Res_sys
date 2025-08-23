@@ -209,7 +209,8 @@ class BookingService
         }
 
         return Booking::where('hall_id', $hallId)
-            ->with(['services' , 'songs'])
+            ->where('status', 'unconfirmed')
+            ->with(['services' , 'songs', 'user'])
             ->get();
     }
 
@@ -223,7 +224,7 @@ class BookingService
 
         return Booking::where('hall_id', $hallId)
             ->where('status', 'confirmed')
-            ->with(['services' , 'songs'])
+            ->with(['services' , 'songs', 'user'])
             ->get();
     }
 
