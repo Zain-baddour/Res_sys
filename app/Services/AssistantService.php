@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\DeviceToken;
 use App\Models\hall;
 use App\Models\hall_employee;
 use App\Models\hallEventImages;
@@ -14,11 +15,44 @@ use App\Models\User;
 class AssistantService
 {
     public function responseToInquiry($data) {
-        return inquiryResponse::create($data);
+        $res = inquiryResponse::create($data);
+
+        $notify = inquiry::where('id',$data['inquiry_id'])->value('user_id');
+        $clientTokens = DeviceToken::where('user_id', $notify)->pluck('device_token');
+
+        $firebase = new FirebaseNotificationService();
+
+        foreach ($clientTokens as $token) {
+            $firebase->sendNotification(
+                $token,
+                "response received",
+                "{$data['response']}"
+            );
+        }
+
+        return $res;
     }
 
     public function requestStaff($data) {
+
+        $hall = hall::where('id', $data['hall_id'])->get();
+        $userId = auth()->id();
+        $user = User::where('id',$userId)->get();
+        $clientTokens = DeviceToken::where('user_id', $hall->owner_id)->pluck('device_token');
+
+        $firebase = new FirebaseNotificationService();
+
+        foreach ($clientTokens as $token) {
+            $firebase->sendNotification(
+                $token,
+                "Your have a staff request",
+                "user {$user->name} has requested to be an employee in your hall {$hall->name}"
+            );
+        }
+
+
         return staff_requests::create($data);
+
     }
 
     public function getStaffRequest() {

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Booking;
 use App\Models\Complaint;
+use App\Models\DeviceToken;
 use App\Models\hall;
 use App\Models\inquiry;
 use App\Models\Review;
@@ -18,7 +19,26 @@ class ClientService
 
 
     public function createInquiry($data) {
-        return inquiry::create($data);
+        $res = inquiry::create($data);
+
+        $hallN = hall::findOrFail($data['hall_id']);
+        // توكنات الأونر
+        $ownerTokens = DeviceToken::where('user_id', $hallN->owner_id)->pluck('device_token');
+
+        // توكنات الموظفين
+        $staffTokens = DeviceToken::whereIn('user_id', $hallN->employee()->pluck('user_id'))->pluck('device_token');
+
+        // دمج الكل بمصفوفة وحدة
+        $allTokens = $ownerTokens->merge($staffTokens);
+
+        foreach ($allTokens as $token) {
+            FirebaseNotificationService::sendNotification(
+                $token,
+                "New inquiry",
+                "{$data['message']}"
+            );
+        }
+        return $res;
     }
 
     public function getMyInquiries($userId, $hallId) {
@@ -88,16 +108,7 @@ class ClientService
             ]);
     }
 
-    protected function isCommentClean(string $comment): bool
-    {
-        foreach ($this->badWords as $badWord) {
-            if (stripos($comment, $badWord) !== false) {
-                return false;
-            }
-        }
 
-        return true;
-    }
 
     public function getMyBookings() {
         $id = Auth::id();
@@ -125,6 +136,24 @@ class ClientService
 
         // ترتيب تنازلي حسب نسبة التشابه
         return $halls->sortByDesc('similarity')->values();
+    }
+
+    public function costumeSearch(array $filters) {
+        $query = hall::query();
+
+        if(!empty($filters['name'])) {
+            $query->where('name', 'like','%'.$filters['name'].'%');
+        }
+
+        if(!empty($filters['capacity'])) {
+            $query->where('capacity', '>=',$filters['capacity']);
+        }
+
+        if(!empty($filters['location'])) {
+            $query->where('location', 'like','%'.$filters['location'].'%');
+        }
+
+        return $query->get();
     }
 
     public function storeComplaint(Request $request , $hall_id) {

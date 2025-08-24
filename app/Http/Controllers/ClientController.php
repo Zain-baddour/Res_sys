@@ -83,6 +83,14 @@ class ClientController extends Controller
         ]);
     }
 
+    public function searchHalls (Request $request) {
+        $filters = $request->only(['name','capacity','location']);
+        $halls = $this->clientService->costumeSearch($filters);
+        return response()->json([
+            'halls' => $halls,
+        ]);
+    }
+
     public function storeComplaint(Request $request , $hall_id) {
         $request->validate([
             'complaint' => 'required|string|max:10000'

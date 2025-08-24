@@ -55,7 +55,7 @@ Route::get('polices/{id}', [HallController::class, 'showpolices']);// show hall 
 Route::get('hallPriceCards/{id}', [HallController::class , 'getHallPrice']); // show price card
 Route::get('offer/{id}', [HallController::class, 'showHallOffer']); // show offer
 Route::get('activeOfferHalls' ,[HallController::class, 'activeOfferHalls']);
-
+Route::post('/halls/costumeSearch',[ClientController::class, 'searchHalls']); // search by name , capacity or location
 
 
 

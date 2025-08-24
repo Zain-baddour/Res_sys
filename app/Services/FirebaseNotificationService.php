@@ -3,6 +3,9 @@
 namespace App\Services;
 
 
+use App\Models\DeviceToken;
+use App\Models\Notifications;
+use App\Models\User;
 use Google\Client;
 use GuzzleHttp\Client as HttpClient;
 use Illuminate\Support\Facades\Http;
@@ -88,6 +91,12 @@ class FirebaseNotificationService
                     ],
                 ],
             ]);
+        $userId = DeviceToken::where('device_token',$deviceToken)->value('user_id');
+        Notifications::create([
+            'user_id' => $userId,
+            'title' => $title,
+            'body' => $body,
+        ]);
 
         return $response->json();
     }
