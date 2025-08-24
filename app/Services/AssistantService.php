@@ -35,9 +35,10 @@ class AssistantService
 
     public function requestStaff($data) {
 
-        $hall = hall::where('id', $data['hall_id'])->get();
+        $req = staff_requests::create($data);
+        $hall = hall::findOrFail($data['hall_id']);
         $userId = auth()->id();
-        $user = User::where('id',$userId)->get();
+        $user = User::findOrFail($userId);
         $clientTokens = DeviceToken::where('user_id', $hall->owner_id)->pluck('device_token');
 
         $firebase = new FirebaseNotificationService();
@@ -51,13 +52,13 @@ class AssistantService
         }
 
 
-        return staff_requests::create($data);
+        return $req;
 
     }
 
     public function getStaffRequest() {
         $userId = auth()->id();
-        return staff_requests::where('user_id', $userId)->get();
+        return staff_requests::where('user_id', $userId)->with(['hall'])->get();
     }
 
     public function getChats() {

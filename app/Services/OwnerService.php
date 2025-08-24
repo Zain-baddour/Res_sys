@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\DeviceToken;
 use App\Models\hall;
+use App\Models\hall_employee;
 use App\Models\Hall_img;
 use App\Models\staff_requests;
 use App\Notifications\StaffRequestApprovedNotification;
@@ -45,6 +46,11 @@ class OwnerService
 
     public function approveOrRejectStaff($staffReqId,$status) {
         $staffReq = staff_requests::findOrFail($staffReqId);
+        $emp = hall_employee::where('user_id',$staffReq->user_id)->get();
+        if ($emp) {
+            return "this user has been already employed";
+        }
+
         if ($staffReq->status !== 'pending') {
             throw ValidationException::withMessages([
                 'status' => 'You cannot modify this request , its not pending.'
@@ -53,6 +59,7 @@ class OwnerService
         if(!in_array($status,['approved','rejected'])){
             throw new \InvalidArgumentException('status is not Right');
         }
+
         $staffReq->update(['status' => $status]);
 
         if ($staffReq->status == 'approved'){
