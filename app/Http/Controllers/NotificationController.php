@@ -28,6 +28,22 @@ class NotificationController extends Controller
         ]);
     }
 
+    public function getNRN(Request $request)
+    {
+        $userId = $request->user()->id; // جبت الـ id من الـ token
+
+        $notifications = $this->notificationService->getNonReadN($userId);
+
+        return response()->json([
+            'notifications' => $notifications
+        ]);
+    }
+
+    public function markAsRead($NId)
+    {
+        return response()->json(['message' => $this->notificationService->markAsRead($NId)]);
+    }
+
     public function saveToken(Request $request)
     {
         $request->validate([

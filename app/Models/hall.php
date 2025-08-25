@@ -101,4 +101,8 @@ class hall extends Model
     public function paymentConfirm() {
         return $this->hasMany(paymentConfirm::class);
     }
+
+    public function contact(){
+        return $this->hasMany(HallContact::class);
+    }
 }

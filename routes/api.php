@@ -119,6 +119,8 @@ Route::middleware(['auth:sanctum','blocked'])->prefix('assistant')->group(functi
     Route::put('updatePrice/{id}', [HallController::class , 'updatePrice']); // update price card
     Route::post('addoffer/{id}', [HallController::class, 'addoffer']); // add offer
     Route::post('updateoffer/{id}', [HallController::class, 'updateoffer']); // update offer
+    Route::post('uploadContact' , [AssistantController::class, 'uploadContact']);// upload contact
+    Route::post('/searchBooking' ,[AssistantController::class, 'searchBooking']);//search booking by user_id or event_date
 
 
     Route::post('addpay/{id}', [HallController::class, 'add_pay']);
@@ -200,7 +202,9 @@ Route::prefix('admin/dashboard')
 Route::middleware('auth:sanctum')->get('/Owner-dashboard/statistics', [HallDashboardController::class, 'getStatistics']);
 
 // ***** Notification APIs *****
-Route::middleware('auth:sanctum')->get('/notifications', [NotificationController::class, 'index']);
+Route::middleware('auth:sanctum')->get('/notifications', [NotificationController::class, 'index']);//all notes
+Route::middleware('auth:sanctum')->get('/notifications/unreadCount', [NotificationController::class, 'getNRN']);//unread notes
+Route::middleware('auth:sanctum')->put('/notifications/turnRead/{id}', [NotificationController::class, 'markAsRead']);//mark as read
 
 //*********************
 //ZainHassan ********

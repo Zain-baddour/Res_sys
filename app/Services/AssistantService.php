@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\Booking;
 use App\Models\DeviceToken;
 use App\Models\hall;
 use App\Models\hall_employee;
+use App\Models\HallContact;
 use App\Models\hallEventImages;
 use App\Models\hallEventVideos;
 use App\Models\inquiry;
@@ -66,7 +68,7 @@ class AssistantService
 
         $hallId = hall_employee::where('user_id', $assistantId)->value('hall_id');
         if(!$hallId) {
-            return response()->json(['message' => 'أنت غير مرتبط بقاعة'], 404);
+            return response()->json(['message' => 'you are not employed'], 404);
         }
 
         $customers = inquiry::where('hall_id', $hallId)
@@ -74,7 +76,7 @@ class AssistantService
             ->pluck('user_id');
 
         if ($customers->isEmpty()) {
-            return response()->json(['message' => 'لا توجد رسائل حاليا'], 404);
+            return response()->json(['message' => 'no messages yet!'], 404);
         }
 
         $customersDetails = User::whereIn('id', $customers)->get();
@@ -87,7 +89,7 @@ class AssistantService
 
         $hallId = hall_employee::where('user_id', $assistantId)->value('hall_id');
         if(!$hallId) {
-            return response()->json(['message' => 'أنت غير مرتبط بقاعة'], 404);
+            return response()->json(['message' => 'you are not employed'], 404);
         }
 
         $hall = hall::where('id', $hallId)->get();
@@ -113,7 +115,7 @@ class AssistantService
 
         $hallId = hall_employee::where('user_id', $assistantId)->value('hall_id');
         if(!$hallId) {
-            return response()->json(['message' => 'أنت غير مرتبط بقاعة'], 404);
+            return response()->json(['message' => 'you are not employed'], 404);
         }
 
         $hall = hall::where('id', $hallId)->get();
@@ -129,6 +131,39 @@ class AssistantService
             }
         }
         return $hall->load('eventVideos');
+    }
+
+    public function uploadContact($data) {
+        $assistantId = auth()->id();
+
+        $hallId = hall_employee::where('user_id', $assistantId)->value('hall_id');
+        if(!$hallId) {
+            return response()->json(['message' => 'you are not employed'], 404);
+        }
+
+        $contact = HallContact::updateOrCreate([
+            'user_id' => $assistantId,
+            'hall_id' => $hallId,
+            'telegram' => $data['telegram'],
+            'whatsUp' => $data['whatsUp'],
+        ]);
+        return $contact;
+
+    }
+
+    public function costumeSearchBooking(array $filters) {
+        $query = Booking::query();
+
+        if(!empty($filters['user_id'])) {
+            $query->where('user_id', '=',$filters['user_id']);
+        }
+
+        if(!empty($filters['event_date'])) {
+            $query->where('event_date', '=',$filters['event_date']);
+        }
+
+
+        return $query->get();
     }
 
 }

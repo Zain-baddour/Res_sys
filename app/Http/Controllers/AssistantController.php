@@ -61,4 +61,21 @@ class AssistantController extends Controller
         return response()->json($response , 200);
     }
 
+    public function uploadContact (Request $request) {
+        $data = $request->validate([
+            'telegram' => 'sometimes|required|string',
+            'whatsUp' => 'sometimes|required|string',
+        ]);
+        $response = $this->assistantService->uploadContact($data);
+        return response()->json($response, 200);
+    }
+
+    public function searchBooking (Request $request) {
+        $filters = $request->only(['user_id','event_date']);
+        $halls = $this->assistantService->costumeSearchBooking($filters);
+        return response()->json([
+            'halls' => $halls,
+        ]);
+    }
+
 }

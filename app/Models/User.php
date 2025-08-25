@@ -95,5 +95,9 @@ class User extends Authenticatable
         return $this->id_image ? asset($this->id_image) : null;
     }
 
+    public function hallContact(){
+        return $this->hasOne(HallContact::class);
+    }
+
 
 }
