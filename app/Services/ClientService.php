@@ -163,6 +163,19 @@ class ClientService
             'hall_id' => $hall_id,
             'complaint' => $request->complaint,
         ]);
+        $user = User::find(auth()->id());
+        $hall = hall::find($hall_id);
+        $clientTokens = DeviceToken::where('user_id', 1)->pluck('device_token');
+
+        $firebase = new FirebaseNotificationService();
+
+        foreach ($clientTokens as $token) {
+            $firebase->sendNotification(
+                $token,
+                "new complaint",
+                "user {$user->name} sent a complaint on hall {$hall->name}"
+            );
+        }
 
         return response()->json(['message' => 'Your complaint was successfully stored and will be reviewed', 'review' => $complaint]);
     }
