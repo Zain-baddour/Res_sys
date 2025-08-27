@@ -13,5 +13,7 @@ return function (Schedule $schedule) {
     $schedule->command(com\DeleteExpiredOffers::class)->daily();
     $schedule->command(com\NotifyCloseExpiringSubscriptions::class)->dailyAt('9:00');
     $schedule->command(com\NotifyExpiredSubscriptions::class)->dailyAt('9:00');
+    $schedule->command(com\UnconfirmedBookings::class)->dailyAt('9:00');
+    $schedule->command(com\DeleteOldReadNotifications::class)->daily();
 };
 

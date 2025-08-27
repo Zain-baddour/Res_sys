@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 use Nette\Utils\Strings;
 use Spatie\Permission\Models\Role;
 
@@ -55,7 +56,7 @@ class UserService
 
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
             throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
+                'message' => ['The provided credentials are incorrect.'],
             ]);
         }
 

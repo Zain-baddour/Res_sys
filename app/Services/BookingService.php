@@ -172,7 +172,7 @@ class BookingService
                 FirebaseNotificationService::sendNotification(
                     $token,
                     "Booking Stored",
-                    "Your booking has been saved successfully. Please confirm by paying online or at the hall."
+                    "Your booking has been saved successfully. Please confirm by paying online or at the hall in 2 days or else the booking will be deleted."
                 );
             }
 

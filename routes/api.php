@@ -25,7 +25,7 @@ Route::controller(AuthController::class)->group(function (){
         ->name('user.register');
 
     Route::post('login', 'login')
-        ->name('user.login');
+        ->name('user.login')->middleware('throttle:login');
 
     Route::group(['middleware' => ['auth:sanctum']], function (){
         Route::get('logout', 'logout')
