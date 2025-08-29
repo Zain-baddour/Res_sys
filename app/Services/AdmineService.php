@@ -72,6 +72,7 @@ class AdmineService
                     "Your hall :{$hall->name}  has been rejected. contact the admin!"
                 );
             }
+
         }
 
         return $hall;

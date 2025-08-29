@@ -210,7 +210,7 @@ class BookingService
 
         return Booking::where('hall_id', $hallId)
             ->where('status', 'unconfirmed')
-            ->with(['services' , 'songs', 'user'])
+            ->with(['services' , 'songs', 'user' , 'payment'])
             ->get();
     }
 
@@ -224,7 +224,7 @@ class BookingService
 
         return Booking::where('hall_id', $hallId)
             ->where('status', 'confirmed')
-            ->with(['services' , 'songs', 'user'])
+            ->with(['services' , 'songs', 'user' , 'payment'])
             ->get();
     }
 
@@ -407,16 +407,14 @@ class BookingService
     {
         $booking = Booking::where('id', $bookingId)->where('user_id', Auth::id())->firstOrFail();
 
-        if ($booking->status == 'confirmed') {
-            return response()->json('You cannot delete a booking after confirmation, Contact the hall to avoid loosing your money if possible');
-        }
+
         $bookingDate = Carbon::parse($booking->event_date);
         $daysBeforeEvent = now()->diffInDays($bookingDate);
 
-        if ($daysBeforeEvent < 2) {
+        if ($daysBeforeEvent < 5) {
             if (!$confirmPenalty) {
                 return response()->json([
-                    'message' => 'to delete a booking before 2 days it require a fee , would you like to proceed!',
+                    'message' => 'to delete a booking before 5 days it require a fee , would you like to proceed!',
                     'confirm_penalty_required' => true
                 ], 400);
             }

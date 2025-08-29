@@ -136,6 +136,9 @@ class StripeService
                 ? $currentExpiry->addMonth()
                 : $now->addMonth();
 
+            if ($hall->status = "expired"){
+                $hall->status = "approved";
+            }
             $hall->save();
             return $hall;
         });
