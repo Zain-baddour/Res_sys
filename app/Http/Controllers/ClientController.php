@@ -87,7 +87,7 @@ class ClientController extends Controller
         $filters = $request->only(['name','capacity','location']);
         $halls = $this->clientService->costumeSearch($filters);
         return response()->json([
-            'halls' => $halls,
+            'halls' => $halls->where('status', 'approved'),
         ]);
     }
 

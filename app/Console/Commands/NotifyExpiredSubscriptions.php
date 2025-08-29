@@ -31,7 +31,7 @@ class NotifyExpiredSubscriptions extends Command
     {
         $today = Carbon::today();
 
-        $halls = Hall::whereDate('subscription_end_date', $today->copy())->get();
+        $halls = Hall::whereDate('subscription_end_date', '<=' ,$today->copy())->get();
 
         foreach ($halls as $hall) {
             $ownerTokens = DeviceToken::where('user_id', $hall->owner_id)->pluck('device_token');
@@ -47,6 +47,12 @@ class NotifyExpiredSubscriptions extends Command
                     "Your hall '{$hall->name}' subscription expired please subscribe."
                 );
             }
+            if($hall->status = 'approved'){
+                $hall->status = 'expired';
+                $hall->save();
+            }
+
+
 
             $this->info("Notified hall: {$hall->name}");
         }
