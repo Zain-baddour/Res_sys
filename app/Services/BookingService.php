@@ -407,6 +407,9 @@ class BookingService
     {
         $booking = Booking::where('id', $bookingId)->where('user_id', Auth::id())->firstOrFail();
 
+        if ($booking->status == 'confirmed'){
+            return response()->json(['message' => 'you cannot delete a booking after confirmation or you will lose your money chick with tha hall first']);
+        }
 
         $bookingDate = Carbon::parse($booking->event_date);
         $daysBeforeEvent = now()->diffInDays($bookingDate);
