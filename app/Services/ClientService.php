@@ -158,6 +158,11 @@ class ClientService
 
     public function storeComplaint(Request $request , $hall_id) {
 
+        $analyzer = new CommentAnalyzer();
+        $res = $analyzer->analyze($request->complaint);
+        if($res === 'Bad'){
+            return response()->json(['message' => 'Complaint was rejected due to using Bad Words'], 403);
+        }
         $complaint = Complaint::create([
             'user_id' => auth()->id(),
             'hall_id' => $hall_id,

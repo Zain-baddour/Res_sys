@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\Models\AppSetting;
 use App\Models\Booking;
+use App\Models\DeviceToken;
 use App\Models\paymentConfirm;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
@@ -143,6 +144,19 @@ class StripeService
             return $hall;
         });
         $hall = hall::findOrFail($hallId);
+
+        $clientToken = DeviceToken::where('user_id', $hall->owner_id)->pluck('device_token');
+
+        $firebase = new FirebaseNotificationService();
+
+        foreach ($clientToken as $token) {
+            $firebase->sendNotification(
+                $token,
+                "Subscription ReNewed",
+                "Your hall {$hall->name} subscription ends at {$hall->subscription_expires_at}"
+            );
+        }
+
         return $hall;
     }
 
@@ -290,12 +304,24 @@ class StripeService
         try {
             // استرجاع معلومات الدفع
             $paymentIntent = PaymentIntent::retrieve($paymentIntentId);
-            $booking = Booking::findOrFail($bookingId);
+            $booking = Booking::findOrFail($bookingId)->with(['hall']);
 
             // إذا الدفع ناجح
             if ($paymentIntent->status === 'succeeded') {
                 // هون منستدعي لوجيك تأكيد الحجز
                 $this->confirmBooking($bookingId);
+
+                $clientToken = DeviceToken::where('user_id', $booking->user_id)->pluck('device_token');
+
+                $firebase = new FirebaseNotificationService();
+
+                foreach ($clientToken as $token) {
+                    $firebase->sendNotification(
+                        $token,
+                        "Booking ",
+                        "Your Booking for hall {$booking->hall()->name} at {$booking->event_date}"
+                    );
+                }
 
                 return [
                     'status' => true,

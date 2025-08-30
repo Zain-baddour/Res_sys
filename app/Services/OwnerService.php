@@ -46,7 +46,7 @@ class OwnerService
 
     public function approveOrRejectStaff($staffReqId,$status) {
         $staffReq = staff_requests::findOrFail($staffReqId);
-        $emp = hall_employee::where('user_id',$staffReq->user_id)->get();
+        $emp = hall_employee::where('user_id',$staffReq->user_id)->exists();
         if ($emp) {
             return "this user has been already employed";
         }

@@ -58,6 +58,8 @@ class StripeController extends Controller
         try {
             $hall = $this->stripeService->confirmAndRecord($request->payment_intent_id);
 
+
+
             return response()->json([
                 'message' => 'Payment confirmed and subscription updated ✅',
                 'hall'    => $hall,
