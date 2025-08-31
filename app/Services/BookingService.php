@@ -360,7 +360,7 @@ class BookingService
     public function updateBooking($bookingId, $data)
     {
         $booking = Booking::where('id', $bookingId)->where('user_id', Auth::id())->firstOrFail();
-
+        $hallU = hall::findOfFail($booking->hall_id);
         if ($booking->status == 'confirmed') {
             return response()->json('Sorry You cannot update a booking after confirmation');
         }
@@ -368,6 +368,28 @@ class BookingService
         $bookingDate = Carbon::parse($booking->event_date);
         if (now()->diffInDays($bookingDate,false) < 2) {
             return response()->json('you cannot update a booking in such short notice');
+        }
+        $data['to'] = $booking->to;
+        $data['from'] = $booking->from;
+
+        $conflictingBooking = Booking::where('id', $bookingId)
+            ->whereDate('event_date', $data['event_date'])
+            ->where(function ($query) use ($data) {
+                $query->where(function ($q) use ($data) {
+                    $q->where('from', '<', $data['to'])
+                        ->where('to', '>', $data['from']);
+                });
+            })
+            ->exists();
+
+        if ($conflictingBooking) {
+            return response()->json(['message' => 'there is another reservation at this time'], 422);
+        }
+
+        $guestMax = $hallU->capacity;
+
+        if ($guestMax < $data['guest_count']) {
+            return response()->json(['message' => 'the hall cannot take all the guest']);
         }
 
         $booking->update($data);
